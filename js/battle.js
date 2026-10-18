@@ -43,16 +43,30 @@ class BattleEngine {
       const isGlassCannon = c.weakness && c.weakness.text === 'Glass Cannon';
       const actualMaxHp = isGlassCannon ? 35 : maxHp;
 
+      const gradeText = c.sorcererGrade ? (c.sorcererGrade.text || c.sorcererGrade) : 'Grade 2 Sorcerer';
+      const gradeBfOdds = (c.sorcererGrade && c.sorcererGrade.bfOdds) ? c.sorcererGrade.bfOdds : this.getGradeBfOdds(gradeText);
+      const inferredTheme = (c.domainType && c.domainType.theme) || c.domainTheme ||
+        ((c.archetype && c.archetype.text === 'Cursed Vessel') || (c.powers && c.powers.some(p => (p.text || p).includes('Shrine'))) ? 'shrine' : 'void');
+      const inferredDomainName = c.domainType ? (c.domainType.text || c.domainType) :
+        (c.domainName || (inferredTheme === 'shrine' ? 'Malevolent Shrine' : 'Unlimited Void'));
+
       return {
         id: c.id || 'f_' + index,
         originalData: c,
-        name: c.name || 'Gladiator',
+        name: c.name || `Gladiator #${index + 1}`,
         fullTitle: (typeof characterManager !== 'undefined') ? characterManager.generateFullTitle(c) : c.name,
         level: c.level || 1,
         race: c.race ? c.race.text : 'Human',
         raceColor: c.race && c.race.color ? c.race.color : '#b3131b',
         archetype: c.archetype ? c.archetype.text : 'Warrior',
         archetypeSub: c.archetypeSub ? c.archetypeSub.text : null,
+        sorcererGrade: gradeText,
+        bfOdds: gradeBfOdds,
+        bfChain: 0,
+        awakenedPotential: false,
+        simpleDomainActive: false,
+        simpleDomainTurns: 0,
+        ctBurnoutTurns: 0,
         sukunaFingers: c.sukunaFingers || (c.archetypeSub && c.archetypeSub.fingers) || 0,
         weapon: c.weapon ? c.weapon.text : 'Bare Knuckles',
         weaponRarity: c.weapon ? c.weapon.rarity : 'common',
@@ -65,8 +79,8 @@ class BattleEngine {
         maxHp: actualMaxHp,
         currentHp: actualMaxHp,
         shield: (c.powers && c.powers.some(p => (p.text || p) === 'Force Field Barrier' || (p.text || p) === 'Limitless & Hollow Purple')) ? 180 : 0,
-        domainName: c.domainType ? (c.domainType.text || c.domainType) : (c.domainName || 'Infinite Void'),
-        domainTheme: (c.domainType && c.domainType.theme) || c.domainTheme || 'void',
+        domainName: inferredDomainName,
+        domainTheme: inferredTheme,
         isAlive: true,
         isUndeadRevived: false,
         isPhoenixRevived: false,
@@ -82,7 +96,35 @@ class BattleEngine {
       };
     });
 
+    this.activeDomain = null;
     return this.fighters;
+  }
+
+  getGradeBfOdds(gradeText = '') {
+    if (gradeText.includes('Unlimited Potential')) return 0.52;
+    if (gradeText.includes('Heavenly Anomaly')) return 0.45;
+    if (gradeText.includes('Special Grade')) return 0.40;
+    if (gradeText.includes('Semi-Grade 1')) return 0.28;
+    if (gradeText.includes('Grade 1')) return 0.33;
+    if (gradeText.includes('Semi-Grade 2')) return 0.21;
+    if (gradeText.includes('Grade 2')) return 0.24;
+    if (gradeText.includes('Grade 3')) return 0.18;
+    return 0.14; // Grade 4 baseline so every spin can Black Flash
+  }
+
+  toggleSimpleDomain(fighterId = null) {
+    const targetFighter = fighterId
+      ? this.fighters.find(f => f.id === fighterId && f.isAlive)
+      : (this.fighters.find(f => f.isAlive && (!this.activeDomain || f.id !== this.activeDomain.caster.id)) || this.fighters[0]);
+    if (!targetFighter) return null;
+    targetFighter.simpleDomainActive = !targetFighter.simpleDomainActive;
+    targetFighter.simpleDomainTurns = targetFighter.simpleDomainActive ? 3 : 0;
+    if (targetFighter.simpleDomainActive) {
+      this.logAction(`🛡️ circle! ${targetFighter.name} deploys NEW SHADOW STYLE: SIMPLE DOMAIN (簡易領域)! Incoming Domain sure-hit damage reduced by 55%!`, 'power');
+    } else {
+      this.logAction(`🛡️ ${targetFighter.name}'s Simple Domain barrier dissipates.`, 'info');
+    }
+    return targetFighter;
   }
 
   setSpeed(mult) {
@@ -141,6 +183,71 @@ class BattleEngine {
       // Skip dead fighter
       this.scheduleNextTurn(50);
       return;
+    }
+
+    // Tick down Simple Domain turns if active
+    if (attacker.simpleDomainActive && attacker.simpleDomainTurns > 0) {
+      attacker.simpleDomainTurns--;
+      if (attacker.simpleDomainTurns <= 0) {
+        attacker.simpleDomainActive = false;
+      }
+    }
+
+    // Process Active Winning Domain Effects on trapped opponents
+    if (this.activeDomain && this.activeDomain.caster && this.activeDomain.caster.isAlive && attacker.id !== this.activeDomain.caster.id) {
+      const domCaster = this.activeDomain.caster;
+      const domTheme = this.activeDomain.theme || 'shrine';
+      const domName = this.activeDomain.name || (domTheme === 'shrine' ? 'Malevolent Shrine' : 'Unlimited Void');
+
+      // Trapped fighter can auto-deploy Simple Domain if they haven't yet
+      if (!attacker.simpleDomainActive && Math.random() < 0.38) {
+        attacker.simpleDomainActive = true;
+        attacker.simpleDomainTurns = 2;
+        this.logAction(`🛡️✨ ${attacker.name} erects SIMPLE DOMAIN (簡易領域) to neutralizing the sure-hit barrier of ${domName} (-55% DMG)!`, 'power');
+      }
+
+      const sdMitigation = attacker.simpleDomainActive ? 0.45 : 1.0;
+      const isFinalDomainTurn = this.activeDomain.turnsLeft <= 1;
+
+      if (domTheme === 'shrine' || domName.includes('Shrine') || domName.includes('Coffin') || domName.includes('Horizon')) {
+        let shrineDmg = Math.floor((95 + domCaster.stats.str * 0.35) * sdMitigation);
+        if (isFinalDomainTurn) {
+          shrineDmg = Math.floor(shrineDmg * 1.65);
+          this.logAction(`🔥🏹 竈「開」 DIVINE FLAME: FUGA! ${domCaster.name} ignites the pulverized dust of ${domName} into a thermobaric Fire Arrow, scorching ${attacker.name} for ${shrineDmg} damage!`, 'crit');
+        } else {
+          this.logAction(`⛩️🗡️ ${domName.toUpperCase()} SURE-HIT! Relentless Cleave & Dismantle slashes carve ${attacker.name} for ${shrineDmg} damage${attacker.simpleDomainActive ? ' (Simple Domain -55%)' : ''}!`, 'hit');
+        }
+        attacker.currentHp = Math.max(1, attacker.currentHp - shrineDmg);
+        domCaster.damageDealt += shrineDmg;
+        this.options.onHpUpdate(attacker);
+      } else {
+        // Unlimited Void / Control Domain
+        let voidDmg = Math.floor((70 + domCaster.stats.int * 0.32) * sdMitigation);
+        if (isFinalDomainTurn) {
+          voidDmg = Math.floor(voidDmg * 1.85);
+          this.logAction(`🟣🤞 虚式「茈」 HOLLOW TECHNIQUE: PURPLE! Inside ${domName}, ${domCaster.name} fires imaginary mass through ${attacker.name} for ${voidDmg} damage!`, 'crit');
+        } else {
+          this.logAction(`🌌🧠 ${domName.toUpperCase()} SURE-HIT! Infinite information floods ${attacker.name}'s mind for ${voidDmg} neural damage!`, 'power');
+        }
+        attacker.currentHp = Math.max(1, attacker.currentHp - voidDmg);
+        domCaster.damageDealt += voidDmg;
+        this.options.onHpUpdate(attacker);
+
+        if (!attacker.simpleDomainActive && !isFinalDomainTurn) {
+          this.logAction(`🧠⚡ ${attacker.name} is paralyzed by UNLIMITED VOID sensory overload and loses their action!`, 'info');
+          this.activeDomain.turnsLeft--;
+          if (this.activeDomain.turnsLeft <= 0) {
+            this.endActiveDomain();
+          }
+          this.scheduleNextTurn(850);
+          return;
+        }
+      }
+
+      this.activeDomain.turnsLeft--;
+      if (this.activeDomain.turnsLeft <= 0) {
+        this.endActiveDomain();
+      }
     }
 
     // Process status effects at turn start
@@ -315,26 +422,97 @@ class BattleEngine {
     let powerBonus = 0;
     let powerEffectText = '';
     let attackSound = 'slash';
+    let triggeredDomainPause = false;
 
-    // Domain Expansion Check
-    const hasDomainPower = attacker.powers.some(p => p.includes('Domain Expansion'));
-    if (hasDomainPower && Math.random() < 0.28) {
-      powerBonus += 75;
-      const domainName = attacker.domainName || (attacker.archetypeSub && attacker.archetypeSub.includes('Domain') ? attacker.archetypeSub : 'Infinite Void');
-      const domainTheme = attacker.domainTheme || 'void';
-      powerEffectText = `🌑 RYŌIKI TENKAI: ${domainName.toUpperCase()}! `;
+    // CT Burnout check after Domain ends
+    if (attacker.ctBurnoutTurns > 0) {
+      attacker.ctBurnoutTurns--;
+      powerBonus -= 20;
+      this.logAction(`🥵 ${attacker.name}'s Cursed Technique is experiencing post-Domain CT BURNOUT (recovering)!`, 'info');
+    }
+
+    // Mid-Battle "Honored One" Awakening for Unlimited Potential
+    if (attacker.sorcererGrade && attacker.sorcererGrade.includes('Unlimited Potential') && !attacker.awakenedPotential && ((attacker.currentHp / attacker.maxHp) < 0.65 || attacker.bfChain >= 1)) {
+      attacker.awakenedPotential = true;
+      const awakenHeal = Math.floor(attacker.maxHp * 0.35);
+      attacker.currentHp = Math.min(attacker.maxHp, attacker.currentHp + awakenHeal);
+      attacker.stats.str = Math.floor(attacker.stats.str * 1.25);
+      attacker.stats.spd = Math.floor(attacker.stats.spd * 1.25);
+      attacker.stats.int = Math.floor(attacker.stats.int * 1.25);
+      attacker.bfOdds = Math.min(0.75, (attacker.bfOdds || 0.52) + 0.15);
+      powerBonus += 80;
+      powerEffectText += '✨👑 HONORED ONE AWAKENING! ';
+      sounds.playFanfare('godTier');
+      this.options.onHpUpdate(attacker);
+      this.logAction(`✨👑 "THROUGHOUT HEAVEN AND EARTH, I ALONE AM THE HONORED ONE!" ${attacker.name}'s Unlimited Potential awakens (+${awakenHeal} HP, +25% ALL STATS)!`, 'power');
+    }
+
+    // Domain Expansion & Split-Screen Domain Clash Check
+    const hasDomainPower = attacker.powers.some(p => p.includes('Domain Expansion')) ||
+      (attacker.sorcererGrade && (attacker.sorcererGrade.includes('Special Grade') || attacker.sorcererGrade.includes('Heavenly Anomaly') || attacker.sorcererGrade.includes('Unlimited Potential')));
+    const targetCanClash = target.powers.some(p => p.includes('Domain Expansion')) ||
+      (target.sorcererGrade && (target.sorcererGrade.includes('Special Grade') || target.sorcererGrade.includes('Heavenly Anomaly') || target.sorcererGrade.includes('Unlimited Potential') || target.sorcererGrade.includes('Grade 1')));
+
+    if (hasDomainPower && attacker.ctBurnoutTurns === 0 && !this.activeDomain && Math.random() < 0.28) {
+      triggeredDomainPause = true;
+      powerBonus += 90;
       attackSound = 'magic';
       sounds.playDomainExpansion();
-      this.logAction(`🌌 ${attacker.name} manifests DOMAIN EXPANSION: 「${domainName}」! The barrier seals the battlefield with guaranteed hit-rate!`, 'power');
-      this.options.onAction({
-        type: 'domainExpansion',
-        attacker,
-        target,
-        domainName,
-        domainTheme,
-        text: `DOMAIN EXPANSION: ${domainName.toUpperCase()}!`,
-        sound: 'magic'
-      });
+
+      if (targetCanClash && Math.random() < 0.72) {
+        // SPLIT-SCREEN DOMAIN CLASH -> WINNING DOMAIN CONTINUATION (4.0s)
+        const atkScore = attacker.stats.int + attacker.stats.str * 0.5 + (attacker.bfChain * 25) + Math.random() * 45;
+        const tgtScore = target.stats.int + target.stats.str * 0.5 + (target.bfChain * 25) + Math.random() * 45;
+        const clashWinner = atkScore >= tgtScore ? attacker : target;
+        const clashLoser = clashWinner.id === attacker.id ? target : attacker;
+        const winTheme = clashWinner.id === attacker.id ? (attacker.domainTheme || 'shrine') : (target.domainTheme || 'void');
+        const winDomainName = clashWinner.domainName || (winTheme === 'shrine' ? 'Malevolent Shrine' : 'Unlimited Void');
+
+        this.activeDomain = {
+          caster: clashWinner,
+          target: clashLoser,
+          name: winDomainName,
+          theme: winTheme,
+          turnsLeft: 3
+        };
+
+        powerEffectText = `⛩️⚡🌌 DOMAIN CLASH -> ${winDomainName.toUpperCase()} OVERWHELMS! `;
+        this.logAction(`⛩️⚡🌌 SPLIT-SCREEN DOMAIN CLASH! ${attacker.name} and ${target.name}'s barriers collide in a diagonal tug-of-war—${clashWinner.name}'s 「${winDomainName}」 shatters the opposing barrier and stays active!`, 'crit');
+        this.options.onAction({
+          type: 'domainClash',
+          attacker,
+          target,
+          clashWinner,
+          clashLoser,
+          domainName: winDomainName,
+          domainTheme: winTheme === 'shrine' ? 'shrine' : 'void',
+          text: `DOMAIN CLASH: ${winDomainName.toUpperCase()} WINS!`,
+          sound: 'magic'
+        });
+      } else {
+        const domainName = attacker.domainName || (attacker.archetypeSub && attacker.archetypeSub.includes('Domain') ? attacker.archetypeSub : 'Unlimited Void');
+        const domainTheme = attacker.domainTheme || (domainName.includes('Shrine') ? 'shrine' : 'void');
+        this.activeDomain = {
+          caster: attacker,
+          target,
+          name: domainName,
+          theme: domainTheme,
+          turnsLeft: 3
+        };
+        powerEffectText = `🌑 RYŌIKI TENKAI: ${domainName.toUpperCase()}! `;
+        this.logAction(`🌌 ${attacker.name} manifests DOMAIN EXPANSION: 「${domainName}」! The barrier seals the battlefield for 3 turns with guaranteed sure-hit attacks!`, 'power');
+        this.options.onAction({
+          type: 'domainClash',
+          attacker,
+          target,
+          clashWinner: attacker,
+          clashLoser: target,
+          domainName,
+          domainTheme: domainTheme === 'shrine' ? 'shrine' : 'void',
+          text: `DOMAIN EXPANSION: ${domainName.toUpperCase()}!`,
+          sound: 'magic'
+        });
+      }
     } else if (attacker.powers.includes('Limitless & Hollow Purple') && Math.random() < 0.30) {
       powerBonus += 85;
       powerEffectText = '🟣🤞 HOLLOW TECHNIQUE: PURPLE! ';
@@ -525,6 +703,9 @@ class BattleEngine {
     if (target.powers.includes('Limitless & Hollow Purple') && !hasSpearOfHeaven && !attacker.powers.includes('Domain Expansion')) {
       mitigation *= 1.55; // Infinity slows incoming strikes
     }
+    if (target.simpleDomainActive) {
+      mitigation *= 1.35;
+    }
     if (target.weakness === 'Fragile Bones' && (attacker.weapon.includes('Maul') || attacker.weapon.includes('Hammer') || attacker.weapon.includes('Brick') || attacker.weapon.includes('Crowbar') || attacker.weapon.includes('Nokia') || attacker.weapon.includes('Baguette') || attacker.weapon.includes('Playful Cloud'))) {
       mitigation *= 0.25; // Fragile bones shattered!
       powerEffectText += '💀 FRAGILE BONES SHATTERED! ';
@@ -540,23 +721,26 @@ class BattleEngine {
     const chaosRoll = 0.85 + (Math.random() * 0.35) * (attacker.stats.chaos / 100);
     let finalDamage = Math.max(14, Math.floor((baseDmg - mitigation) * chaosRoll));
 
-    // BLACK FLASH (KOKUSEN) & Critical Hit Calculation
-    const hasBlackFlashTrait = attacker.powers.includes('Black Flash (Kokusen)') || attacker.archetype === 'Cursed Vessel' || attacker.archetype === 'Special Grade Sorcerer' || attacker.race === 'Death Painting Womb';
-    const blackFlashChance = hasBlackFlashTrait ? (attacker.inTheZone ? 0.42 : 0.32) : 0.08;
-    const isBlackFlash = Math.random() < blackFlashChance;
+    // UNIVERSAL SORCERER GRADE BLACK FLASH (KOKUSEN) & 120% ZONE CHAIN
+    const gradeBaseOdds = attacker.bfOdds || 0.22;
+    const traitBonusOdds = (attacker.powers.includes('Black Flash (Kokusen)') || attacker.archetype === 'Cursed Vessel' || attacker.archetype === 'Special Grade Sorcerer' || attacker.race === 'Death Painting Womb') ? 0.10 : 0;
+    const chainBonusOdds = (attacker.bfChain || 0) * 0.08;
+    const blackFlashChance = Math.min(0.78, gradeBaseOdds + traitBonusOdds + chainBonusOdds);
+    const isBlackFlash = !triggeredDomainPause && (Math.random() < blackFlashChance);
 
     let critMultiplier = (attacker.backstory === 'Won the Cosmic Lottery') ? 2.5 : 1.85;
     const critChance = Math.min(0.48, (attacker.stats.int * 0.0015) + (attacker.stats.chaos * 0.0015));
     const isCrit = isBlackFlash || Math.random() < critChance || (attacker.powers.includes('Probability Manipulation') && Math.random() < 0.4) || attacker.hasShonenProtagonistBuff;
     
     if (isBlackFlash) {
+      attacker.bfChain = (attacker.bfChain || 0) + 1;
       finalDamage = Math.floor(finalDamage * 2.5);
       attacker.inTheZone = true; // 120% Cursed Energy output zone
       attacker.stats.str = Math.floor(attacker.stats.str * 1.08);
-      powerEffectText = `⚡⚫ 黒閃 • BLACK FLASH (KOKUSEN ^2.5)! ` + powerEffectText;
+      powerEffectText = `⚡⚫ 黒閃 • BLACK FLASH (120% ZONE • ${attacker.bfChain}x CHAIN • ^2.5)! ` + powerEffectText;
       attackSound = 'blackFlash';
       sounds.playBlackFlash();
-      this.logAction(`⚡⚫ 黒閃! The sparks of black choose ${attacker.name}! Spatial distortion strike hits ${target.name} for ^2.5 (${finalDamage}) damage!`, 'crit');
+      this.logAction(`⚡⚫ 黒閃! [${attacker.sorcererGrade}] The sparks of black choose ${attacker.name} (0.000001s charge -> ${attacker.bfChain}x Chain)! Spatial distortion hits ${target.name} for ^2.5 (${finalDamage}) damage!`, 'crit');
     } else if (isCrit) {
       finalDamage = Math.floor(finalDamage * critMultiplier);
       attackSound = 'crit';
@@ -608,22 +792,25 @@ class BattleEngine {
     this.options.onHpUpdate(target);
 
     // Format Combat Log
-    const critText = isBlackFlash ? '⚡⚫ 黒閃 BLACK FLASH! ' : (isCrit ? '💥 CRITICAL HIT! ' : '');
+    const critText = isBlackFlash ? `⚡⚫ 黒閃 BLACK FLASH (${attacker.bfChain}x)! ` : (isCrit ? '💥 CRITICAL HIT! ' : '');
     const logMsg = `${attacker.name} strikes ${target.name} with ${attacker.weapon}! ${powerEffectText}${critText}(-${finalDamage} HP)`;
     this.logAction(logMsg, isCrit ? 'crit' : 'hit');
 
-    // Trigger visual action animation
-    this.options.onAction({
-      type: isBlackFlash ? 'blackFlash' : 'attack',
-      attacker,
-      target,
-      damage: finalDamage,
-      isCrit,
-      isBlackFlash,
-      powerEffectText,
-      text: `${critText}-${finalDamage}`,
-      sound: attackSound
-    });
+    // Trigger visual action animation (if Domain Clash already fired onAction, only fire attack if not domain)
+    if (!triggeredDomainPause) {
+      this.options.onAction({
+        type: isBlackFlash ? 'blackFlash' : 'attack',
+        attacker,
+        target,
+        damage: finalDamage,
+        isCrit,
+        isBlackFlash,
+        bfChain: attacker.bfChain || 0,
+        powerEffectText,
+        text: `${critText}-${finalDamage}`,
+        sound: attackSound
+      });
+    }
 
     // 6. Target Defeat / Death Check / Revivals / Indomitable Will
     if (target.currentHp <= 0) {
@@ -693,24 +880,82 @@ class BattleEngine {
       }
     }
 
+    // Combat Pause Duration for Black Flash (2400ms) or Domain Clash + Active Domain (6400ms)
+    const cinematicPauseMs = triggeredDomainPause ? 6400 : (isBlackFlash ? 2400 : 1100);
+
     // Double Strike Check
-    if (!isDoubleStrike && attacker.isAlive && target.isAlive && (attacker.passives.includes('Double Strike Mastery') && Math.random() < 0.32)) {
+    if (!isDoubleStrike && !triggeredDomainPause && attacker.isAlive && target.isAlive && (attacker.passives.includes('Double Strike Mastery') && Math.random() < 0.32)) {
       this.logAction(`⚡ ${attacker.name}'s Double Strike Mastery triggers an IMMEDIATE FOLLOW-UP ATTACK!`, 'power');
       setTimeout(() => {
         if (this.isRunning && attacker.isAlive && target.isAlive) {
           this.resolveTurnAction(attacker, target, true);
         }
-      }, 400);
+      }, isBlackFlash ? 2200 : 400);
       return;
     }
 
-    // Schedule next turn scaled by speed
-    this.scheduleNextTurn(1100);
+    // Schedule next turn scaled by speed (with guaranteed minimum pause for Black Flash / Domain Clash)
+    this.scheduleNextTurn(cinematicPauseMs, triggeredDomainPause || isBlackFlash);
   }
 
-  scheduleNextTurn(delayMs) {
+  endActiveDomain() {
+    if (!this.activeDomain) return;
+    const caster = this.activeDomain.caster;
+    const domName = this.activeDomain.name;
+    this.activeDomain = null;
+    if (caster && caster.isAlive) {
+      caster.ctBurnoutTurns = 1;
+      this.logAction(`🥵 「${domName}」 barrier collapses! ${caster.name} enters CT BURNOUT for 1 turn!`, 'info');
+    }
+  }
+
+  forceDomainClash(preferredWinnerTheme = null) {
+    const alive = this.fighters.filter(f => f.isAlive);
+    if (alive.length < 2) return;
+    const f1 = alive[0];
+    const f2 = alive[1];
+    const winTheme = preferredWinnerTheme || (Math.random() < 0.5 ? 'shrine' : 'void');
+    const clashWinner = winTheme === 'shrine' ? f1 : f2;
+    const clashLoser = clashWinner.id === f1.id ? f2 : f1;
+    const winDomainName = winTheme === 'shrine' ? 'Malevolent Shrine' : 'Unlimited Void';
+
+    this.activeDomain = {
+      caster: clashWinner,
+      target: clashLoser,
+      name: winDomainName,
+      theme: winTheme,
+      turnsLeft: 3
+    };
+
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
+
+    sounds.playDomainExpansion();
+    this.logAction(`⛩️⚡🌌 DOMAIN CLASH TRIGGERED! ${f1.name} (Malevolent Shrine) vs ${f2.name} (Unlimited Void)! ${clashWinner.name}'s 「${winDomainName}」 wins the clash and stays active for 4.0s!`, 'crit');
+    this.options.onAction({
+      type: 'domainClash',
+      attacker: f1,
+      target: f2,
+      clashWinner,
+      clashLoser,
+      domainName: winDomainName,
+      domainTheme: winTheme,
+      text: `DOMAIN CLASH: ${winDomainName.toUpperCase()}!`,
+      sound: 'magic'
+    });
+
+    if (this.isRunning && !this.isPaused) {
+      this.scheduleNextTurn(6400, true);
+    }
+  }
+
+  scheduleNextTurn(delayMs, isCinematicPause = false) {
     if (!this.isRunning) return;
-    const actualDelay = Math.max(120, Math.floor(delayMs / this.speed));
+    const actualDelay = isCinematicPause
+      ? Math.max(2100, Math.floor(delayMs / Math.min(this.speed, 1.5)))
+      : Math.max(120, Math.floor(delayMs / this.speed));
     this.timerId = setTimeout(() => {
       this.executeNextTurn();
     }, actualDelay);

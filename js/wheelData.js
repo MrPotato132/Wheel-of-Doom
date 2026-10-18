@@ -1177,6 +1177,27 @@ const WHEEL_DATA = {
       { text: 'Indomitable Will', subtext: 'Survives fatal blows with 1 HP once per match', rarity: 'epic', color: '#f97316', effect: { type: 'indomitableWill' } },
       { text: 'Double Strike Mastery', subtext: '30% chance to attack twice on every turn', rarity: 'legendary', color: '#14b8a6', effect: { type: 'doubleStrike' } }
     ]
+  },
+
+  // ============================================================
+  // 9. JUJUTSU SORCERER GRADE & POTENTIAL WHEEL (Universal Grade)
+  // ============================================================
+  sorcererGrade: {
+    id: 'sorcererGrade',
+    name: 'Sorcerer Grade & Potential Wheel',
+    subtitle: 'Every warrior starts with a Jujutsu Sorcerer Grade, Black Flash odds, and Awakening potential!',
+    icon: '🔮',
+    segments: [
+      { text: 'Grade 4 Sorcerer', subtext: '14% Base Black Flash Odds • Novice Cursed Energy Flow', rarity: 'common', color: '#475569', bfChance: 0.14, bonus: 10 },
+      { text: 'Grade 3 Sorcerer', subtext: '18% Base Black Flash Odds • Academy Field Operative', rarity: 'common', color: '#2563eb', bfChance: 0.18, bonus: 16 },
+      { text: 'Semi-Grade 2 Sorcerer', subtext: '22% Base Black Flash Odds • Certified Curse Exorcist', rarity: 'uncommon', color: '#0d9488', bfChance: 0.22, bonus: 22 },
+      { text: 'Grade 2 Sorcerer', subtext: '26% Base Black Flash Odds • Solo Mission Specialist + Simple Domain', rarity: 'uncommon', color: '#16a34a', bfChance: 0.26, bonus: 28 },
+      { text: 'Semi-Grade 1 Sorcerer', subtext: '30% Base Black Flash Odds • Elite Clan Vanguard + Simple Domain', rarity: 'rare', color: '#7c3aed', bfChance: 0.30, bonus: 35 },
+      { text: 'Grade 1 Sorcerer', subtext: '36% Base Black Flash Odds • Peak Jujutsu Tactician + Simple Domain', rarity: 'epic', color: '#d97706', bfChance: 0.36, bonus: 45 },
+      { text: 'Special Grade Sorcerer', subtext: '44% Base Black Flash Odds • Can Overthrow a Nation Single-Handedly', rarity: 'legendary', color: '#e11d48', bfChance: 0.44, bonus: 60 },
+      { text: 'Heavenly Anomaly (Zero CE)', subtext: '40% Spatial Strike Odds • Superhuman Physical Prowess & Barrier Immunity', rarity: 'mythic', color: '#14532d', bfChance: 0.40, bonus: 65 },
+      { text: 'Unlimited Potential (Awakened)', subtext: '52% Base Black Flash Odds • Surpasses Gojo & Sukuna + Honored One Awakening!', rarity: 'godTier', color: '#00f0ff', bfChance: 0.52, bonus: 80 }
+    ]
   }
 };
 
@@ -1534,7 +1555,17 @@ const TRAIT_DESCRIPTIONS = {
     'Horizon of the Captivating Skandha': 'Oceanic Abyss: Floods the arena with tidal vortexes and leviathan predators that bypass armor.',
     'Coffin of the Iron Mountain': 'Volcanic Core: Traps the target in the heart of an active volcano, dealing severe burning magma damage.',
     'Self-Embodiment of Perfection': 'Soul Transfiguration: Direct transmorphic resonance touching the opponent’s soul, ignoring armor.',
-    'Time-Space Chrono Matrix': 'Temporal Freeze: Freezes the opponent’s personal timeline while the caster unleashes a barrage of free hits.'
+    'Time-Space Chrono Matrix': 'Temporal Freeze: Freezes the opponent’s personal timeline while the caster unleashes a barrage of free hits.',
+    // Universal Sorcerer Grades & Potential
+    'Grade 4 Sorcerer': 'Novice Sorcerer Grade: Grants +10 All Stats and a 14% base chance to land a ^2.5 Black Flash (Kokusen) on any strike.',
+    'Grade 3 Sorcerer': 'Field Operative Grade: Grants +16 All Stats and an 18% base chance to land a ^2.5 Black Flash (Kokusen).',
+    'Semi-Grade 2 Sorcerer': 'Certified Exorcist Grade: Grants +22 All Stats and a 22% base chance to land a ^2.5 Black Flash (Kokusen).',
+    'Grade 2 Sorcerer': 'Solo Specialist Grade: Grants +28 All Stats, Simple Domain anti-barrier defense, and a 26% base Black Flash chance.',
+    'Semi-Grade 1 Sorcerer': 'Elite Clan Vanguard: Grants +35 All Stats, Simple Domain mastery, and a 30% base Black Flash chance.',
+    'Grade 1 Sorcerer': 'Peak Jujutsu Tactician: Grants +45 All Stats, Simple Domain mastery, and a 36% base chance to land a ^2.5 Black Flash!',
+    'Special Grade Sorcerer': 'National Threat Anomaly: Grants +60 All Stats, Domain Clash superiority, and a 44% base chance to land a ^2.5 Black Flash!',
+    'Heavenly Anomaly (Zero CE)': 'Zero Cursed Energy Pact: Grants +65 STR/SPD, Simple Domain resilience, and 40% Spatial Strike critical odds!',
+    'Unlimited Potential (Awakened)': 'Transcendent Prodigy (1-in-10-Million Talent): Grants +80 All Stats, 52% base Black Flash odds (+8% per chain), and triggers THE HONORED ONE AWAKENING below 45% HP (RCT heal + guaranteed Black Flash)!'
   }
 };
 

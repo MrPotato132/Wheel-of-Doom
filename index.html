@@ -76,7 +76,7 @@
         <div class="progress-track">
           <div class="progress-fill" id="progressBar"></div>
         </div>
-        <span class="step-badge" id="currentStepBadge">Step 1 of 7</span>
+        <span class="step-badge" id="currentStepBadge">Step 1 of 8</span>
       </div>
 
       <!-- Free Spin Wheel Selector Hub (Hidden by default, shown in Free Spin Mode) -->
@@ -87,10 +87,11 @@
             <optgroup label="Main Character Wheels">
               <option value="race">Race Wheel (43 Races)</option>
               <option value="archetype">Archetype Wheel (36 Roles)</option>
+              <option value="sorcererGrade">Sorcerer Grade &amp; Potential Wheel (9 Grades)</option>
               <option value="weapon">Weapon Wheel (36 Armaments)</option>
               <option value="power">Power Wheel (28 Abilities)</option>
               <option value="weakness">Weakness / Curse Wheel (22 Curses)</option>
-              <option value="backstory">Backstory & Chaos Wheel (20 Twists)</option>
+              <option value="backstory">Backstory &amp; Chaos Wheel (20 Twists)</option>
               <option value="stats">Combat Rating Wheel (8 Tiers)</option>
             </optgroup>
             <optgroup label="Race Sub-Wheels">
@@ -156,6 +157,7 @@
         <div class="hub-tags-scroll">
           <button class="hub-tag-btn" data-wheel="race">👤 Race</button>
           <button class="hub-tag-btn" data-wheel="archetype">⚔️ Archetype</button>
+          <button class="hub-tag-btn" data-wheel="sorcererGrade">🧿 Sorcerer Grade</button>
           <button class="hub-tag-btn" data-wheel="weapon">🗡️ Weapon</button>
           <button class="hub-tag-btn" data-wheel="power">✨ Power</button>
           <button class="hub-tag-btn" data-wheel="weakness">⚠️ Weakness</button>
@@ -216,28 +218,35 @@
 
         <!-- Visual Battle Colosseum Stage -->
         <div class="arena-colosseum" id="arenaColosseum">
-          <!-- Domain Expansion Metaphysical Pocket Overlay -->
+          <!-- Combat Pause & Active Domain Status Banner -->
+          <div class="arena-pause-banner hidden" id="arenaPauseBanner">⏸️ COMBAT PAUSED • CINEMATIC CLASH</div>
+
+          <!-- Domain Expansion & Split-Screen Domain Clash Overlay -->
           <div class="arena-domain-overlay hidden" id="arenaDomainOverlay">
             <div class="domain-barrier-bg" id="domainBarrierBg"></div>
+            <canvas class="domain-clash-canvas" id="arenaDomainCanvas" width="900" height="450"></canvas>
             <div class="domain-particles-layer" id="domainParticlesLayer"></div>
             <div class="domain-banner-wrap" id="domainBannerWrap">
-              <span class="domain-kanji-tag">領域展開</span>
-              <h2 class="domain-title" id="domainTitle">DOMAIN EXPANSION</h2>
-              <h3 class="domain-name" id="domainRealmName">INFINITE VOID</h3>
-              <p class="domain-caster-line" id="domainCasterLine">Cast by Satoru Gojo</p>
+              <span class="domain-kanji-tag" id="domainKanjiTag">領域展開 • 激突</span>
+              <h2 class="domain-title" id="domainTitle">DOMAIN CLASH</h2>
+              <h3 class="domain-name" id="domainRealmName">MALEVOLENT SHRINE vs UNLIMITED VOID</h3>
+              <p class="domain-caster-line" id="domainCasterLine">Split-Screen Barrier Tug-of-War</p>
             </div>
           </div>
 
-          <!-- Black Flash (Kokusen) Multi-Bolt Spatial Distortion Overlay -->
+          <!-- Black Flash (Kokusen) 3-Phase Delayed Spatial Distortion Overlay -->
           <div class="arena-blackflash-overlay hidden" id="arenaBlackFlashOverlay">
             <div class="blackflash-strobe-layer" id="blackFlashStrobeLayer"></div>
             <canvas class="blackflash-canvas" id="arenaBlackFlashCanvas" width="900" height="450"></canvas>
             <div class="blackflash-banner-wrap" id="blackFlashBannerWrap">
               <span class="blackflash-kanji">黒閃</span>
               <h2 class="blackflash-title" id="blackFlashTitle">BLACK FLASH!</h2>
-              <p class="blackflash-sub" id="blackFlashSub">SPATIAL DISTORTION • ^2.5 CRITICAL IMPACT</p>
+              <p class="blackflash-sub" id="blackFlashSub">SPATIAL DISTORTION • 120% ZONE • ^2.5 IMPACT</p>
             </div>
           </div>
+
+          <!-- JJK Twin-Meteor & Domain Chant Subtitle Box -->
+          <div class="arena-chant-box hidden" id="arenaChantBox">"Scale of the Dragon... Recoil... Twin Meteors!"</div>
 
           <!-- Floating Damage Text Container -->
           <div class="floating-damage-container" id="floatingDamageLayer"></div>
@@ -310,7 +319,9 @@
               <button class="speed-btn" data-speed="4">4x ⚡</button>
             </div>
             <button class="btn btn-sm btn-secondary" id="btnPauseBattle">⏸️ Pause</button>
-            <button class="btn btn-sm btn-secondary" id="btnTestBlackFlash" style="border-color:#ef4444;color:#fca5a5;" title="Preview the ultra-flashy Black Flash (Kokusen) impact storm!">⚡⚫ Test Black Flash</button>
+            <button class="btn btn-sm btn-secondary" id="btnTestBlackFlash" style="border-color:#ef4444;color:#fca5a5;" title="Trigger 3-Phase Non-Instant Black Flash (0.75s charge-up + inverted freeze + 16-bolt storm)">⚡⚫ Black Flash</button>
+            <button class="btn btn-sm btn-secondary" id="btnTestDomainClash" style="border-color:#a855f7;color:#e9d5ff;" title="Trigger Split-Screen Malevolent Shrine vs Unlimited Void Clash + 4.0s Winning Domain Continuation!">⛩️🔥 Domain Clash</button>
+            <button class="btn btn-sm btn-secondary" id="btnSimpleDomain" style="border-color:#38bdf8;color:#bae6fd;" title="Deploy New Shadow Style: Simple Domain (-55% Domain sure-hit damage)">🛡️ Simple Domain</button>
           </div>
         </div>
 
@@ -372,6 +383,10 @@
           <div class="draft-row">
             <span class="draft-label">Archetype:</span>
             <span class="draft-val" id="liveArchetype">—</span>
+          </div>
+          <div class="draft-row">
+            <span class="draft-label">Sorcerer Grade:</span>
+            <span class="draft-val" id="liveSorcererGrade">—</span>
           </div>
           <div class="draft-row">
             <span class="draft-label">Weapon:</span>
@@ -480,6 +495,16 @@
             </div>
             <div id="cardArchetypeDisplay"></div>
             <div class="trait-explain-box" id="cardArchExplain"></div>
+          </div>
+
+          <!-- Sorcerer Grade & Black Flash Potential -->
+          <div class="card-attr-item card-attr-grade">
+            <div class="attr-header-row">
+              <span class="attr-key">🧿 Sorcerer Grade &amp; Potential</span>
+              <span class="attr-rarity-tag" id="cardGradeRarity">GRADE</span>
+            </div>
+            <div id="cardGradeDisplay"></div>
+            <div class="trait-explain-box" id="cardGradeExplain"></div>
           </div>
 
           <!-- Weapon & Armament -->

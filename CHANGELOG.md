@@ -13,6 +13,24 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
 
 ---
 
+## [v2.5.0] - 2026-10-18
+### Added
+- **Promoted Sandbox Take C (`take=C, chargeUp=0.75s, domTime=4s, grade=Unlimited Potential (Awakened), activeDomainAfterClash=true, simpleDomain=true, fugaAndPurpleFinishers=true`)**:
+  - **Universal Sorcerer Grade & Potential Wheel (`js/wheelData.js`, `js/character.js`, `js/battle.js`, `index.html`, `js/app.js`)**:
+    - Added the 9-tier `sorcererGrade` wheel (*Grade 4 Sorcerer* $\rightarrow$ *Grade 3* $\rightarrow$ *Semi-Grade 2* $\rightarrow$ *Grade 2* $\rightarrow$ *Semi-Grade 1* $\rightarrow$ *Grade 1* $\rightarrow$ *Special Grade Sorcerer* $\rightarrow$ *Heavenly Anomaly* $\rightarrow$ *Unlimited Potential (Awakened)*) to the Destiny Spin sequence, Wheel Hub, Live Draft panel, Character Card, and Arena Fighter Status Bar.
+    - Every fighter now begins combat with a Sorcerer Grade granting universal Black Flash access (14%–52% base odds), Simple Domain access, and Mid-Battle **"Honored One Awakening"** (*"Throughout Heaven and Earth, I Alone Am the Honored One!"*, +35% HP heal & +25% all stats) for *Unlimited Potential*.
+  - **3-Phase Non-Instant Black Flash (`chargeUp = 0.75s`) + Combat Pause + `120% Zone` Chain (`js/app.js`, `js/battle.js`, `css/styles.css`)**:
+    - Combat automatically pauses (`⏸️ COMBAT PAUSED • 0.000001s CURSED ENERGY CONDENSATION`) and displays the JJK Twin-Meteor Chant (*"Scale of the Dragon... Recoil... Twin Meteors!"*) during a `0.75s` inward-spiraling crimson/black condensation phase, followed by a `0.21s` inverted black-and-white manga impact freeze (`黒閃`) and a `1.1s` 16-bolt recursive black-crimson lightning storm.
+    - Consecutive Black Flashes stack the fighter's **`🔥 120% ZONE • BF: Nx`** badge (+8% Black Flash chance per stack).
+  - **Split-Screen `MALEVOLENT SHRINE vs UNLIMITED VOID` Domain Clash (`2.4s`) $\rightarrow$ Winner's Active Domain Continuation (`domTime = 4.0s`)**:
+    - Integrated `sandbox/domain_clash.png` and a 60fps canvas split-screen barrier tug-of-war (`#arenaDomainCanvas`) where both fighter pods visibly lunge inward (`clashing-left` / `clashing-right`) across a diagonal lightning fault-line.
+    - Immediately transitions into a `4.0s` Active Winning Domain phase (plus 3 turns of sure-hit combat persistence):
+      - **Malevolent Shrine Wins**: Relentless **Cleave & Dismantle** sure-hit slashes carve the opponent every `0.35s`, culminating in the final `1.0s` **`🔥🏹 竈「開」 DIVINE FLAME: FUGA!`** thermobaric fire arrow finisher!
+      - **Unlimited Void Wins**: Paralyzes the opponent with **`🧠 ∞ VOID PARALYSIS`** while cosmic rings flood their mind with neural damage, culminating in the final `1.0s` **`🟣🤞 虚式「茈」 HOLLOW TECHNIQUE: PURPLE!`** imaginary mass orb!
+    - Added **`🛡️ Simple Domain (`簡易領域`)`** (interactive arena button + auto-proc cutting incoming Domain sure-hit & finisher damage by 55%) and **`🥵 CT Burnout`** (1-turn Cursed Technique recovery after a Domain collapses).
+
+---
+
 ## [v2.4.0] - 2026-10-18
 ### Added
 - **Jujutsu Kaisen (JJK) Expansion — Races, Cursed Vessel Archetype, Sub-Wheels, Cursed Tools, Techniques & Bosses (`js/wheelData.js`, `js/character.js`, `js/battle.js`, `index.html`)**:

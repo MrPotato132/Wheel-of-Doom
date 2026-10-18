@@ -1,139 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wheel of Faith - JJK Sandbox Lab (Ultra Black Flash)</title>
+  <meta charset="UTF-8">
+  <title>Wheel of Faith — Sandbox Lab (Option C: Clash + Active Domain + Simple Domain)</title>
   <link rel="stylesheet" href="../css/styles.css">
   <style>
-    body { background: radial-gradient(circle at 50% 25%, #16071c 0%, #050811 75%); color: var(--text-primary); min-height: 100vh; padding: 16px; font-family: var(--font-body); margin: 0; overflow-x: hidden; }
-    .sandbox-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border-blue); border-radius: var(--radius-md); box-shadow: 0 4px 20px rgba(0,0,0,0.7); margin-bottom: 20px; position: relative; z-index: 20; }
-    .sandbox-link { color: var(--cyan-accent); text-decoration: none; font-weight: 700; font-size: 0.86rem; }
-    .take-group, .action-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-    .take-btn { background: rgba(255,255,255,0.06); border: 1px solid var(--border-silver); color: var(--text-secondary); padding: 6px 13px; border-radius: var(--radius-full); font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
-    .take-btn.active { background: linear-gradient(135deg, #dc2626, #7f1d1d); color: #fff; border-color: #ff2a55; box-shadow: 0 0 14px rgba(239,68,68,0.7); }
-    .controls-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; background: rgba(4,10,22,0.75); padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-silver); }
-    .slider-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; }
-    .slider-item input[type=range] { accent-color: #ef4444; width: 85px; }
-    .slider-item b { color: #ff4d6d; min-width: 34px; }
-    .btn-promote { background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: 1px solid #34d399; padding: 7px 14px; border-radius: var(--radius-full); font-weight: 800; font-size: 0.78rem; cursor: pointer; }
-    .sandbox-stage { display: flex; justify-content: center; align-items: center; padding: 12px; position: relative; }
-    .jjk-card { width: 100%; max-width: 540px; background: rgba(10, 12, 24, 0.92); border: 2px solid #ef4444; border-radius: var(--radius-md); padding: 24px; text-align: center; box-shadow: 0 0 calc(var(--flash-glow, 36) * 1px) var(--aura-color, rgba(239, 68, 68, 0.75)), inset 0 0 28px rgba(0,0,0,0.9); position: relative; overflow: hidden; z-index: 10; }
-    .jjk-badge { display: inline-block; padding: 4px 12px; border-radius: var(--radius-full); background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 10px; }
-    .finger-meter { margin: 14px 0; padding: 10px; background: rgba(0,0,0,0.55); border-radius: var(--radius-sm); border: 1px solid rgba(239,68,68,0.35); }
-    .clash-bar { height: 14px; border-radius: 99px; background: #1e1b4b; overflow: hidden; display: flex; border: 1px solid #fff3; margin-top: 8px; }
-    .clash-left { background: linear-gradient(90deg, #00f0ff, #a855f7); width: 55%; transition: width 0.25s; box-shadow: 0 0 12px #00f0ff; }
-    .clash-right { background: linear-gradient(90deg, #ef4444, #450a0a); flex: 1; }
-    .btn-jjk { padding: 9px 16px; border-radius: var(--radius-sm); font-weight: 800; font-size: 0.82rem; cursor: pointer; border: 1px solid #ff2a55; background: linear-gradient(135deg, #111, #7f1d1d); color: #fff; box-shadow: 0 0 15px rgba(239,68,68,0.5); transition: transform 0.15s; }
-    .btn-jjk:hover { transform: scale(1.05); }
-    #bfCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
-    .kokusen-banner { position: fixed; top: 42%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 1000; pointer-events: none; font-family: var(--font-heading); font-size: 3.2rem; font-weight: 900; color: #fff; text-shadow: 0 0 25px #ff003c, 0 0 50px #ff003c, 4px 4px 0 #000; letter-spacing: 0.12em; opacity: 0; transition: transform 0.15s cubic-bezier(.17,.89,.32,1.49), opacity 0.15s; white-space: nowrap; }
-    .kokusen-banner.show { transform: translate(-50%, -50%) scale(1) rotate(-3deg); opacity: 1; }
-    .kokusen-shake { animation: kShake calc(var(--impact-speed, 0.55) * 1s) cubic-bezier(.36,.07,.19,.97) both; }
-    @keyframes kShake { 0% { filter: invert(1) contrast(3); transform: scale(0.92); } 12% { filter: contrast(2.2) saturate(2.5); transform: translate(-22px, 16px) rotate(-3deg) scale(1.06); } 25% { filter: invert(1); transform: translate(20px, -16px) rotate(3deg); } 40% { filter: none; transform: translate(-16px, 12px) rotate(-2deg); } 60% { transform: translate(12px, -8px) rotate(1.5deg); } 80% { transform: translate(-6px, 4px); } 100% { transform: translate(0,0) scale(1); } }
+    body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #040308; color: #f8fafc; font-family: system-ui, sans-serif; overflow: hidden; }
+    .sandbox-bar { position: fixed; top: 10px; z-index: 100; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: rgba(8,6,16,0.95); border: 1px solid #ff003c; padding: 7px 11px; border-radius: 99px; box-shadow: 0 8px 32px rgba(255,0,60,0.3); backdrop-filter: blur(12px); }
+    .take-btn, .act-btn { background: #120d1d; border: 1px solid #3b2854; color: #cbd5e1; padding: 5px 9px; border-radius: 99px; cursor: pointer; font-weight: 700; font-size: 0.7rem; transition: 0.2s; }
+    .take-btn.active { background: #e11d48; border-color: #fda4af; color: #fff; box-shadow: 0 0 12px #e11d48; }
+    .act-btn.bf { background: linear-gradient(135deg, #09090b, #be123c); border-color: #ff0040; color: #fff; }
+    .act-btn.clash { background: linear-gradient(90deg, #be123c 0%, #7e22ce 50%, #0284c7 100%); border-color: #fff; color: #fff; box-shadow: 0 0 16px rgba(56,189,248,0.6); }
+    .act-btn.pushL { background: #991b1b; border-color: #fca5a5; color: #fff; } .act-btn.pushR { background: #0369a1; border-color: #bae6fd; color: #fff; } .act-btn.sd { background: linear-gradient(135deg, #065f46, #0ea5e9); border-color: #6ee7b7; color: #fff; }
+    .slider-wrap { display: flex; align-items: center; gap: 3px; font-size: 0.68rem; color: #fecdd3; } .slider-val { color: #fde047; font-weight: 800; min-width: 24px; }
+    .promote-btn { background: linear-gradient(135deg, #f59e0b, #ea580c); color: #000; font-weight: 800; border: none; padding: 5px 11px; border-radius: 99px; cursor: pointer; font-size: 0.7rem; }
+    .arena-stage { position: relative; width: 760px; height: 430px; border-radius: 18px; background: radial-gradient(circle at center, #13091c 0%, #050308 100%); border: 2px solid #fb7185; box-shadow: 0 0 45px rgba(225,29,72,0.4); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 18px; }
+    #fxCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 25; }
+    .pause-pill { align-self: center; z-index: 40; background: rgba(0,0,0,0.92); border: 1.5px solid #fde047; color: #fde047; font-size: 0.72rem; font-weight: 900; padding: 4px 14px; border-radius: 99px; letter-spacing: 0.1em; opacity: 0; transition: 0.2s; } .pause-pill.active { opacity: 1; box-shadow: 0 0 20px rgba(253,224,71,0.6); }
+    .chant-box { position: absolute; bottom: 54px; left: 50%; transform: translateX(-50%); z-index: 40; background: rgba(5,0,10,0.92); border: 1px solid #f43f5e; color: #fda4af; font-size: 0.78rem; font-weight: 800; font-style: italic; padding: 5px 16px; border-radius: 8px; opacity: 0; transition: 0.2s; white-space: nowrap; } .chant-box.show { opacity: 1; }
+    .fighters-row { display: flex; justify-content: space-between; align-items: center; z-index: 30; margin: auto 0; padding: 0 16px; transition: 0.3s; }
+    .f-pod { width: 220px; background: rgba(12,10,22,0.92); border: 1.5px solid #475569; border-radius: 12px; padding: 12px; text-align: center; transition: 0.25s; position: relative; }
+    .f-pod.clashing-left { transform: translateX(60px) scale(1.06); border-color: #ff003c; box-shadow: 0 0 32px #ff003c; } .f-pod.clashing-right { transform: translateX(-60px) scale(1.06); border-color: #00f0ff; box-shadow: 0 0 32px #00f0ff; }
+    .f-pod.simple-domain { border-color: #2dd4bf !important; box-shadow: 0 0 32px #2dd4bf, inset 0 0 18px rgba(45,212,191,0.5) !important; } .f-pod.hit-jolt { transform: scale(0.94) rotate(-2deg); border-color: #ef4444; }
+    .chain-tag { display: inline-block; font-size: 0.64rem; font-weight: 900; background: #991b1b; color: #fff; padding: 2px 8px; border-radius: 99px; margin-top: 5px; }
+    .clash-hud { z-index: 35; background: rgba(0,0,0,0.85); border: 1px solid rgba(255,255,255,0.22); border-radius: 10px; padding: 7px 12px; font-size: 0.72rem; }
+    .clash-track { height: 11px; border-radius: 99px; background: linear-gradient(90deg, #0284c7, #e0f2fe); overflow: hidden; display: flex; margin-top: 4px; box-shadow: 0 0 14px rgba(255,0,60,0.6); } .clash-fill { width: 50%; background: linear-gradient(90deg, #7f1d1d, #ff003c); transition: width 0.06s; }
+    .invert-freeze { filter: invert(1) contrast(2.4) !important; transform: scale(1.03); }
   </style>
 </head>
 <body>
-  <canvas id="bfCanvas"></canvas>
-  <div class="kokusen-banner" id="bfBanner">黒閃 • BLACK FLASH!</div>
-  <header class="sandbox-bar">
-    <a href="../index.html" class="sandbox-link">🏠 Back to Live Arena</a>
-    <div class="take-group">
-      <button class="take-btn active" data-take="A">Take A: Black Flash</button>
-      <button class="take-btn" data-take="B">Take B: Sukuna Vessel</button>
-      <button class="take-btn" data-take="C">Take C: Domain Clash</button>
+  <div class="sandbox-bar">
+    <button class="take-btn" data-take="A">Take A</button><button class="take-btn" data-take="B">Take B</button><button class="take-btn active" data-take="C">Take C: Full Domain</button>
+    <div class="slider-wrap">Charge:<input type="range" id="sCharge" min="0.4" max="1.4" step="0.05" value="0.75"><span class="slider-val" id="vCharge">0.75s</span></div>
+    <div class="slider-wrap">DomTime:<input type="range" id="sPause" min="2.5" max="6.0" step="0.5" value="4.0"><span class="slider-val" id="vPause">4.0s</span></div>
+    <div class="slider-wrap">Grade:<input type="range" id="sGrade" min="0" max="6" step="1" value="6"><span class="slider-val" id="vGrade">Unlimited</span></div>
+    <button class="act-btn clash" id="btnClash">⛩️🔥 CLASH: SHRINE vs VOID 🤞🌌</button><button class="act-btn pushL" id="btnPushL">👈 Shrine Wins</button><button class="act-btn pushR" id="btnPushR">Void Wins 👉</button><button class="act-btn sd" id="btnSD">🛡️ Simple Domain</button><button class="act-btn bf" id="btnBF">⚡⚫ Black Flash</button><button class="promote-btn" id="btnPromote">🚀 Promote to Live</button>
+  </div>
+  <div class="arena-stage" id="stage">
+    <canvas id="fxCanvas" width="760" height="430"></canvas>
+    <div class="pause-pill" id="pausePill">⏸️ COMBAT PAUSED — DOMAIN CLASH CUTSCENE</div>
+    <div class="chant-box" id="chantBox">🗣️ "RYŌIKI TENKAI: MALEVOLENT SHRINE vs UNLIMITED VOID!"</div>
+    <div class="fighters-row">
+      <div class="f-pod" id="podL"><div style="font-size:1.7rem">👁️</div><div style="font-weight:900;font-size:0.92rem">Ryomen Sukuna (20F)</div><div style="font-size:0.72rem;color:#f43f5e;font-weight:800" id="stateL">MALEVOLENT SHRINE</div><div style="font-size:0.72rem;color:#fde047;font-weight:800" id="hpL">HP: 3,000 / 3,000</div><div class="chain-tag" id="chainL">🔥 120% ZONE • CHAIN: 0x</div></div>
+      <div style="font-weight:900;color:#fb7185;font-size:1.3rem;z-index:15">VS</div>
+      <div class="f-pod" id="podR"><div style="font-size:1.7rem">🤞</div><div style="font-weight:900;font-size:0.92rem">Satoru Gojo</div><div style="font-size:0.72rem;color:#38bdf8;font-weight:800" id="gradeL">Grade: Unlimited Potential</div><div style="font-size:0.72rem;color:#fde047;font-weight:800" id="hpR">HP: 3,000 / 3,000</div><div class="chain-tag" id="stateR" style="background:#0369a1">🤞 Six Eyes • Limitless</div></div>
     </div>
-    <div class="controls-row">
-      <label class="slider-item">Fingers: <input type="range" id="fingerSlider" min="1" max="20" value="15"> <b id="fingerVal">15/20</b></label>
-      <label class="slider-item">Flash Glow: <input type="range" id="glowSlider" min="10" max="60" value="40"> <b id="glowVal">40px</b></label>
-      <label class="slider-item">Speed: <input type="range" id="speedSlider" min="0.25" max="1.5" step="0.05" value="0.55"> <b id="speedVal">0.55s</b></label>
-      <button class="btn-promote" id="btnPromote">🚀 Promote to Live</button>
-    </div>
-  </header>
-  <main class="sandbox-stage" id="stageWrap">
-    <div class="jjk-card" id="jjkCard">
-      <span class="jjk-badge" id="takeBadge">TAKE A • BLACK FLASH (KOKUSEN ^2.5)</span>
-      <h2 id="traitTitle" style="font-family:var(--font-heading); font-size:1.55rem; margin:4px 0; color:#fff;">Cursed Vessel (Sukuna's Host)</h2>
-      <div id="traitMeta" style="color:#f87171; font-size:0.8rem; font-weight:700; margin-bottom:8px;">[GOD-TIER ARCHETYPE] • +95 STR / +80 SPD / +100 CHAOS</div>
-      <p id="traitDesc" style="color:var(--text-secondary); font-size:0.84rem; line-height:1.45; margin-bottom:14px;">Rolls 1–20 Consumed Fingers on draft. Each Finger grants +15% Cursed Output & Cleave/Dismantle, with a chance for Sukuna to seize control mid-battle!</p>
-      <div class="finger-meter">
-        <div id="fingerReadout" style="font-size:0.8rem; font-weight:800; color:#fca5a5;">🔥 15 / 20 Sukuna Fingers • +225% Cursed Output • 30% Takeover Risk</div>
-        <div class="clash-bar"><div class="clash-left" id="clashBarLeft"></div><div class="clash-right"></div></div>
-        <div id="clashStatus" style="font-size:0.72rem; color:var(--text-muted); margin-top:5px;">⛩️ Domain Clash: Unlimited Void (55%) vs Malevolent Shrine (45%)</div>
-      </div>
-      <div class="action-row" style="margin-top:16px;">
-        <button class="btn-jjk" id="btnBlackFlash">⚡ Trigger Black Flash (2.5x)</button>
-        <button class="btn-jjk" id="btnSpinTrait" style="border-color:var(--cyan-accent); background:linear-gradient(135deg,#0f172a,#1e3a8a);">🎲 Roll JJK Draft Trait</button>
-      </div>
-      <div id="statusLine" style="font-size:0.73rem; color:var(--text-muted); margin-top:14px;">Active: Take A | Fingers: 15 | Glow: 40px | Speed: 0.55s</div>
-    </div>
-  </main>
+    <div class="clash-hud"><div style="display:flex;justify-content:space-between"><span id="statusTxt">Click "CLASH" then push Shrine or Void! Winner's Domain stays active with sure-hit damage & finishers!</span><span id="clashPctTxt">⛩️ Shrine 50% vs 50% Void 🤞</span></div><div class="clash-track"><div class="clash-fill" id="clashFill"></div></div></div>
+  </div>
   <script>
-    let activeTake = 'A', traitIdx = 0, clashPct = 55;
-    const card = document.getElementById('jjkCard'), badge = document.getElementById('takeBadge'), title = document.getElementById('traitTitle'), meta = document.getElementById('traitMeta'), desc = document.getElementById('traitDesc');
-    const fingers = document.getElementById('fingerSlider'), glow = document.getElementById('glowSlider'), speed = document.getElementById('speedSlider'), status = document.getElementById('statusLine'), cvs = document.getElementById('bfCanvas'), ctx = cvs.getContext('2d');
-    const jjkTraits = [
-      { name: "Cursed Vessel (Sukuna's Host)", meta: "[GOD-TIER ARCHETYPE] • +95 STR / +80 SPD / +100 CHAOS", desc: "Rolls 1–20 Consumed Fingers on draft. Grants Cleave, Dismantle & Reverse Cursed Technique." },
-      { name: "Six Eyes Clan Heir", meta: "[GOD-TIER RACE] • +110 INT / +95 SPD / INFINITY BARRIER", desc: "Neutral Limitless slows incoming strikes; unleashes Cursed Technique Reversal: Red & Hollow Purple." },
-      { name: "Heavenly Restricted (Toji Pact)", meta: "[MYTHIC RACE] • +120 STR / +115 SPD / IMMUNE TO DOMAINS", desc: "Complete absence of Cursed Energy in exchange for godlike physical stats & barrier immunity." },
-      { name: "Inverted Spear of Heaven", meta: "[GOD-TIER CURSED TOOL] • NULLIFIES ALL DEFENSIVE BARRIERS", desc: "Special Grade foreign blade that forcibly cancels active Cursed Techniques and shields on hit." },
-      { name: "Ten Shadows (Mahoraga)", meta: "[GOD-TIER POWER] • ADAPTS TO ANY & ALL PHENOMENA", desc: "Every time you take damage, the sacred wheel turns once—reducing future damage and healing." },
-      { name: "Black Flash (Kokusen)", meta: "[LEGENDARY POWER] • 2.5x EXPONENTIAL CRIT + ZONE STATE", desc: "Distorts space within 0.000001s of impact, dealing ^2.5 damage with branching black-crimson lightning." }
-    ];
-    const takes = { A: { badge: 'TAKE A • BLACK FLASH (KOKUSEN ^2.5)', border: '#ef4444', aura: 'rgba(239, 68, 68, 0.75)' }, B: { badge: 'TAKE B • SUKUNA VESSEL AURA', border: '#f59e0b', aura: 'rgba(245, 158, 11, 0.7)' }, C: { badge: 'TAKE C • DOMAIN CLASH TUG-OF-WAR', border: '#a855f7', aura: 'rgba(168, 85, 247, 0.75)' } };
-    function playKokusenSound() {
-      try {
-        const ac = new (window.AudioContext || window.webkitAudioContext)(), now = ac.currentTime;
-        [160, 90, 42].forEach((f, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = i ? 'sawtooth' : 'triangle'; o.frequency.setValueAtTime(f, now); o.frequency.exponentialRampToValueAtTime(18, now + 0.55); g.gain.setValueAtTime(0.35, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.58); o.connect(g); g.connect(ac.destination); o.start(now); o.stop(now + 0.6); });
-      } catch(e) {}
-    }
-    function triggerFlashStorm() {
-      cvs.width = window.innerWidth; cvs.height = window.innerHeight;
-      const cx = cvs.width / 2, cy = cvs.height / 2, banner = document.getElementById('bfBanner');
-      banner.classList.add('show'); setTimeout(() => banner.classList.remove('show'), 650);
-      let frame = 0;
-      const iv = setInterval(() => {
-        frame++; ctx.clearRect(0, 0, cvs.width, cvs.height);
-        if (frame > 16) { clearInterval(iv); return; }
-        if (frame === 1 || frame === 3) { ctx.fillStyle = frame === 1 ? 'rgba(255,255,255,0.85)' : 'rgba(255,0,50,0.45)'; ctx.fillRect(0, 0, cvs.width, cvs.height); }
-        const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, frame * 48);
-        grad.addColorStop(0, 'rgba(255,0,55,0.4)'); grad.addColorStop(0.6, 'rgba(0,0,0,0.7)'); grad.addColorStop(1, 'transparent');
-        ctx.fillStyle = grad; ctx.fillRect(0, 0, cvs.width, cvs.height);
-        for (let b = 0; b < 14; b++) {
-          const ang = (b / 14) * Math.PI * 2 + (Math.random() * 0.4), pts = [[cx, cy]];
-          for (let s = 1; s <= 7; s++) {
-            const dist = s * (Math.min(cvs.width, cvs.height) * 0.085);
-            pts.push([cx + Math.cos(ang) * dist + (Math.random() - 0.5) * 65, cy + Math.sin(ang) * dist + (Math.random() - 0.5) * 65]);
-          }
-          [[14, '#ff003c', 28], [6, '#000000', 0]].forEach(([w, col, blur]) => {
-            ctx.save(); ctx.beginPath(); pts.forEach((p, idx) => idx ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]));
-            ctx.strokeStyle = col; ctx.lineWidth = w; ctx.shadowColor = '#ff003c'; ctx.shadowBlur = blur; ctx.lineCap = 'round'; ctx.stroke(); ctx.restore();
-          });
-        }
-      }, 35);
+    const grades = [{ name: 'Grade 4 Sorcerer', odds: '12%', short: 'Grade 4' }, { name: 'Grade 3 Sorcerer', odds: '16%', short: 'Grade 3' }, { name: 'Grade 2 Sorcerer', odds: '22%', short: 'Grade 2' }, { name: 'Semi-Grade 1 Sorcerer', odds: '28%', short: 'Semi-1' }, { name: 'Grade 1 Sorcerer', odds: '34%', short: 'Grade 1' }, { name: 'Special Grade Sorcerer', odds: '42%', short: 'Special' }, { name: 'Unlimited Potential (Awakened)', odds: '52%', short: 'Unlimited' }];
+    let activeTake = 'C', bfChain = 0, animId = null, actx = null, clashBias = 0.08, isClashing = false, simpleDom = false, hpSukuna = 3000, hpGojo = 3000;
+    const clashImg = new Image(); clashImg.src = 'domain_clash.png';
+    const sCharge = document.getElementById('sCharge'), sPause = document.getElementById('sPause'), sGrade = document.getElementById('sGrade');
+    const cvs = document.getElementById('fxCanvas'), ctx = cvs.getContext('2d'), stage = document.getElementById('stage'), podL = document.getElementById('podL'), podR = document.getElementById('podR');
+    function tone(f1, f2, dur, type = 'sawtooth', vol = 0.22) {
+      const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      if (!actx) actx = new AC(); const now = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f1, now); o.frequency.exponentialRampToValueAtTime(f2, now + dur); g.gain.setValueAtTime(vol, now); g.gain.exponentialRampToValueAtTime(0.001, now + dur); o.connect(g); g.connect(actx.destination); o.start(now); o.stop(now + dur);
     }
     function sync() {
-      const f = fingers.value; card.style.setProperty('--flash-glow', glow.value); document.body.style.setProperty('--impact-speed', speed.value);
-      document.getElementById('fingerVal').textContent = `${f}/20`; document.getElementById('glowVal').textContent = `${glow.value}px`; document.getElementById('speedVal').textContent = `${speed.value}s`;
-      document.getElementById('fingerReadout').textContent = `🔥 ${f} / 20 Sukuna Fingers • +${f * 15}% Cursed Output • ${f * 2}% Takeover Risk`;
-      status.textContent = `Active: Take ${activeTake} | Fingers: ${f} | Glow: ${glow.value}px | Speed: ${speed.value}s`;
+      const g = grades[sGrade.value]; document.getElementById('vCharge').textContent = sCharge.value + 's'; document.getElementById('vPause').textContent = sPause.value + 's'; document.getElementById('vGrade').textContent = g.short;
+      document.getElementById('gradeL').textContent = `Grade: ${g.short} (${g.odds} BF)`; document.getElementById('hpL').textContent = `HP: ${hpSukuna} / 3,000`; document.getElementById('hpR').textContent = `HP: ${hpGojo} / 3,000`;
     }
-    [fingers, glow, speed].forEach(s => s.addEventListener('input', sync)); sync();
-    document.querySelectorAll('.take-btn').forEach(btn => btn.addEventListener('click', () => {
-      document.querySelectorAll('.take-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-      activeTake = btn.dataset.take; const t = takes[activeTake]; badge.textContent = t.badge; card.style.borderColor = t.border; card.style.setProperty('--aura-color', t.aura); sync();
-    }));
-    document.getElementById('btnBlackFlash').addEventListener('click', () => {
-      playKokusenSound(); triggerFlashStorm(); document.body.classList.remove('kokusen-shake'); void document.body.offsetWidth; document.body.classList.add('kokusen-shake');
-      clashPct = Math.min(90, Math.max(15, clashPct + (Math.random() > 0.4 ? 14 : -12))); document.getElementById('clashBarLeft').style.width = clashPct + '%';
-      document.getElementById('clashStatus').textContent = `⛩️ Domain Clash: Unlimited Void (${clashPct}%) vs Malevolent Shrine (${100 - clashPct}%)`;
+    [sCharge, sPause, sGrade].forEach(el => el.addEventListener('input', sync)); sync();
+    document.querySelectorAll('.take-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.take-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); activeTake = b.dataset.take; sync(); }));
+    function showHud(pillTxt, chantTxt) { const pill = document.getElementById('pausePill'), chant = document.getElementById('chantBox'); pill.textContent = pillTxt; pill.classList.add('active'); chant.textContent = chantTxt; chant.classList.add('show'); }
+    function startWinningDomain(sukunaWon) {
+      const domMs = parseFloat(sPause.value) * 1000, start = performance.now(), W = 760, H = 430; let lastTick = 0, firedFinisher = false; const targetPod = sukunaWon ? podR : podL;
+      if (sukunaWon) document.getElementById('stateR').textContent = '🩸 SLICED BY CLEAVE & DISMANTLE!'; else document.getElementById('stateL').textContent = '🧠 ∞ VOID PARALYSIS (STUNNED)!';
+      function domLoop(now) {
+        const el = now - start, rem = Math.max(0, (domMs - el) / 1000), p = el / domMs; ctx.clearRect(0, 0, W, H);
+        if (p >= 1) {
+          podL.classList.remove('simple-domain'); podR.classList.remove('simple-domain'); simpleDom = false; document.getElementById('pausePill').classList.remove('active'); document.getElementById('chantBox').classList.remove('show');
+          if (sukunaWon) document.getElementById('stateL').textContent = '🥵 CT BURNOUT (1 TURN)'; else document.getElementById('stateR').textContent = '🥵 CT BURNOUT (RCT REFRESH)';
+          document.getElementById('statusTxt').textContent = `✅ Active Domain Ended! Winner entered brief Cursed Technique Burnout.`; return;
+        }
+        document.getElementById('clashFill').style.width = ((1 - p) * 100) + '%'; document.getElementById('clashPctTxt').textContent = `${sukunaWon ? '⛩️ SHRINE' : '🤞 VOID'} ACTIVE: ${rem.toFixed(1)}s`;
+        if (el - lastTick > 350) {
+          lastTick = el; const rawDmg = sukunaWon ? 150 : 110, dmg = simpleDom ? Math.floor(rawDmg * 0.45) : rawDmg;
+          if (sukunaWon) hpGojo = Math.max(0, hpGojo - dmg); else hpSukuna = Math.max(0, hpSukuna - dmg);
+          targetPod.classList.add('hit-jolt'); setTimeout(() => targetPod.classList.remove('hit-jolt'), 140); tone(sukunaWon ? 950 : 620, 120, 0.09, sukunaWon ? 'sawtooth' : 'sine', 0.2); sync();
+        }
+        const isClimax = rem <= 1.1;
+        if (isClimax && !firedFinisher) {
+          firedFinisher = true; const finDmg = simpleDom ? 240 : 520;
+          if (sukunaWon) { hpGojo = Math.max(0, hpGojo - finDmg); showHud(`🔥 竈「開」 DIVINE FLAME: FUGA! (-${finDmg} HP)`, '🗣️ "Kamino... OPEN (竈「開」)!" — Thermobaric Fire Arrow!'); }
+          else { hpSukuna = Math.max(0, hpSukuna - finDmg); showHud(`🟣🤞 HOLLOW TECHNIQUE: PURPLE! (-${finDmg} HP)`, '🗣️ "Nine Ropes, Polarized Light... HOLLOW PURPLE (虚式「茈」)!"'); }
+          tone(180, 28, 0.7, 'sawtooth', 0.4); sync();
+        } else if (!isClimax) { showHud(`${sukunaWon ? '⛩️ MALEVOLENT SHRINE' : '🌌 UNLIMITED VOID'} ACTIVE (${rem.toFixed(1)}s)`, sukunaWon ? `🗡️ Relentless Cleave & Dismantle Ticks! ${simpleDom ? '(🛡️ Simple Domain -55% DMG!)' : ''}` : `🧠 Target Stunned by ∞ Information! ${simpleDom ? '(🛡️ Simple Domain Active!)' : ''}`); }
+        if (sukunaWon) {
+          ctx.fillStyle = isClimax ? 'rgba(180,35,0,0.55)' : 'rgba(65,4,16,0.58)'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#e11d48'; ctx.beginPath(); ctx.arc(W / 2, 95, isClimax ? 75 : 46, 0, Math.PI * 2); ctx.fill();
+          for (let s = 0; s < 26; s++) { ctx.strokeStyle = isClimax ? (s % 2 ? '#fde047' : '#ff4500') : (s % 3 === 0 ? '#fff' : '#ff003c'); ctx.lineWidth = isClimax ? 4 : 2.4; ctx.beginPath(); ctx.moveTo(Math.random() * W, Math.random() * H); ctx.lineTo(Math.random() * W, Math.random() * H); ctx.stroke(); }
+        } else {
+          const g = ctx.createRadialGradient(W / 2, H / 2, 10, W / 2, H / 2, 420); g.addColorStop(0, isClimax ? '#a855f7' : '#38bdf8'); g.addColorStop(0.5, '#1e1b4b'); g.addColorStop(1, '#020617'); ctx.fillStyle = g; ctx.globalAlpha = 0.65; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+          for (let r = 0; r < 24; r++) { const a = (r / 24) * Math.PI * 2 + el * 0.004; ctx.strokeStyle = isClimax ? '#d8b4fe' : '#e0f2fe'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(W / 2, H / 2); ctx.lineTo(W / 2 + Math.cos(a) * 450, H / 2 + Math.sin(a) * 450); ctx.stroke(); }
+          if (isClimax) { ctx.fillStyle = 'rgba(168,85,247,0.85)'; ctx.shadowColor = '#c084fc'; ctx.shadowBlur = 40; ctx.beginPath(); ctx.arc(W * (1 - rem), H / 2, 68, 0, Math.PI * 2); ctx.fill(); }
+        }
+        animId = requestAnimationFrame(domLoop);
+      }
+      animId = requestAnimationFrame(domLoop);
+    }
+    function startSplitClash() {
+      if (animId) cancelAnimationFrame(animId); isClashing = true; hpSukuna = 3000; hpGojo = 3000; sync(); const clashMs = 2400, start = performance.now(), W = 760, H = 430;
+      podL.classList.add('clashing-left'); podR.classList.add('clashing-right'); showHud('⏸️ COMBAT PAUSED — DOMAIN CLASH TUG-OF-WAR', '🗣️ "RYŌIKI TENKAI: MALEVOLENT SHRINE vs UNLIMITED VOID!"'); tone(160, 34, 0.8, 'sawtooth', 0.35);
+      function clashLoop(now) {
+        const el = now - start, p = el / clashMs, t = el / 1000; ctx.clearRect(0, 0, W, H);
+        if (p >= 1) { isClashing = false; podL.classList.remove('clashing-left'); podR.classList.remove('clashing-right'); startWinningDomain(clashBias >= 0); return; }
+        const splitX = Math.max(80, Math.min(W - 80, W * (0.5 + 0.12 * Math.sin(t * 9) + clashBias + (p > 0.7 ? (clashBias >= 0 ? 1 : -1) * (p - 0.7) * 1.5 : 0)))), pct = Math.min(96, Math.max(4, Math.round((splitX / W) * 100)));
+        document.getElementById('clashFill').style.width = pct + '%'; document.getElementById('clashPctTxt').textContent = `⛩️ Shrine ${pct}% vs ${100 - pct}% Void 🤞`;
+        ctx.save(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(splitX + 42, 0); ctx.lineTo(splitX - 42, H); ctx.lineTo(0, H); ctx.closePath(); ctx.clip(); if (clashImg.complete && clashImg.naturalWidth) ctx.drawImage(clashImg, (splitX - W * 0.5) * 0.25, 0, W, H); else { ctx.fillStyle = '#450a0a'; ctx.fillRect(0, 0, W, H); } ctx.restore();
+        ctx.save(); ctx.beginPath(); ctx.moveTo(splitX + 42, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(splitX - 42, H); ctx.closePath(); ctx.clip(); if (clashImg.complete && clashImg.naturalWidth) ctx.drawImage(clashImg, (splitX - W * 0.5) * 0.25, 0, W, H); else { ctx.fillStyle = '#0c4a6e'; ctx.fillRect(0, 0, W, H); } ctx.restore(); ctx.save();
+        [[11, '#ff003c', 26], [6, '#00f0ff', 18], [3, '#ffffff', 6]].forEach(([w, col, bl]) => { ctx.strokeStyle = col; ctx.lineWidth = w; ctx.shadowColor = col; ctx.shadowBlur = bl; ctx.beginPath(); ctx.moveTo(splitX + 42, 0); for (let y = 1; y <= 12; y++) ctx.lineTo(splitX + 42 - (y * 7) + (Math.random() - 0.5) * 28, (y / 12) * H); ctx.stroke(); });
+        const vx = splitX + (Math.random() - 0.5) * 10, vy = H / 2 + (Math.random() - 0.5) * 10; ctx.font = '900 58px Impact, sans-serif'; ctx.lineWidth = 7; ctx.strokeStyle = '#ffffff'; ctx.fillStyle = '#09090b'; ctx.strokeText('VS', vx - 32, vy + 20); ctx.fillText('VS', vx - 32, vy + 20); ctx.restore();
+        animId = requestAnimationFrame(clashLoop);
+      }
+      animId = requestAnimationFrame(clashLoop);
+    }
+    document.getElementById('btnClash').addEventListener('click', startSplitClash);
+    document.getElementById('btnPushL').addEventListener('click', () => { clashBias = 0.24; if (!isClashing) startSplitClash(); tone(140, 280, 0.12); });
+    document.getElementById('btnPushR').addEventListener('click', () => { clashBias = -0.24; if (!isClashing) startSplitClash(); tone(520, 880, 0.12); });
+    document.getElementById('btnSD').addEventListener('click', () => { simpleDom = !simpleDom; podL.classList.toggle('simple-domain', simpleDom); podR.classList.toggle('simple-domain', simpleDom); document.getElementById('statusTxt').textContent = simpleDom ? '🛡️ SIMPLE DOMAIN (簡易領域) DEPLOYED! Incoming Domain Sure-Hit Damage reduced by 55%!' : 'Simple Domain deactivated.'; tone(660, 1320, 0.2, 'triangle', 0.25); });
+    document.getElementById('btnBF').addEventListener('click', () => {
+      if (animId) cancelAnimationFrame(animId); const chargeMs = parseFloat(sCharge.value) * 1000, start = performance.now(), cx = 540, cy = 215;
+      showHud('⏸️ COMBAT PAUSED — BLACK FLASH CONDENSATION', '🗣️ "Scale of the Dragon... Recoil... Twin Meteors! (0.000001s)"'); tone(110, 620, chargeMs / 1000, 'sine', 0.22);
+      function step(now) {
+        const el = now - start; ctx.clearRect(0, 0, 760, 430);
+        if (el < chargeMs) { const p = el / chargeMs; ctx.fillStyle = `rgba(0,0,0,${0.4 + p * 0.45})`; ctx.fillRect(0, 0, 760, 430); ctx.strokeStyle = '#ff003c'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(cx, cy, Math.max(8, (1 - p) * 155), 0, Math.PI * 2); ctx.stroke(); animId = requestAnimationFrame(step); }
+        else if (el < chargeMs + 210) { stage.classList.add('invert-freeze'); animId = requestAnimationFrame(step); }
+        else if (el < chargeMs + 1100) {
+          if (stage.classList.contains('invert-freeze')) { stage.classList.remove('invert-freeze'); tone(220, 28, 0.55, 'sawtooth', 0.4); bfChain++; hpGojo = Math.max(0, hpGojo - 680); document.getElementById('chainL').textContent = `🔥 120% ZONE • CHAIN: ${bfChain}x`; sync(); }
+          for (let b = 0; b < 16; b++) { const ang = (b / 16) * Math.PI * 2 + (Math.random() * 0.35), pts = [[cx, cy]]; for (let s = 1; s <= 7; s++) pts.push([cx + Math.cos(ang) * s * 54 + (Math.random() - 0.5) * 48, cy + Math.sin(ang) * s * 54 + (Math.random() - 0.5) * 48]); [[13, '#ff003c', 25], [5, '#000', 0]].forEach(([w, c, bl]) => { ctx.save(); ctx.beginPath(); pts.forEach((pt, i) => i ? ctx.lineTo(pt[0], pt[1]) : ctx.moveTo(pt[0], pt[1])); ctx.strokeStyle = c; ctx.lineWidth = w; ctx.shadowColor = '#ff003c'; ctx.shadowBlur = bl; ctx.stroke(); ctx.restore(); }); }
+          ctx.font = '900 46px system-ui'; ctx.fillStyle = '#fff'; ctx.shadowColor = '#ff003c'; ctx.shadowBlur = 24; ctx.fillText('黒閃 • BLACK FLASH!', 175, 220); animId = requestAnimationFrame(step);
+        } else { ctx.clearRect(0, 0, 760, 430); document.getElementById('pausePill').classList.remove('active'); document.getElementById('chantBox').classList.remove('show'); }
+      }
+      animId = requestAnimationFrame(step);
     });
-    document.getElementById('btnSpinTrait').addEventListener('click', () => { traitIdx = (traitIdx + 1) % jjkTraits.length; const tr = jjkTraits[traitIdx]; title.textContent = tr.name; meta.textContent = tr.meta; desc.textContent = tr.desc; playKokusenSound(); });
-    const btnPromote = document.getElementById('btnPromote');
-    btnPromote.addEventListener('click', () => {
-      const copyText = `Promote to live with sandbox settings: take=${activeTake}, fingers=${fingers.value}, glow=${glow.value}px, speed=${speed.value}s`;
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(copyText);
-      btnPromote.textContent = '✅ Copied to Clipboard!'; setTimeout(() => { btnPromote.textContent = '🚀 Promote to Live'; }, 2000);
-    });
-  </script>
-</body>
-</html>
+    document.getElementById('btnPromote').addEventListener('click', function () { const txt = `Promote to live with sandbox settings: take=${activeTake}, chargeUp=${sCharge.value}s, domTime=${sPause.value}s, grade=${grades[sGrade.value].name}, activeDomainAfterClash=true, simpleDomain=true, fugaAndPurpleFinishers=true`; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt); this.textContent = '✅ Copied to Clipboard!'; setTimeout(() => { this.textContent = '🚀 Promote to Live'; }, 2000); });
+  </script></body></html>

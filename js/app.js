@@ -235,6 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.destinyQueue = [
       { id: 'race', category: 'race', name: 'Race Wheel' },
       { id: 'archetype', category: 'archetype', name: 'Archetype Wheel' },
+      { id: 'sorcererGrade', category: 'sorcererGrade', name: 'Sorcerer Grade & Potential Wheel' },
       { id: 'weapon', category: 'weapon', name: 'Weapon Wheel' },
       { id: 'power', category: 'power', name: 'Power Wheel' },
       { id: 'weakness', category: 'weakness', name: 'Weakness Wheel' },
@@ -421,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         subRace: '🧬 LINEAGE INHERITANCE',
         archetype: '🛡️ TACTICAL ARCHETYPE ROLE',
         archetypeSub: '🎯 SPECIALTY WAGER / RELIC',
+        sorcererGrade: '🧿 SORCERER GRADE & BLACK FLASH POTENTIAL',
         domainType: '🌑 DOMAIN EXPANSION REALM',
         levelUp: '⚡ LEVEL-UP UPGRADE MECHANICS',
         stats: '📊 COMBAT TIER RATING'
@@ -520,6 +522,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const archExplain = document.getElementById('cardArchExplain');
     if (archExplain) {
       archExplain.textContent = getTraitDescription('archetype', char.archetype ? char.archetype.text : '');
+    }
+
+    // Sorcerer Grade & Black Flash Potential Description
+    const gradeObj = char.sorcererGrade || { text: 'Unlimited Potential (Awakened)', rarity: 'godTier', subtext: '52% Black Flash • Honored One Awakening' };
+    const gradeText = typeof gradeObj === 'object' ? gradeObj.text : gradeObj;
+    const gradeRarityEl = document.getElementById('cardGradeRarity');
+    if (gradeRarityEl) gradeRarityEl.textContent = (gradeObj.rarity || 'grade').toUpperCase();
+    const gradeDisplay = document.getElementById('cardGradeDisplay');
+    if (gradeDisplay) {
+      gradeDisplay.innerHTML = `<span class="attr-val highlight">🧿 ${gradeText}</span> <span class="attr-sub">${gradeObj.subtext || 'Universal Black Flash & Simple Domain Access'}</span>`;
+    }
+    const gradeExplain = document.getElementById('cardGradeExplain');
+    if (gradeExplain) {
+      gradeExplain.textContent = getTraitDescription('sorcererGrade', gradeText);
     }
 
     // Weapon
@@ -2018,6 +2034,10 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
     }
     document.getElementById('liveRace').textContent = char.race ? char.race.text : '—';
     document.getElementById('liveArchetype').textContent = char.archetype ? char.archetype.text : '—';
+    const liveGradeEl = document.getElementById('liveSorcererGrade');
+    if (liveGradeEl) {
+      liveGradeEl.textContent = char.sorcererGrade ? (char.sorcererGrade.text || char.sorcererGrade) : '—';
+    }
     document.getElementById('liveWeapon').textContent = char.weapon ? char.weapon.text : '—';
     document.getElementById('livePower').textContent = char.powers.length ? char.powers.map(p => p.text).join(', ') : '—';
     document.getElementById('liveWeakness').textContent = char.weakness ? char.weakness.text : '—';
@@ -2582,6 +2602,10 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
       lvl.textContent = `Lv. ${fighter.level || 1}`;
       name.textContent = fighter.name;
       weapon.textContent = fighter.weapon ? fighter.weapon.text || fighter.weapon : 'Bare Knuckles';
+      const gradeLabel = fighter.sorcererGrade
+        ? (typeof fighter.sorcererGrade === 'object' ? fighter.sorcererGrade.text : fighter.sorcererGrade)
+        : 'Unlimited Potential (Awakened)';
+      status.innerHTML = `<span class="status-pill" style="background:rgba(244,63,94,0.18);border:1px solid #f43f5e;color:#fda4af;font-size:0.62rem;padding:1px 6px;border-radius:99px;">🧿 ${gradeLabel}</span>`;
       
       const dur = fighter.stats ? fighter.stats.dur : 50;
       const maxHp = fighter.weakness && (fighter.weakness.text === 'Glass Cannon' || fighter.weakness === 'Glass Cannon') ? 35 : Math.floor(dur * 5.5 + 120 + ((fighter.level || 1) * 20));
@@ -2595,6 +2619,31 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
       weapon.textContent = 'Select Fighter';
       hpFill.style.width = '0%';
       hpText.textContent = '0 / 0 HP';
+    }
+  }
+
+  function updateDuelStatusPills(fighter) {
+    if (!fighter || arenaState.submode !== 'duel' || !battleEngine.fighters.length) return;
+    const isLeft = fighter.id === battleEngine.fighters[0].id;
+    const status = document.getElementById(isLeft ? 'statusBarLeft' : 'statusBarRight');
+    const pod = document.getElementById(isLeft ? 'podLeft' : 'podRight');
+    if (!status) return;
+
+    const pills = [];
+    const gradeLabel = fighter.sorcererGrade || 'Grade 2 Sorcerer';
+    pills.push(`<span class="status-pill" style="background:rgba(244,63,94,0.16);border:1px solid rgba(244,63,94,0.5);color:#fda4af;font-size:0.6rem;padding:1px 6px;border-radius:99px;">🧿 ${gradeLabel}</span>`);
+    if (fighter.bfChain > 0) {
+      pills.push(`<span class="status-pill" style="background:rgba(225,29,72,0.3);border:1px solid #ff0033;color:#fff;font-size:0.6rem;font-weight:800;padding:1px 6px;border-radius:99px;">🔥 120% ZONE • BF: ${fighter.bfChain}x</span>`);
+    }
+    if (fighter.simpleDomainActive) {
+      pills.push(`<span class="status-pill" style="background:rgba(56,189,248,0.25);border:1px solid #38bdf8;color:#bae6fd;font-size:0.6rem;font-weight:800;padding:1px 6px;border-radius:99px;">🛡️ SIMPLE DOMAIN (-55%)</span>`);
+    }
+    if (fighter.ctBurnoutTurns > 0) {
+      pills.push(`<span class="status-pill" style="background:rgba(251,146,60,0.22);border:1px solid #fb923c;color:#fed7aa;font-size:0.6rem;font-weight:800;padding:1px 6px;border-radius:99px;">🥵 CT BURNOUT</span>`);
+    }
+    status.innerHTML = pills.join(' ');
+    if (pod) {
+      pod.classList.toggle('simple-domain-active', !!fighter.simpleDomainActive);
     }
   }
 
@@ -2662,6 +2711,7 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
 
     // Initialize Engine
     const fighters = battleEngine.setupBattle(arenaState.combatants, arenaState.submode);
+    fighters.forEach(f => updateDuelStatusPills(f));
     battleStatusBadge.textContent = 'BATTLE IN PROGRESS';
     battleStatusBadge.className = 'log-indicator fighting';
     fightBtnText.textContent = 'FIGHTING...';
@@ -2684,15 +2734,60 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
     }
   });
 
+  // Preload Split-Screen Domain Clash Reference Art
+  const domainClashImage = new Image();
+  domainClashImage.src = 'sandbox/domain_clash.png';
+
   // Test Black Flash Button in Arena Controls
   const btnTestBlackFlash = document.getElementById('btnTestBlackFlash');
+  let manualBfChain = 0;
   if (btnTestBlackFlash) {
     btnTestBlackFlash.addEventListener('click', () => {
+      manualBfChain++;
       sounds.playBlackFlash();
-      const sampleAttacker = arenaState.combatants[0] || { name: 'Yuji Itadori (Awakened)' };
-      const sampleTarget = arenaState.combatants[1] || { name: 'Ryomen Sukuna (20F)' };
-      triggerBlackFlashAnimation(sampleAttacker, sampleTarget, 999);
-      appendArenaLogEntry(`⚡⚫ 黒閃! ${sampleAttacker.name} unleashes a test BLACK FLASH (Kokusen) spatial distortion storm! (^2.5 CRIT)`, 'crit');
+      const sampleAttacker = (battleEngine.fighters && battleEngine.fighters[0]) || arenaState.combatants[0] || { name: 'Yuji Itadori (Awakened)', bfChain: manualBfChain };
+      const sampleTarget = (battleEngine.fighters && battleEngine.fighters[1]) || arenaState.combatants[1] || { name: 'Ryomen Sukuna (20F)' };
+      if (sampleAttacker) sampleAttacker.bfChain = (sampleAttacker.bfChain || 0) + 1;
+      triggerBlackFlashAnimation(sampleAttacker, sampleTarget, 999, sampleAttacker.bfChain || manualBfChain);
+      updateDuelStatusPills(sampleAttacker);
+      appendArenaLogEntry(`⚡⚫ 黒閃! [0.75s Charge-Up -> 120% ZONE ${sampleAttacker.bfChain || manualBfChain}x] ${sampleAttacker.name} unleashes a non-instant BLACK FLASH spatial distortion storm! (^2.5 CRIT)`, 'crit');
+    });
+  }
+
+  // Test Split-Screen Domain Clash + 4.0s Winning Domain Continuation Button
+  const btnTestDomainClash = document.getElementById('btnTestDomainClash');
+  let toggleClashWinnerSide = 'shrine';
+  if (btnTestDomainClash) {
+    btnTestDomainClash.addEventListener('click', () => {
+      if (battleEngine.isRunning && battleEngine.fighters.length >= 2) {
+        battleEngine.forceDomainClash(toggleClashWinnerSide);
+      } else {
+        sounds.playDomainExpansion();
+        const f1 = arenaState.combatants[0] || { name: 'Ryomen Sukuna (20F)' };
+        const f2 = arenaState.combatants[1] || { name: 'Satoru Gojo (Six Eyes)' };
+        const winWinner = toggleClashWinnerSide === 'shrine' ? f1 : f2;
+        const winLoser = toggleClashWinnerSide === 'shrine' ? f2 : f1;
+        const winName = toggleClashWinnerSide === 'shrine' ? 'Malevolent Shrine' : 'Unlimited Void';
+        triggerDomainClashAnimation(f1, f2, winWinner, winLoser, winName, toggleClashWinnerSide);
+        appendArenaLogEntry(`⛩️⚡🌌 SPLIT-SCREEN DOMAIN CLASH! ${f1.name} (Malevolent Shrine) vs ${f2.name} (Unlimited Void) -> ${winWinner.name}'s 「${winName}」 wins and stays active for 4.0s!`, 'crit');
+      }
+      toggleClashWinnerSide = toggleClashWinnerSide === 'shrine' ? 'void' : 'shrine';
+    });
+  }
+
+  // Simple Domain Toggle Button in Arena Controls
+  const btnSimpleDomain = document.getElementById('btnSimpleDomain');
+  if (btnSimpleDomain) {
+    btnSimpleDomain.addEventListener('click', () => {
+      sounds.playMagicCast();
+      if (battleEngine.fighters && battleEngine.fighters.length > 0) {
+        const toggled = battleEngine.toggleSimpleDomain();
+        if (toggled) updateDuelStatusPills(toggled);
+      } else {
+        const podRight = document.getElementById('podRight');
+        if (podRight) podRight.classList.toggle('simple-domain-active');
+        appendArenaLogEntry(`🛡️✨ NEW SHADOW STYLE: SIMPLE DOMAIN (簡易領域) deployed! Incoming Domain sure-hit & finisher damage reduced by 55%!`, 'power');
+      }
     });
   }
 
@@ -2709,31 +2804,34 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
 
   // Visual Battle Action Callback
   function handleVisualBattleAction(data) {
-    const { type, attacker, target, damage, isCrit, isBlackFlash, text, sound, domainName, domainTheme } = data;
+    const { type, attacker, target, clashWinner, clashLoser, damage, isCrit, isBlackFlash, bfChain, text, domainName, domainTheme } = data;
 
-    // Domain Expansion Cinematic Trigger
-    if (type === 'domainExpansion') {
-      triggerDomainExpansionAnimation(attacker, domainName, domainTheme);
+    if (attacker) updateDuelStatusPills(attacker);
+    if (target) updateDuelStatusPills(target);
+
+    // Split-Screen Domain Clash -> 4.0s Winning Domain Continuation Trigger
+    if (type === 'domainClash' || type === 'domainExpansion') {
+      triggerDomainClashAnimation(attacker, target, clashWinner || attacker, clashLoser || target, domainName, domainTheme);
     }
 
-    // Black Flash (Kokusen) Ultra-Flashy Multi-Bolt Strobe Trigger
+    // 3-Phase Non-Instant Black Flash (Kokusen) Trigger
     if (type === 'blackFlash' || isBlackFlash) {
-      triggerBlackFlashAnimation(attacker, target, damage);
+      triggerBlackFlashAnimation(attacker, target, damage, bfChain || (attacker && attacker.bfChain) || 1);
     }
 
     // 1. Screen Shake on criticals, heavy blows, or domain expansions
-    if (isCrit || damage > 50 || type === 'explosion' || type === 'domainExpansion' || type === 'blackFlash') {
+    if (isCrit || damage > 50 || type === 'explosion' || type === 'domainExpansion' || type === 'domainClash' || type === 'blackFlash') {
       arenaColosseum.classList.add('screen-shake');
       setTimeout(() => arenaColosseum.classList.remove('screen-shake'), 450);
     }
 
     // 2. Animate Attacker & Target Pods
-    if (arenaState.submode === 'duel') {
+    if (arenaState.submode === 'duel' && battleEngine.fighters.length >= 2) {
       const isAttackerLeft = attacker && attacker.id === battleEngine.fighters[0].id;
       const attackerPod = document.getElementById(isAttackerLeft ? 'podLeft' : 'podRight');
       const targetPod = document.getElementById(isAttackerLeft ? 'podRight' : 'podLeft');
 
-      if (attackerPod) {
+      if (attackerPod && type !== 'domainClash') {
         attackerPod.classList.add(isAttackerLeft ? 'lunge-left' : 'lunge-right');
         setTimeout(() => attackerPod.classList.remove(isAttackerLeft ? 'lunge-left' : 'lunge-right'), 350);
       }
@@ -2748,7 +2846,7 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
         spawnSlashFX(targetPod);
         spawnFloatingDamage(targetPod, text, isCrit, type);
       }
-    } else {
+    } else if (attacker) {
       // FFA Animations
       const attPod = document.getElementById(`ffa_pod_${attacker.id}`);
       if (attPod) {
@@ -2782,13 +2880,54 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
     }, 240);
   }
 
-  // Ultra-Flashy Black Flash (Kokusen • 黒閃) Multi-Bolt Storm & Strobe Engine
+  function drawJaggedBoltOnCtx(ctx, x1, y1, x2, y2, disp, colOuter, colCore, wOuter) {
+    const segs = 12;
+    const pts = [{ x: x1, y: y1 }];
+    for (let i = 1; i < segs; i++) {
+      const t = i / segs;
+      pts.push({
+        x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * disp,
+        y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * disp
+      });
+    }
+    pts.push({ x: x2, y: y2 });
+    ctx.save();
+    ctx.beginPath();
+    pts.forEach((p, idx) => (idx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+    ctx.strokeStyle = colOuter;
+    ctx.lineWidth = wOuter;
+    ctx.shadowColor = colOuter;
+    ctx.shadowBlur = 24;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = wOuter * 0.45;
+    ctx.shadowBlur = 8;
+    ctx.stroke();
+
+    ctx.strokeStyle = colCore;
+    ctx.lineWidth = wOuter * 0.28;
+    ctx.shadowBlur = 0;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ============================================================================
+  // 3-PHASE NON-INSTANT BLACK FLASH (KOKUSEN • 黒閃, chargeUp = 0.75s)
+  // Phase 1 (0.75s): Combat pauses + JJK Chant + Inward 0.000001s Singularity
+  // Phase 2 (0.21s): Inverted Black/White Manga Freeze Frame
+  // Phase 3 (1.10s): 16-Bolt Recursive Black-Crimson Storm + 120% Zone Chain
+  // ============================================================================
   let activeBlackFlashAnimId = null;
   let activeBlackFlashTimeout = null;
-  function triggerBlackFlashAnimation(attacker, target, damage) {
+  function triggerBlackFlashAnimation(attacker, target, damage, bfChain = 1) {
     const overlay = document.getElementById('arenaBlackFlashOverlay');
     const canvas = document.getElementById('arenaBlackFlashCanvas');
     const subEl = document.getElementById('blackFlashSub');
+    const bannerWrap = document.getElementById('blackFlashBannerWrap');
+    const pauseBanner = document.getElementById('arenaPauseBanner');
+    const chantBox = document.getElementById('arenaChantBox');
     if (!overlay || !canvas) return;
 
     if (activeBlackFlashAnimId) {
@@ -2800,240 +2939,466 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
       activeBlackFlashTimeout = null;
     }
 
+    const attName = attacker ? attacker.name.toUpperCase() : 'SORCERER';
     if (subEl) {
-      const attName = attacker ? attacker.name.toUpperCase() : 'SORCERER';
-      subEl.textContent = `${attName} • ^2.5 SPATIAL CRIT (-${damage || 999} HP)`;
+      subEl.textContent = `${attName} • 120% ZONE (${bfChain}x CHAIN) • ^2.5 CRIT (-${damage || 999} HP)`;
     }
 
-    // Restart CSS impact strobe and colosseum megashake
+    // Show Combat Pause Banner & JJK Chant during 0.75s Charge-Up
+    if (pauseBanner) {
+      pauseBanner.className = 'arena-pause-banner';
+      pauseBanner.textContent = '⏸️ COMBAT PAUSED • 0.000001s CURSED ENERGY CONDENSATION';
+    }
+    if (chantBox) {
+      chantBox.classList.remove('hidden');
+      chantBox.textContent = '"Scale of the Dragon... Recoil... Twin Meteors!"';
+    }
+
     overlay.classList.remove('hidden', 'bf-active');
-    arenaColosseum.classList.remove('bf-megashake');
-    void overlay.offsetWidth;
-    overlay.classList.add('bf-active');
-    arenaColosseum.classList.add('bf-megashake');
+    if (bannerWrap) bannerWrap.style.opacity = '0';
 
     const ctx = canvas.getContext('2d');
     const W = canvas.width = overlay.clientWidth || 900;
     const H = canvas.height = overlay.clientHeight || 450;
-    const cx = W * (0.38 + Math.random() * 0.24);
-    const cy = H * (0.38 + Math.random() * 0.24);
+    const cx = W * 0.5;
+    const cy = H * 0.5;
 
-    // Generate 75 high-velocity black & crimson sparks
-    const sparks = Array.from({ length: 75 }, () => {
-      const ang = Math.random() * Math.PI * 2;
-      const spd = 5 + Math.random() * 20;
-      return {
-        x: cx,
-        y: cy,
-        vx: Math.cos(ang) * spd,
-        vy: Math.sin(ang) * spd,
-        len: 12 + Math.random() * 28,
-        thick: 2 + Math.random() * 4.5,
-        isBlack: Math.random() > 0.35
-      };
-    });
-
-    function drawJaggedBolt(x1, y1, x2, y2, displacement, branchDepth) {
-      const segs = 12;
-      const pts = [{ x: x1, y: y1 }];
-      for (let i = 1; i < segs; i++) {
-        const t = i / segs;
-        const jx = (Math.random() - 0.5) * displacement;
-        const jy = (Math.random() - 0.5) * displacement;
-        pts.push({
-          x: x1 + (x2 - x1) * t + jx,
-          y: y1 + (y2 - y1) * t + jy
-        });
-      }
-      pts.push({ x: x2, y: y2 });
-
-      // 1. Outer Crimson Aura
-      ctx.save();
-      ctx.beginPath();
-      pts.forEach((p, idx) => (idx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
-      ctx.strokeStyle = '#ff0033';
-      ctx.lineWidth = branchDepth > 0 ? 15 : 8;
-      ctx.shadowColor = '#ff0033';
-      ctx.shadowBlur = 32;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.stroke();
-
-      // 2. Electric White-Hot Rim
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = branchDepth > 0 ? 8 : 4;
-      ctx.shadowBlur = 10;
-      ctx.stroke();
-
-      // 3. Pitch-Black Spatial Void Core (Signature Kokusen Look)
-      ctx.strokeStyle = '#020003';
-      ctx.lineWidth = branchDepth > 0 ? 5.5 : 2.5;
-      ctx.shadowBlur = 0;
-      ctx.stroke();
-      ctx.restore();
-
-      // Recursive fork branches
-      if (branchDepth > 0) {
-        for (let i = 2; i < pts.length - 2; i += 3) {
-          if (Math.random() < 0.7) {
-            const p = pts[i];
-            const bAngle = Math.atan2(y2 - y1, x2 - x1) + (Math.random() - 0.5) * 1.7;
-            const bLen = 70 + Math.random() * 140;
-            drawJaggedBolt(
-              p.x,
-              p.y,
-              p.x + Math.cos(bAngle) * bLen,
-              p.y + Math.sin(bAngle) * bLen,
-              displacement * 0.6,
-              branchDepth - 1
-            );
-          }
-        }
-      }
-    }
-
+    const chargeFrames = 45; // 0.75s at 60fps
+    const freezeFrames = 13; // 0.21s inverted impact freeze
+    const stormFrames = 65;  // 1.1s 16-bolt lightning detonation
+    const totalFrames = chargeFrames + freezeFrames + stormFrames;
     let frame = 0;
-    const totalFrames = 46;
 
-    function renderBlackFlashFrame() {
+    function renderThreePhaseBlackFlash() {
       frame++;
       ctx.clearRect(0, 0, W, H);
 
-      // Multi-frame full-canvas strobe flashes (Frames 1-3, 6-8, 12-13, 18)
-      if (frame <= 3 || (frame >= 6 && frame <= 8) || frame === 12 || frame === 18) {
-        ctx.fillStyle = frame % 2 === 0 ? 'rgba(255,255,255,0.92)' : 'rgba(255,0,43,0.78)';
+      if (frame <= chargeFrames) {
+        // PHASE 1: NON-INSTANT 0.75s INWARD CONDENSATION
+        const p = frame / chargeFrames;
+        ctx.fillStyle = `rgba(4, 0, 8, ${0.35 + p * 0.48})`;
         ctx.fillRect(0, 0, W, H);
-      } else if (frame < 34) {
-        const g = ctx.createRadialGradient(cx, cy, 10, cx, cy, Math.max(W, H) * 0.72);
-        g.addColorStop(0, `rgba(255, 0, 51, ${0.48 * (1 - frame / totalFrames)})`);
-        g.addColorStop(0.45, `rgba(10, 0, 4, ${0.76 * (1 - frame / totalFrames)})`);
+
+        // Contracting 0.000001s Distortion Ring
+        const ringR = Math.max(8, (1 - p) * 230);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, ringR, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ff0033';
+        ctx.lineWidth = 3 + p * 11;
+        ctx.shadowColor = '#ff0033';
+        ctx.shadowBlur = 28;
+        ctx.stroke();
+
+        // 28 Inward-spiraling crimson/black particles
+        for (let i = 0; i < 28; i++) {
+          const ang = (i / 28) * Math.PI * 2 + p * 7;
+          const dist = (1 - p) * (150 + (i % 5) * 32);
+          const px = cx + Math.cos(ang) * dist;
+          const py = cy + Math.sin(ang) * dist;
+          ctx.beginPath();
+          ctx.arc(px, py, 3 + p * 4, 0, Math.PI * 2);
+          ctx.fillStyle = i % 2 === 0 ? '#ff0033' : '#000000';
+          ctx.fill();
+        }
+
+        // Core singularity fist charge
+        ctx.beginPath();
+        ctx.arc(cx, cy, 10 + p * 28, 0, Math.PI * 2);
+        ctx.fillStyle = '#030002';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      } else if (frame <= chargeFrames + freezeFrames) {
+        // PHASE 2: INVERTED BLACK & WHITE MANGA FREEZE FRAME
+        if (frame === chargeFrames + 1) {
+          overlay.classList.add('bf-active');
+          arenaColosseum.classList.add('bf-megashake');
+          if (bannerWrap) bannerWrap.style.opacity = '';
+          if (pauseBanner) pauseBanner.textContent = `⚡⚫ 黒閃 BLACK FLASH IMPACT! • 120% ZONE (${bfChain}x CHAIN)`;
+        }
+        const inv = frame % 2 === 0;
+        ctx.fillStyle = inv ? '#ffffff' : '#020002';
+        ctx.fillRect(0, 0, W, H);
+        for (let r = 0; r < 34; r++) {
+          const a = (r / 34) * Math.PI * 2;
+          ctx.beginPath();
+          ctx.moveTo(cx + Math.cos(a) * 36, cy + Math.sin(a) * 36);
+          ctx.lineTo(cx + Math.cos(a) * W, cy + Math.sin(a) * W);
+          ctx.strokeStyle = inv ? '#000000' : '#ff0033';
+          ctx.lineWidth = r % 3 === 0 ? 5 : 2;
+          ctx.stroke();
+        }
+      } else {
+        // PHASE 3: 16-BOLT RECURSIVE BLACK-CRIMSON STORM
+        const sf = frame - (chargeFrames + freezeFrames);
+        const sp = sf / stormFrames;
+        const g = ctx.createRadialGradient(cx, cy, 10, cx, cy, W * 0.65);
+        g.addColorStop(0, `rgba(255, 0, 51, ${0.52 * (1 - sp)})`);
+        g.addColorStop(0.5, `rgba(8, 0, 4, ${0.82 * (1 - sp)})`);
         g.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, W, H);
-      }
 
-      // Expanding Dual Shockwave Rings
-      for (let rIdx = 0; rIdx < 3; rIdx++) {
-        const rProgress = Math.max(0, (frame - rIdx * 4) / (totalFrames - 8));
-        if (rProgress > 0 && rProgress < 1) {
-          const radius = rProgress * Math.max(W, H) * 0.68;
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-          ctx.strokeStyle = rIdx % 2 === 0 ? `rgba(255, 0, 51, ${1 - rProgress})` : `rgba(0, 0, 0, ${1 - rProgress})`;
-          ctx.lineWidth = (1 - rProgress) * 18;
-          ctx.shadowColor = '#ff0033';
-          ctx.shadowBlur = 24;
-          ctx.stroke();
-          ctx.restore();
+        // Expanding shockwaves
+        for (let k = 0; k < 3; k++) {
+          const rp = Math.max(0, Math.min(1, sp * 1.4 - k * 0.16));
+          if (rp > 0 && rp < 1) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, rp * W * 0.6, 0, Math.PI * 2);
+            ctx.strokeStyle = k % 2 === 0 ? `rgba(255, 0, 51, ${1 - rp})` : `rgba(0, 0, 0, ${1 - rp})`;
+            ctx.lineWidth = (1 - rp) * 16;
+            ctx.stroke();
+          }
         }
-      }
 
-      // Regenerating 16 Multi-Branching Black & Crimson Lightning Bolts!
-      if (frame < 38) {
-        const numBolts = frame < 22 ? 16 : 9;
-        for (let b = 0; b < numBolts; b++) {
-          const angle = (b / numBolts) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
+        // 16 jagged Black-Crimson Kokusen lightning bolts
+        const bolts = sf < 38 ? 16 : 9;
+        for (let b = 0; b < bolts; b++) {
+          const ang = (b / bolts) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
           const reach = Math.max(W, H) * (0.45 + Math.random() * 0.45);
-          drawJaggedBolt(
+          drawJaggedBoltOnCtx(
+            ctx,
             cx,
             cy,
-            cx + Math.cos(angle) * reach,
-            cy + Math.sin(angle) * reach,
-            46,
-            1
+            cx + Math.cos(ang) * reach,
+            cy + Math.sin(ang) * reach,
+            44,
+            '#ff0033',
+            '#020003',
+            13
           );
         }
-
-        // Central Black-Core Singularity Impact Sphere
-        const coreR = Math.max(6, (1 - frame / 38) * 58);
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, coreR * 1.35, 0, Math.PI * 2);
-        ctx.fillStyle = '#ff0033';
-        ctx.shadowColor = '#ff0033';
-        ctx.shadowBlur = 40;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(cx, cy, coreR, 0, Math.PI * 2);
-        ctx.fillStyle = '#030002';
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 3.5;
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
       }
 
-      // High-velocity flying sparks
-      sparks.forEach(sp => {
-        sp.x += sp.vx;
-        sp.y += sp.vy;
-        sp.vx *= 0.95;
-        sp.vy *= 0.95;
-        const alpha = Math.max(0, 1 - frame / totalFrames);
-        ctx.save();
-        ctx.globalAlpha = alpha;
-        ctx.beginPath();
-        ctx.moveTo(sp.x, sp.y);
-        ctx.lineTo(sp.x - sp.vx * 2.2, sp.y - sp.vy * 2.2);
-        ctx.strokeStyle = sp.isBlack ? '#000000' : '#ff0033';
-        ctx.lineWidth = sp.thick;
-        ctx.shadowColor = '#ff0033';
-        ctx.shadowBlur = 14;
-        ctx.lineCap = 'round';
-        ctx.stroke();
-        ctx.restore();
-      });
-
       if (frame < totalFrames) {
-        activeBlackFlashAnimId = requestAnimationFrame(renderBlackFlashFrame);
+        activeBlackFlashAnimId = requestAnimationFrame(renderThreePhaseBlackFlash);
       } else {
         ctx.clearRect(0, 0, W, H);
       }
     }
 
-    activeBlackFlashAnimId = requestAnimationFrame(renderBlackFlashFrame);
+    activeBlackFlashAnimId = requestAnimationFrame(renderThreePhaseBlackFlash);
 
     activeBlackFlashTimeout = setTimeout(() => {
       overlay.classList.add('hidden');
       overlay.classList.remove('bf-active');
       arenaColosseum.classList.remove('bf-megashake');
-    }, 920);
+      if (pauseBanner) pauseBanner.classList.add('hidden');
+      if (chantBox) chantBox.classList.add('hidden');
+    }, 2150);
   }
 
-  // Domain Expansion Metaphysical Animation Sequence
+  // ============================================================================
+  // SPLIT-SCREEN DOMAIN CLASH (2.4s) -> WINNING DOMAIN CONTINUATION (domTime = 4.0s)
+  // Phase 1 (2.4s): Malevolent Shrine (Left) vs Unlimited Void (Right) Tug-of-War
+  // Phase 2 (4.0s): Winner's Domain takes over 100% of arena with Sure-Hit + Finisher!
+  // ============================================================================
+  let activeDomainAnimId = null;
   let activeDomainTimeout = null;
-  function triggerDomainExpansionAnimation(caster, domainName, domainTheme = 'void') {
+  function triggerDomainClashAnimation(attacker, target, clashWinner, clashLoser, domainName, domainTheme = 'shrine') {
     const overlay = document.getElementById('arenaDomainOverlay');
+    const canvas = document.getElementById('arenaDomainCanvas');
+    const kanjiEl = document.getElementById('domainKanjiTag');
+    const titleEl = document.getElementById('domainTitle');
     const realmTitleEl = document.getElementById('domainRealmName');
     const casterLineEl = document.getElementById('domainCasterLine');
-    if (!overlay || !realmTitleEl) return;
+    const pauseBanner = document.getElementById('arenaPauseBanner');
+    const chantBox = document.getElementById('arenaChantBox');
+    const podLeft = document.getElementById('podLeft');
+    const podRight = document.getElementById('podRight');
+    if (!overlay || !canvas || !realmTitleEl) return;
 
+    if (activeDomainAnimId) {
+      cancelAnimationFrame(activeDomainAnimId);
+      activeDomainAnimId = null;
+    }
     if (activeDomainTimeout) {
       clearTimeout(activeDomainTimeout);
       activeDomainTimeout = null;
     }
 
-    // Set Domain Text & Caster Info
-    const displayName = domainName || 'Infinite Void';
-    realmTitleEl.textContent = displayName.toUpperCase();
-    if (casterLineEl) {
-      casterLineEl.textContent = `Cast by ${caster ? caster.name : 'Unknown Sorcerer'}`;
+    const winTheme = (domainTheme === 'shrine' || (domainName && domainName.includes('Shrine'))) ? 'shrine' : 'void';
+    const winName = domainName || (winTheme === 'shrine' ? 'Malevolent Shrine' : 'Unlimited Void');
+    const winnerName = clashWinner ? clashWinner.name : (attacker ? attacker.name : 'Ryomen Sukuna');
+    const loserPod = winTheme === 'shrine' ? podRight : podLeft;
+
+    // 1. Setup Split-Screen Clash Header & Pod Lunges
+    overlay.className = `arena-domain-overlay theme-${winTheme}`;
+    overlay.classList.remove('hidden', 'domain-closing');
+    if (kanjiEl) kanjiEl.textContent = '領域展開 • 激突';
+    if (titleEl) titleEl.textContent = 'DOMAIN EXPANSION CLASH';
+    realmTitleEl.textContent = 'MALEVOLENT SHRINE vs UNLIMITED VOID';
+    if (casterLineEl) casterLineEl.textContent = `${attacker ? attacker.name : 'Sukuna'} vs ${target ? target.name : 'Gojo'} • Barrier Tug-of-War!`;
+
+    if (podLeft) podLeft.classList.add('clashing-left');
+    if (podRight) podRight.classList.add('clashing-right');
+
+    if (pauseBanner) {
+      pauseBanner.className = 'arena-pause-banner';
+      pauseBanner.textContent = '⏸️ COMBAT PAUSED • SPLIT-SCREEN DOMAIN CLASH!';
+    }
+    if (chantBox) {
+      chantBox.classList.remove('hidden');
+      chantBox.textContent = '⛩️ " Malevolent Shrine "  ⚡ VS ⚡  " Unlimited Void " 🌌';
     }
 
-    // Reset Theme Classes
-    overlay.className = `arena-domain-overlay theme-${domainTheme || 'void'}`;
-    overlay.classList.remove('hidden', 'domain-closing');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width = overlay.clientWidth || 900;
+    const H = canvas.height = overlay.clientHeight || 450;
 
-    // Hold Domain Expansion for 1.8 seconds, then animate barrier dispersion
+    const clashFrames = 144; // 2.4s Split-Screen Tug-of-War Clash
+    const activeFrames = 240; // 4.0s (domTime = 4s) Winner's Active Domain Continuation
+    const totalFrames = clashFrames + activeFrames;
+    let frame = 0;
+
+    function renderDomainClashAndActivePhase() {
+      frame++;
+      ctx.clearRect(0, 0, W, H);
+
+      if (frame <= clashFrames) {
+        // ============================================================
+        // PHASE 1 (0s - 2.4s): SPLIT-SCREEN MALEVOLENT SHRINE vs UNLIMITED VOID
+        // ============================================================
+        const cp = frame / clashFrames;
+        const targetShift = cp > 0.72
+          ? (winTheme === 'shrine' ? (cp - 0.72) * 580 : -(cp - 0.72) * 580)
+          : Math.sin(frame * 0.24) * 52;
+        const splitX = W * 0.5 + targetShift;
+
+        // Draw Reference Split-Screen Image if loaded
+        if (domainClashImage && domainClashImage.complete && domainClashImage.naturalWidth > 0) {
+          ctx.save();
+          ctx.globalAlpha = 0.85;
+          ctx.drawImage(domainClashImage, 0, 0, W, H);
+          ctx.restore();
+        }
+
+        // Left Half Clip: Crimson Malevolent Shrine
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(splitX + 38, 0);
+        ctx.lineTo(splitX - 38, H);
+        ctx.lineTo(0, H);
+        ctx.closePath();
+        ctx.clip();
+
+        const gL = ctx.createRadialGradient(W * 0.25, H * 0.5, 10, W * 0.25, H * 0.5, W * 0.65);
+        gL.addColorStop(0, 'rgba(220, 38, 38, 0.58)');
+        gL.addColorStop(1, 'rgba(15, 0, 4, 0.78)');
+        ctx.fillStyle = gL;
+        ctx.fillRect(0, 0, W, H);
+
+        // Cleave slashes inside Shrine half
+        for (let s = 0; s < 7; s++) {
+          ctx.beginPath();
+          const sy = Math.random() * H;
+          ctx.moveTo(0, sy);
+          ctx.lineTo(splitX, sy + (Math.random() - 0.5) * 90);
+          ctx.strokeStyle = s % 2 === 0 ? '#ffffff' : '#ff0033';
+          ctx.lineWidth = 2.2;
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // Right Half Clip: Cyan/Purple Unlimited Void
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(splitX + 38, 0);
+        ctx.lineTo(W, 0);
+        ctx.lineTo(W, H);
+        ctx.lineTo(splitX - 38, H);
+        ctx.closePath();
+        ctx.clip();
+
+        const gR = ctx.createRadialGradient(W * 0.75, H * 0.5, 10, W * 0.75, H * 0.5, W * 0.65);
+        gR.addColorStop(0, 'rgba(56, 189, 248, 0.55)');
+        gR.addColorStop(0.6, 'rgba(88, 28, 135, 0.55)');
+        gR.addColorStop(1, 'rgba(2, 6, 23, 0.8)');
+        ctx.fillStyle = gR;
+        ctx.fillRect(0, 0, W, H);
+
+        for (let r = 0; r < 3; r++) {
+          const rad = ((frame * 2.5 + r * 55) % 210);
+          ctx.beginPath();
+          ctx.arc(W * 0.74, H * 0.5, rad, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(125, 211, 252, ${1 - rad / 210})`;
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // Diagonal Clash Fault-Line Lightning
+        drawJaggedBoltOnCtx(ctx, splitX + 38, 0, splitX - 38, H, 32, '#ff0033', '#ffffff', 12);
+        drawJaggedBoltOnCtx(ctx, splitX + 38, 0, splitX - 38, H, 32, '#38bdf8', '#000000', 8);
+      } else {
+        // ============================================================
+        // PHASE 2 (2.4s - 6.4s): WINNER'S ACTIVE DOMAIN CONTINUATION (domTime = 4.0s)
+        // ============================================================
+        const af = frame - clashFrames;
+        const ap = af / activeFrames;
+        const remSec = Math.max(0, (4.0 * (1 - ap))).toFixed(1);
+        const isFinalFinisher = ap >= 0.74;
+
+        if (af === 1) {
+          if (podLeft) podLeft.classList.remove('clashing-left');
+          if (podRight) podRight.classList.remove('clashing-right');
+          if (kanjiEl) kanjiEl.textContent = winTheme === 'shrine' ? '伏魔御廚子 • 領域継続' : '無量空処 • 領域継続';
+          if (titleEl) titleEl.textContent = `${winnerName.toUpperCase()} WINS THE CLASH!`;
+          realmTitleEl.textContent = `${winName.toUpperCase()} ACTIVE (${remSec}s)`;
+        } else if (af % 6 === 0) {
+          realmTitleEl.textContent = `${winName.toUpperCase()} ACTIVE (${remSec}s)`;
+        }
+
+        if (winTheme === 'shrine') {
+          // ACTIVE MALEVOLENT SHRINE: Continuous Cleave & Dismantle + FUGA Finisher
+          if (pauseBanner) {
+            pauseBanner.className = 'arena-pause-banner';
+            pauseBanner.textContent = isFinalFinisher
+              ? `🔥🏹 竈「開」 DIVINE FLAME: FUGA FINISHER! (${remSec}s)`
+              : `⛩️🔥 MALEVOLENT SHRINE ACTIVE (${remSec}s) • RELENTLESS CLEAVE & DISMANTLE!`;
+          }
+          if (chantBox) {
+            chantBox.textContent = isFinalFinisher
+              ? `🔥🏹 "竈「開」(KAMINO: FUGA)!" — Thermobaric Fire Arrow incinerates the domain!`
+              : `⛩️🗡️ Relentless Cleave & Dismantle sure-hit slashes carve the opponent every 0.35s!`;
+          }
+          if (casterLineEl) {
+            casterLineEl.textContent = isFinalFinisher
+              ? '🔥 DIVINE FLAME: FUGA (THERMOBARIC DETONATION)'
+              : `Sure-Hit Cleave & Dismantle Barrage • Cast by ${winnerName}`;
+          }
+
+          const gS = ctx.createRadialGradient(W * 0.5, H * 0.5, 20, W * 0.5, H * 0.5, W * 0.72);
+          gS.addColorStop(0, isFinalFinisher ? 'rgba(251, 146, 60, 0.78)' : 'rgba(185, 28, 28, 0.68)');
+          gS.addColorStop(1, 'rgba(10, 0, 2, 0.92)');
+          ctx.fillStyle = gS;
+          ctx.fillRect(0, 0, W, H);
+
+          // 14 Full-screen Cleave & Dismantle slashes
+          for (let s = 0; s < 14; s++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * W, Math.random() * H);
+            ctx.lineTo(Math.random() * W, Math.random() * H);
+            ctx.strokeStyle = s % 3 === 0 ? '#ffffff' : '#ff0033';
+            ctx.lineWidth = 2 + Math.random() * 4;
+            ctx.shadowColor = '#ff0033';
+            ctx.shadowBlur = 16;
+            ctx.stroke();
+          }
+
+          // Periodic floating Cleave damage ticks on loser pod
+          if (af % 22 === 0 && loserPod) {
+            loserPod.classList.add('hit-shake');
+            setTimeout(() => loserPod.classList.remove('hit-shake'), 220);
+            spawnFloatingDamage(loserPod, isFinalFinisher ? '🔥 FUGA! -240' : '🗡️ CLEAVE! -85', true, 'blackFlash');
+          }
+
+          // Final 1.0s Fuga Fire Arrow Beam
+          if (isFinalFinisher) {
+            const fp = (ap - 0.74) / 0.26;
+            const arrowX = W * 0.18 + fp * W * 0.68;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(arrowX, H * 0.5, 42 + fp * 55, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(251, 191, 36, 0.92)';
+            ctx.shadowColor = '#f97316';
+            ctx.shadowBlur = 50;
+            ctx.fill();
+            drawJaggedBoltOnCtx(ctx, W * 0.12, H * 0.5, arrowX, H * 0.5, 24, '#f97316', '#ffffff', 16);
+            ctx.restore();
+          }
+        } else {
+          // ACTIVE UNLIMITED VOID: Mind Paralysis + HOLLOW PURPLE Finisher
+          if (pauseBanner) {
+            pauseBanner.className = 'arena-pause-banner void-active';
+            pauseBanner.textContent = isFinalFinisher
+              ? `🟣🤞 虚式「茈」 HOLLOW TECHNIQUE: PURPLE FINISHER! (${remSec}s)`
+              : `🌌🧠 UNLIMITED VOID ACTIVE (${remSec}s) • TARGET PARALYZED BY INFINITE INFO!`;
+          }
+          if (chantBox) {
+            chantBox.textContent = isFinalFinisher
+              ? `🟣🤞 "Nine Ropes... Polarized Light... Crow and Shomyo... HOLLOW PURPLE!"`
+              : `🌌🧠 Target is stunned by 0.2s = 6 months of infinite sensory overload!`;
+          }
+          if (casterLineEl) {
+            casterLineEl.textContent = isFinalFinisher
+              ? '🟣🤞 HOLLOW TECHNIQUE: PURPLE (IMAGINARY MASS ERASURE)'
+              : `🧠 ∞ Void Paralysis Active • Cast by ${winnerName}`;
+          }
+
+          const gV = ctx.createRadialGradient(W * 0.5, H * 0.5, 15, W * 0.5, H * 0.5, W * 0.72);
+          gV.addColorStop(0, isFinalFinisher ? 'rgba(168, 85, 247, 0.82)' : 'rgba(56, 189, 248, 0.64)');
+          gV.addColorStop(0.55, 'rgba(76, 29, 149, 0.74)');
+          gV.addColorStop(1, 'rgba(2, 6, 23, 0.94)');
+          ctx.fillStyle = gV;
+          ctx.fillRect(0, 0, W, H);
+
+          // Expanding Void cosmic rings & stars
+          for (let r = 0; r < 5; r++) {
+            const rad = ((af * 3.2 + r * 65) % (W * 0.55));
+            ctx.beginPath();
+            ctx.arc(W * 0.5, H * 0.5, rad, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(186, 230, 253, ${1 - rad / (W * 0.55)})`;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+          }
+
+          if (af % 26 === 0 && loserPod) {
+            loserPod.classList.add('hit-shake');
+            setTimeout(() => loserPod.classList.remove('hit-shake'), 220);
+            spawnFloatingDamage(loserPod, isFinalFinisher ? '🟣 PURPLE! -260' : '🧠 VOID STUN! -70', true, 'crit');
+          }
+
+          // Final 1.0s Hollow Purple Imaginary Mass Orb
+          if (isFinalFinisher) {
+            const pp = (ap - 0.74) / 0.26;
+            const orbX = W * 0.78 - pp * W * 0.60;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(orbX, H * 0.5, 48 + pp * 58, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(192, 132, 252, 0.94)';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            ctx.shadowColor = '#a855f7';
+            ctx.shadowBlur = 55;
+            ctx.fill();
+            ctx.stroke();
+            drawJaggedBoltOnCtx(ctx, W * 0.84, H * 0.5, orbX, H * 0.5, 28, '#a855f7', '#ffffff', 14);
+            ctx.restore();
+          }
+        }
+      }
+
+      if (frame < totalFrames) {
+        activeDomainAnimId = requestAnimationFrame(renderDomainClashAndActivePhase);
+      } else {
+        ctx.clearRect(0, 0, W, H);
+      }
+    }
+
+    activeDomainAnimId = requestAnimationFrame(renderDomainClashAndActivePhase);
+
     activeDomainTimeout = setTimeout(() => {
+      if (podLeft) podLeft.classList.remove('clashing-left');
+      if (podRight) podRight.classList.remove('clashing-right');
       overlay.classList.add('domain-closing');
+      if (pauseBanner) pauseBanner.classList.add('hidden');
+      if (chantBox) chantBox.classList.add('hidden');
       setTimeout(() => {
         overlay.classList.add('hidden');
         overlay.classList.remove('domain-closing');
-      }, 580);
-    }, 1800);
+      }, 450);
+    }, 6400);
+  }
+
+  function triggerDomainExpansionAnimation(caster, domainName, domainTheme = 'void') {
+    const f1 = (battleEngine.fighters && battleEngine.fighters[0]) || caster;
+    const f2 = (battleEngine.fighters && battleEngine.fighters[1]) || caster;
+    triggerDomainClashAnimation(f1, f2, caster, f2, domainName, domainTheme);
   }
 
   function spawnFloatingDamage(targetEl, text, isCrit, type) {
@@ -3069,6 +3434,7 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
       if (text) {
         text.textContent = `${fighter.currentHp} / ${fighter.maxHp} HP`;
       }
+      updateDuelStatusPills(fighter);
     } else {
       const fill = document.getElementById(`ffa_hp_${fighter.id}`);
       const text = document.getElementById(`ffa_text_${fighter.id}`);

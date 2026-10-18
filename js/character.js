@@ -18,6 +18,7 @@ class CharacterManager {
       subRace: null,
       archetype: null,
       archetypeSub: null,
+      sorcererGrade: { text: 'Grade 1 Sorcerer', subtext: '36% Base Black Flash Odds', rarity: 'epic', bfChance: 0.36, bonus: 45 },
       weapon: null,
       enchantments: [],
       powers: [],
@@ -76,6 +77,17 @@ class CharacterManager {
           this.currentDraft.stats.str += fBonus;
           this.currentDraft.stats.spd += Math.floor(fBonus * 0.8);
           this.currentDraft.stats.chaos += fBonus;
+        }
+        break;
+      case 'sorcererGrade':
+        this.currentDraft.sorcererGrade = segmentData;
+        if (segmentData && segmentData.bonus) {
+          const b = segmentData.bonus;
+          this.currentDraft.stats.str += b;
+          this.currentDraft.stats.spd += b;
+          this.currentDraft.stats.dur += b;
+          this.currentDraft.stats.int += b;
+          this.currentDraft.stats.chaos += b;
         }
         break;
       case 'weapon':

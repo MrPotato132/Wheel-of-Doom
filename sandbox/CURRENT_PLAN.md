@@ -1,2 +1,3 @@
-# Sandbox Plan Cleared
-All JJK Expansion (Option A + Option C) features and the upgraded multi-bolt strobing Black Flash (`黒閃 • Kokusen`) engine have been promoted to live (`v2.4.0`). Ready for next experiment.
+# Active Sandbox Plan
+
+No active plan. Promoted Take C (`take=C, chargeUp=0.75s, domTime=4s, grade=Unlimited Potential (Awakened), activeDomainAfterClash=true, simpleDomain=true, fugaAndPurpleFinishers=true`) to live in `v2.5.0`.

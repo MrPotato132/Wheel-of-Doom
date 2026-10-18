@@ -19,6 +19,7 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
   - Initialized isolated Sandbox Lab workflow matching AGENTS.md directives.
   - Added subtle floating `🧪 Sandbox Lab` shortcut button to live arena (`index.html`).
   - Created standalone starter sandbox environment (`sandbox/options.html`) featuring multi-take style selector (`Take A`, `Take B`, `Take C`) and dynamic live parameter sliders (Glow, Shake, Speed) with instant DOM feedback.
+  - Upgraded sandbox "Promote to Live" button into a one-click clipboard copy button with formatted settings string and instant 2-second visual feedback.
   - Cleanly grouped and documented all core theme tokens (`:root` CSS variables) in `css/styles.css` without modifying live pixel output.
 
 ---

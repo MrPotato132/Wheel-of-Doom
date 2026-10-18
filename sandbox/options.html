@@ -72,9 +72,23 @@
       document.querySelectorAll('.take-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
       activeTake = btn.dataset.take; const t = takes[activeTake]; badge.textContent = t.badge; title.textContent = t.title; desc.textContent = t.desc; card.style.borderColor = t.border; sync();
     }));
-    document.getElementById('btnPromote').addEventListener('click', () => {
-      toast.textContent = `🚀 Take ${activeTake} locked! Tell your AI to promote Take ${activeTake} (Glow: ${glow.value}px, Shake: ${shake.value}°, Speed: ${speed.value}s).`;
-      toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3500);
+    const btnPromote = document.getElementById('btnPromote');
+    btnPromote.addEventListener('click', () => {
+      const copyText = `Promote to live with sandbox settings: take=${activeTake}, glow=${glow.value}px, shake=${shake.value}°, speed=${speed.value}s`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyText);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = copyText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      btnPromote.textContent = '✅ Copied to Clipboard!';
+      setTimeout(() => { btnPromote.textContent = '🚀 Promote to Live'; }, 2000);
+      toast.textContent = `📋 Copied to clipboard! "${copyText}"`;
+      toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500);
     });
   </script>
 </body>

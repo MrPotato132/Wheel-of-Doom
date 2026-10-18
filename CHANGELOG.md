@@ -12,6 +12,35 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
 
 ---
 
+## [v2.3.0] - 2026-10-18
+### Added
+- **Gambler Archetype & Signature Wager Sub-Wheel (`js/wheelData.js`, `js/battle.js`, `js/character.js`)**:
+  - Added the **Gambler** archetype (Epic tier, +65 Chaos, +25 Speed, +20 Intelligence) to the Archetype Wheel.
+  - Added dedicated `gamblerGamble` sub-wheel with 6 high-stakes combat wagers:
+    - *Roulette of Death* (50% chance for 300% catastrophic damage; 50% chance the strike completely whiffs).
+    - *Jackpot Fever* (Each consecutive hit ramps damage up by +50%!).
+    - *Loaded Dice* (Rigged critical odds guaranteeing maximum 2.8x crit multiplier).
+    - *All-In Stake* (Sacrifices 30% current HP to unleash a devastating 400% damage blow).
+    - *Card Counting* (Predicts enemy evasion, turning missed attacks into glancing hits).
+    - *Golden Slot Machine* (Triple 7 jackpot: 33% instant full heal, 33% 250% damage strike, 33% 180 HP barrier).
+- **Cinematic Domain Expansion Animation System (`index.html`, `css/styles.css`, `js/app.js`, `js/audio.js`, `js/battle.js`)**:
+  - Added a full-screen metaphysical domain barrier overlay (`#arenaDomainOverlay`) inside the Colosseum arena with dynamic dimensional space-warp particles and a drop-in Japanese calligraphic banner (`領域展開 - DOMAIN EXPANSION`).
+  - Added procedural Web Audio API spatial shutter sound (`sounds.playDomainExpansion()`) combining deep sub-bass drops, barrier glass crystallization, and an ethereal harmonic chord.
+  - Implemented 8 unique Domain Themes with custom radial backdrops and lighting:
+    - *Infinite Void* (Gojo's cosmic abyss, purple/starlight void glow).
+    - *Malevolent Shrine* (Sukuna's crimson blood temple and slicing aura).
+    - *Idle Death Gamble* (Hakari's golden casino pachinko domain).
+    - *Chimera Shadow Garden* (Megumi's dark fluid shadow lake).
+    - *Horizon of the Captivating Skandha* (Dagon's tropical oceanic barrier).
+    - *Coffin of the Iron Mountain* (Jogo's volcanic kiln and molten magma).
+    - *Self-Embodiment of Perfection* (Mahito's hand/soul transfiguration realm).
+    - *Time-Space Chrono Matrix* (Cyan clockwork temporal dilation realm).
+- **Domain Type Sub-Wheel & Guaranteed Chance (`js/wheelData.js`, `js/app.js`)**:
+  - Linked `Domain Expansion` on the Power Wheel directly to the new `domainType` sub-wheel, enabling players who spin Domain Expansion in Destiny Mode to spin and claim their exact signature domain realm.
+  - Integrated domain realm lore into the Character Card and outcome celebrations.
+
+---
+
 ## [v2.2.0] - 2026-10-18
 ### Fixed
 - **100% Wheel-to-Outcome Synchronization (`js/wheel.js`)**:

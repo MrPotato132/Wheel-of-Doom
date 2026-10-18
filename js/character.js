@@ -79,6 +79,11 @@ class CharacterManager {
           this.currentDraft.powers.push(segmentData);
         }
         break;
+      case 'domainType':
+        this.currentDraft.domainType = segmentData;
+        this.currentDraft.domainName = segmentData.text;
+        this.currentDraft.domainTheme = segmentData.theme || 'void';
+        break;
       case 'weakness':
         this.currentDraft.weakness = segmentData;
         break;
@@ -149,6 +154,7 @@ class CharacterManager {
       case 'Brawler / Pugilist': s.str += 45; s.dur += 35; s.spd += 10; break;
       case 'Cosmic Inquisitor': s.int += 50; s.dur += 30; s.chaos += 20; break;
       case 'Bard / Battle Rocker': s.chaos += 45; s.spd += 25; s.int += 20; break;
+      case 'Gambler': s.chaos += 65; s.spd += 25; s.int += 20; break;
       default: break;
     }
   }

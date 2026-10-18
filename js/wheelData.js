@@ -226,6 +226,39 @@ const WHEEL_DATA = {
       { text: 'Primordial Champion', subtext: 'Mortal Chosen by Universal Constants', rarity: 'godTier', color: '#06b6d4', subWheel: 'primordialPatron' },
       { text: "Champion's Legacy", subtext: 'Aligns with Factions of Tournament GOATs (Ethan, Musam, Boodro)', rarity: 'mythic', color: '#d97706', subWheel: 'championsLegacyFaction' },
       { text: 'Hybrid', subtext: 'Possesses Two Distinct Archetypes Simultaneously', rarity: 'godTier', color: '#ec4899', subWheel: null },
+      { text: 'Gambler', subtext: 'High-Stakes Risk Taker: Rolling Jackpot or Bust in the Heat of Duel', rarity: 'epic', color: '#f59e0b', subWheel: 'gamblerGamble' },
+    ]
+  },
+
+  gamblerGamble: {
+    id: 'gamblerGamble',
+    name: 'Gambler Signature Wager Sub-Wheel',
+    subtitle: 'Which high-stakes gamble governs your combat destiny?',
+    icon: '🎲',
+    segments: [
+      { text: 'Roulette of Death', subtext: '50% chance to deal 300% damage, 50% chance to miss', rarity: 'rare', color: '#dc2626' },
+      { text: 'Jackpot Fever', subtext: 'Consecutive hits ramp up damage exponentially (+50% per hit)', rarity: 'epic', color: '#f59e0b' },
+      { text: 'Loaded Dice', subtext: 'Guarantees maximum critical strike multiplier on crits', rarity: 'rare', color: '#10b981' },
+      { text: 'All-In Stake', subtext: 'Sacrifices 30% current HP to unleash a 400% catastrophic blow', rarity: 'legendary', color: '#7c3aed' },
+      { text: 'Card Counting', subtext: 'Predicts enemy evasion and turns misses into grazing hits', rarity: 'uncommon', color: '#0284c7' },
+      { text: 'Golden Slot Machine', subtext: '33% chance for instant complete heal, 33% instant 2x damage, 33% shield', rarity: 'godTier', color: '#fbbf24' }
+    ]
+  },
+
+  domainType: {
+    id: 'domainType',
+    name: 'Domain Expansion Realm Sub-Wheel',
+    subtitle: 'What metaphysical realm is summoned when you expand your domain?',
+    icon: '🌌',
+    segments: [
+      { text: 'Infinite Void', subtext: 'Floods target mind with infinite cosmic data; 100% hit rate & stuns', rarity: 'godTier', color: '#581c87', theme: 'void' },
+      { text: 'Malevolent Shrine', subtext: 'Relentless storm of invisible cleaving slashes carving all matter', rarity: 'godTier', color: '#991b1b', theme: 'shrine' },
+      { text: 'Idle Death Gamble', subtext: 'Colosseum casino domain granting unlimited energy on jackpot', rarity: 'mythic', color: '#f59e0b', theme: 'gamble' },
+      { text: 'Chimera Shadow Garden', subtext: 'Abyssal lake of fluid shadow spawning endless chimeric beasts', rarity: 'legendary', color: '#1e1b4b', theme: 'shadow' },
+      { text: 'Horizon of the Captivating Skandha', subtext: 'Tropical ocean barrier summoning savage leviathan shikigami', rarity: 'legendary', color: '#0284c7', theme: 'ocean' },
+      { text: 'Coffin of the Iron Mountain', subtext: 'Volcanic subterranean kiln incinerating targets with molten magma', rarity: 'epic', color: '#ea580c', theme: 'volcano' },
+      { text: 'Self-Embodiment of Perfection', subtext: 'Direct transmorphic touch on the enemy soul, bypassing physical armor', rarity: 'mythic', color: '#ec4899', theme: 'soul' },
+      { text: 'Time-Space Chrono Matrix', subtext: 'Clockwork pocket continuum freezing opponents while you strike freely', rarity: 'godTier', color: '#06b6d4', theme: 'time' }
     ]
   },
 
@@ -950,7 +983,7 @@ const WHEEL_DATA = {
       { text: 'Precognition', subtext: 'Sees 5 seconds into the immediate future', rarity: 'rare', color: '#0891b2' },
       { text: 'Laser Gaze', subtext: 'High-intensity optical incinerator', rarity: 'uncommon', color: '#ef4444' },
       // --- NEW EXPANDED POWERS ---
-      { text: 'Domain Expansion', subtext: 'Traps foe in pocket realm with guaranteed hits', rarity: 'godTier', color: '#581c87' },
+      { text: 'Domain Expansion', subtext: 'Traps foe in pocket realm with guaranteed hits', rarity: 'godTier', color: '#581c87', subWheel: 'domainType' },
       { text: 'Black Hole Singularity', subtext: 'Crushes light, matter, and enemy projectiles', rarity: 'godTier', color: '#0284c7' },
       { text: 'Blood Bending', subtext: 'Forces enemy limbs into self-inflicted strikes', rarity: 'mythic', color: '#991b1b' },
       { text: 'Lightning God Speed', subtext: 'Hypersonic velocity delivering 3 chain strikes', rarity: 'legendary', color: '#eab308' },
@@ -1235,7 +1268,8 @@ const TRAIT_DESCRIPTIONS = {
     'Shadow Monarch': 'Umbral Overlord: Summons shadow warriors from darkness that strike alongside the hero on every attack.',
     'Brawler / Pugilist': 'Unbreakable Grit: Converts incoming blunt damage into adrenaline attack power; counters critical strikes instantly.',
     'Cosmic Inquisitor': 'Purifier of the Multiverse: Strips away enemy invulnerability, shields, and supernatural copy abilities.',
-    'Bard / Battle Rocker': 'Heavy Metal Shockwaves: Plays crushing arena riffs that disorient enemies, forcing them to miss 25% of their attacks.'
+    'Bard / Battle Rocker': 'Heavy Metal Shockwaves: Plays crushing arena riffs that disorient enemies, forcing them to miss 25% of their attacks.',
+    'Gambler': 'High-Stakes Risk Taker: Wagers life and limb on volatile dice rolls, jackpots, and roulette wheels, trading safety for catastrophic damage spikes.'
   },
 
   weapon: {
@@ -1394,7 +1428,23 @@ const TRAIT_DESCRIPTIONS = {
     'Berserk Adrenaline Serum': 'Mutagenic Stimulant: Triples attack speed and critical strike probability for 30 seconds.',
     'Liquid Diamond Skin': 'Diamond Hardener: Renders skin completely impervious to bladed slashes and arrows.',
     'Acidic Blood Reagent': 'Corrosive Counter: Attackers take heavy splashing acid burn damage whenever they strike.',
-    "Philosopher's Drop": 'Elixir of Immortality: Instantly revives the warrior from lethal defeat with restored vigor.'
+    "Philosopher's Drop": 'Elixir of Immortality: Instantly revives the warrior from lethal defeat with restored vigor.',
+    // Gambler Sub-Wheel Perks
+    'Roulette of Death': 'Double or Nothing: 50% chance to amplify attack damage to 300%; 50% chance the shot completely whiffs.',
+    'Jackpot Fever': 'Momentum Multiplier: Each consecutive hit landed increases the damage of subsequent strikes by +50%!',
+    'Loaded Dice': 'Rigged Odds: Guaranteed to roll maximum 2.8x critical strike damage multiplier on every crit.',
+    'All-In Stake': 'Desperation Wager: Sacrifices 30% current HP to deliver an unstoppable 400% catastrophic strike.',
+    'Card Counting': 'Statistical Insight: Anticipates enemy evasion patterns, transforming missed attacks into glancing hits.',
+    'Golden Slot Machine': 'Triple 7s: Rolls 3 spinning reels mid-turn for instant full heal, double damage, or a 200 HP barrier.',
+    // Domain Expansion Types
+    'Infinite Void': 'Limitless Space: Imbues the realm with unbounded information, stunning the foe and guaranteeing 100% hit rate.',
+    'Malevolent Shrine': 'Dismantle & Cleave: A relentless storm of slashing blades that relentlessly shreds through target defenses.',
+    'Idle Death Gamble': 'Pachinko Domain: Traps the combatant in a high-speed slot match, triggering an immortal energy jackpot.',
+    'Chimera Shadow Garden': 'Umbral Swarm: Summons an endless tide of shadow familiars that attack from blind angles.',
+    'Horizon of the Captivating Skandha': 'Oceanic Abyss: Floods the arena with tidal vortexes and leviathan predators that bypass armor.',
+    'Coffin of the Iron Mountain': 'Volcanic Core: Traps the target in the heart of an active volcano, dealing severe burning magma damage.',
+    'Self-Embodiment of Perfection': 'Soul Transfiguration: Direct transmorphic resonance touching the opponent’s soul, ignoring armor.',
+    'Time-Space Chrono Matrix': 'Temporal Freeze: Freezes the opponent’s personal timeline while the caster unleashes a barrage of free hits.'
   }
 };
 

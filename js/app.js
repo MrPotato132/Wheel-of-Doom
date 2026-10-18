@@ -330,10 +330,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if segment has a subWheel to inject into queue!
     if (segment.subWheel && WHEEL_DATA[segment.subWheel]) {
       const subWheelId = segment.subWheel;
+      let injectedCategory = 'archetypeSub';
+      if (currentTask.category === 'race') injectedCategory = 'subRace';
+      else if (currentTask.category === 'power') injectedCategory = 'domainType';
+
       // Inject next step right after current
       state.destinyQueue.splice(state.destinyStep + 1, 0, {
         id: subWheelId,
-        category: currentTask.category === 'race' ? 'subRace' : 'archetypeSub',
+        category: injectedCategory,
         name: WHEEL_DATA[subWheelId].name
       });
     }
@@ -416,7 +420,8 @@ document.addEventListener('DOMContentLoaded', () => {
         race: '🧬 RACIAL TRAITS & STAT BOOST',
         subRace: '🧬 LINEAGE INHERITANCE',
         archetype: '🛡️ TACTICAL ARCHETYPE ROLE',
-        archetypeSub: '🎯 SPECIALTY PREY / RELIC',
+        archetypeSub: '🎯 SPECIALTY WAGER / RELIC',
+        domainType: '🌑 DOMAIN EXPANSION REALM',
         levelUp: '⚡ LEVEL-UP UPGRADE MECHANICS',
         stats: '📊 COMBAT TIER RATING'
       };
@@ -535,10 +540,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (char.powers && char.powers.length) {
       powersEl.innerHTML = char.powers.map(p => {
         const desc = getTraitDescription('power', p.text);
+        const isDomain = p.text.includes('Domain Expansion');
+        const domainText = (isDomain && char.domainName) ? ` - Realm: 「${char.domainName}」` : '';
+        const domainDesc = (isDomain && char.domainName) ? `<br><b>Domain Realm:</b> ${getTraitDescription('domainType', char.domainName)}` : '';
         return `
           <div class="power-item-wrap">
-            <div class="power-tag"><span class="power-name">✨ ${p.text}</span> <span class="power-sub">${p.subtext || ''}</span></div>
-            <div class="power-explain-box">${desc}</div>
+            <div class="power-tag"><span class="power-name">✨ ${p.text}${domainText}</span> <span class="power-sub">${p.subtext || ''}</span></div>
+            <div class="power-explain-box">${desc}${domainDesc}</div>
           </div>
         `;
       }).join('');
@@ -2687,12 +2695,17 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
 
   // Visual Battle Action Callback
   function handleVisualBattleAction(data) {
-    const { type, attacker, target, damage, isCrit, text, sound } = data;
+    const { type, attacker, target, damage, isCrit, text, sound, domainName, domainTheme } = data;
 
-    // 1. Screen Shake on criticals or heavy blows
-    if (isCrit || damage > 50 || type === 'explosion') {
+    // Domain Expansion Cinematic Trigger
+    if (type === 'domainExpansion') {
+      triggerDomainExpansionAnimation(attacker, domainName, domainTheme);
+    }
+
+    // 1. Screen Shake on criticals, heavy blows, or domain expansions
+    if (isCrit || damage > 50 || type === 'explosion' || type === 'domainExpansion') {
       arenaColosseum.classList.add('screen-shake');
-      setTimeout(() => arenaColosseum.classList.remove('screen-shake'), 320);
+      setTimeout(() => arenaColosseum.classList.remove('screen-shake'), 450);
     }
 
     // 2. Animate Attacker & Target Pods
@@ -2748,6 +2761,40 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
     setTimeout(() => {
       arenaSlashFx.classList.add('hidden');
     }, 240);
+  }
+
+  // Domain Expansion Metaphysical Animation Sequence
+  let activeDomainTimeout = null;
+  function triggerDomainExpansionAnimation(caster, domainName, domainTheme = 'void') {
+    const overlay = document.getElementById('arenaDomainOverlay');
+    const realmTitleEl = document.getElementById('domainRealmName');
+    const casterLineEl = document.getElementById('domainCasterLine');
+    if (!overlay || !realmTitleEl) return;
+
+    if (activeDomainTimeout) {
+      clearTimeout(activeDomainTimeout);
+      activeDomainTimeout = null;
+    }
+
+    // Set Domain Text & Caster Info
+    const displayName = domainName || 'Infinite Void';
+    realmTitleEl.textContent = displayName.toUpperCase();
+    if (casterLineEl) {
+      casterLineEl.textContent = `Cast by ${caster ? caster.name : 'Unknown Sorcerer'}`;
+    }
+
+    // Reset Theme Classes
+    overlay.className = `arena-domain-overlay theme-${domainTheme || 'void'}`;
+    overlay.classList.remove('hidden', 'domain-closing');
+
+    // Hold Domain Expansion for 1.8 seconds, then animate barrier dispersion
+    activeDomainTimeout = setTimeout(() => {
+      overlay.classList.add('domain-closing');
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('domain-closing');
+      }, 580);
+    }, 1800);
   }
 
   function spawnFloatingDamage(targetEl, text, isCrit, type) {

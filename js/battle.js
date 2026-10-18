@@ -64,6 +64,8 @@ class BattleEngine {
         maxHp: actualMaxHp,
         currentHp: actualMaxHp,
         shield: (c.powers && c.powers.some(p => (p.text || p) === 'Force Field Barrier')) ? 150 : 0,
+        domainName: c.domainType ? (c.domainType.text || c.domainType) : (c.domainName || 'Infinite Void'),
+        domainTheme: (c.domainType && c.domainType.theme) || c.domainTheme || 'void',
         isAlive: true,
         isUndeadRevived: false,
         isPhoenixRevived: false,
@@ -292,12 +294,25 @@ class BattleEngine {
     let powerEffectText = '';
     let attackSound = 'slash';
 
-    if (attacker.powers.includes('Domain Expansion') && Math.random() < 0.25) {
-      powerBonus += 70;
-      powerEffectText = '🌑 DOMAIN EXPANSION! ';
+    // Domain Expansion Check
+    const hasDomainPower = attacker.powers.some(p => p.includes('Domain Expansion'));
+    if (hasDomainPower && Math.random() < 0.28) {
+      powerBonus += 75;
+      const domainName = attacker.domainName || (attacker.archetypeSub && attacker.archetypeSub.includes('Domain') ? attacker.archetypeSub : 'Infinite Void');
+      const domainTheme = attacker.domainTheme || 'void';
+      powerEffectText = `🌑 RYŌIKI TENKAI: ${domainName.toUpperCase()}! `;
       attackSound = 'magic';
-      sounds.playMagicCast();
-      this.logAction(`🌌 ${attacker.name} traps ${target.name} in their DOMAIN! All strikes are guaranteed!`, 'power');
+      sounds.playDomainExpansion();
+      this.logAction(`🌌 ${attacker.name} manifests DOMAIN EXPANSION: 「${domainName}」! The barrier seals the battlefield with guaranteed hit-rate!`, 'power');
+      this.options.onAction({
+        type: 'domainExpansion',
+        attacker,
+        target,
+        domainName,
+        domainTheme,
+        text: `DOMAIN EXPANSION: ${domainName.toUpperCase()}!`,
+        sound: 'magic'
+      });
     } else if (attacker.powers.includes('Time Stop') && Math.random() < 0.22) {
       powerBonus += 50;
       powerEffectText = '⏳ TIME STOP! ';
@@ -359,6 +374,53 @@ class BattleEngine {
       if (attacker.archetypeSub.toLowerCase().includes(target.race.toLowerCase())) {
         baseDmg *= 1.8; // 180% damage to designated prey
         powerEffectText += '🎯 PREY EXECUTION! ';
+      }
+    } else if (attacker.archetype === 'Gambler') {
+      // High-Stakes Gambler Logic
+      const wager = attacker.archetypeSub || 'Roulette of Death';
+      if (wager.includes('Roulette')) {
+        if (Math.random() < 0.5) {
+          baseDmg *= 3.0;
+          powerEffectText += '🎰 ROULETTE JACKPOT! (300% DMG) ';
+          sounds.playFanfare('legendary');
+          this.logAction(`🎲 ${attacker.name} spins the ROULETTE OF DEATH and hits RED! 300% damage unleashed!`, 'power');
+        } else {
+          baseDmg = 0;
+          powerEffectText += '💨 ROULETTE WHIFF! ';
+          this.logAction(`🎲 ${attacker.name}'s Roulette of Death landed on BLACK! Attack completely whiffed!`, 'weakness');
+        }
+      } else if (wager.includes('Jackpot Fever')) {
+        attacker.jackpotCombo = (attacker.jackpotCombo || 0) + 1;
+        const comboMult = 1 + (attacker.jackpotCombo * 0.5);
+        baseDmg *= comboMult;
+        powerEffectText += `🎰 JACKPOT FEVER x${attacker.jackpotCombo}! `;
+      } else if (wager.includes('All-In Stake')) {
+        if (attacker.currentHp > 20) {
+          const sacrifice = Math.floor(attacker.currentHp * 0.3);
+          attacker.currentHp -= sacrifice;
+          this.options.onHpUpdate(attacker);
+          baseDmg *= 4.0;
+          powerEffectText += `💥 ALL-IN STAKE (-${sacrifice} HP)! 400% DAMAGE! `;
+          sounds.playExplosion();
+          this.logAction(`🎲 ${attacker.name} goes ALL-IN, sacrificing ${sacrifice} HP for a devastating 400% strike!`, 'power');
+        }
+      } else if (wager.includes('Golden Slot Machine')) {
+        const slotRoll = Math.random();
+        if (slotRoll < 0.34) {
+          const heal = Math.floor(attacker.maxHp * 0.6);
+          attacker.currentHp = Math.min(attacker.maxHp, attacker.currentHp + heal);
+          this.options.onHpUpdate(attacker);
+          powerEffectText += `7️⃣7️⃣7️⃣ TRIPLE 7 JACKPOT: +${heal} HP HEALED! `;
+          sounds.playFanfare('godTier');
+        } else if (slotRoll < 0.67) {
+          baseDmg *= 2.5;
+          powerEffectText += '💎💎💎 TRIPLE DIAMOND: 250% DMG! ';
+          sounds.playCrit();
+        } else {
+          attacker.shield = (attacker.shield || 0) + 180;
+          powerEffectText += '🛡️🛡️🛡️ TRIPLE SHIELD: +180 BARRIER! ';
+          sounds.playMagicCast();
+        }
       }
     }
 

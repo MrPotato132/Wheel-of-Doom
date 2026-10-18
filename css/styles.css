@@ -1863,6 +1863,184 @@ canvas#wheelCanvas:active {
   100% { width: 180px; opacity: 0; transform: rotate(var(--angle, 45deg)) scaleY(1); }
 }
 
+/* ============================================================
+   DOMAIN EXPANSION CINEMATIC OVERLAY & DIMENSIONAL BARRIER
+   ============================================================ */
+.arena-domain-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: domainOpen 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.arena-domain-overlay.domain-closing {
+  animation: domainClose 0.6s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+@keyframes domainOpen {
+  0% {
+    opacity: 0;
+    transform: scale(0.65) rotate(4deg);
+    filter: blur(12px);
+  }
+  50% {
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes domainClose {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+    filter: blur(16px);
+  }
+}
+
+.domain-barrier-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.94;
+  transition: all 0.4s ease;
+}
+
+/* Domain Themes */
+.theme-void .domain-barrier-bg {
+  background: radial-gradient(circle at center, #1e103c 0%, #090314 60%, #020108 100%);
+  box-shadow: inset 0 0 100px rgba(139, 92, 246, 0.6);
+}
+
+.theme-shrine .domain-barrier-bg {
+  background: radial-gradient(circle at center, #450a0a 0%, #1c0505 60%, #050101 100%);
+  box-shadow: inset 0 0 100px rgba(239, 68, 68, 0.6);
+}
+
+.theme-gamble .domain-barrier-bg {
+  background: radial-gradient(circle at center, #451a03 0%, #1c0c02 60%, #050200 100%);
+  box-shadow: inset 0 0 100px rgba(245, 158, 11, 0.6);
+}
+
+.theme-shadow .domain-barrier-bg {
+  background: radial-gradient(circle at center, #0f172a 0%, #030712 60%, #000000 100%);
+  box-shadow: inset 0 0 100px rgba(99, 102, 241, 0.5);
+}
+
+.theme-ocean .domain-barrier-bg {
+  background: radial-gradient(circle at center, #082f49 0%, #031422 60%, #01060a 100%);
+  box-shadow: inset 0 0 100px rgba(14, 165, 233, 0.6);
+}
+
+.theme-volcano .domain-barrier-bg {
+  background: radial-gradient(circle at center, #7c2d12 0%, #2e0c04 60%, #0c0201 100%);
+  box-shadow: inset 0 0 100px rgba(249, 115, 22, 0.6);
+}
+
+.theme-soul .domain-barrier-bg {
+  background: radial-gradient(circle at center, #500724 0%, #1f020c 60%, #050002 100%);
+  box-shadow: inset 0 0 100px rgba(236, 72, 153, 0.6);
+}
+
+.theme-time .domain-barrier-bg {
+  background: radial-gradient(circle at center, #0e3b43 0%, #04171b 60%, #000708 100%);
+  box-shadow: inset 0 0 100px rgba(6, 182, 212, 0.6);
+}
+
+.domain-particles-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.18) 1px, transparent 2px),
+    radial-gradient(circle at 80% 40%, rgba(255,255,255,0.14) 1.5px, transparent 3px),
+    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.2) 2px, transparent 4px),
+    radial-gradient(circle at 70% 85%, rgba(255,255,255,0.15) 1px, transparent 2px);
+  background-size: 160px 160px;
+  animation: domainSpacetimeWarp 12s linear infinite;
+}
+
+@keyframes domainSpacetimeWarp {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.12) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+
+.domain-banner-wrap {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 16px 28px;
+  background: rgba(5, 5, 12, 0.88);
+  border: 2px solid #ffffff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 45px rgba(255, 255, 255, 0.5), inset 0 0 25px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  animation: domainBannerDrop 0.6s cubic-bezier(0.18, 1.4, 0.35, 1) forwards;
+}
+
+@keyframes domainBannerDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.domain-kanji-tag {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.35em;
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+  margin-bottom: 2px;
+}
+
+.domain-title {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 35px var(--gold-bright);
+}
+
+.domain-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  margin: 4px 0 6px;
+  text-shadow: 0 0 16px #38bdf8;
+  text-transform: uppercase;
+}
+
+.domain-caster-line {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
 /* 1v1 Duel View Layout */
 .arena-duel-view {
   display: grid;

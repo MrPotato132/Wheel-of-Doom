@@ -666,34 +666,32 @@ document.addEventListener('DOMContentLoaded', () => {
     let elemColor = '#38bdf8';
     const pLower = (powerName + ' ' + raceName).toLowerCase();
 
-    if (pLower.includes('pyro') || pLower.includes('fire') || pLower.includes('flame') || pLower.includes('magma') || pLower.includes('phoenix') || pLower.includes('eruption')) {
+    // Unified Blue Theme: All elemental sigils and halos in electric ice-blue & cyan
+    elemColor = '#38bdf8';
+    if (pLower.includes('pyro') || pLower.includes('fire') || pLower.includes('flame')) {
       elemIcon = '🔥';
       elemName = 'PYRO';
-      elemColor = '#ef4444';
-    } else if (pLower.includes('cryo') || pLower.includes('ice') || pLower.includes('frost') || pLower.includes('blizzard')) {
+      elemColor = '#38bdf8';
+    } else if (pLower.includes('cryo') || pLower.includes('ice') || pLower.includes('frost')) {
       elemIcon = '❄️';
       elemName = 'CRYO';
-      elemColor = '#06b6d4';
-    } else if (pLower.includes('wind') || pLower.includes('tempest') || pLower.includes('hurricane') || pLower.includes('gale') || pLower.includes('fairy')) {
+      elemColor = '#00f0ff';
+    } else if (pLower.includes('wind') || pLower.includes('gale') || pLower.includes('tempest')) {
       elemIcon = '🌪️';
       elemName = 'ANEMO';
-      elemColor = '#10b981';
-    } else if (pLower.includes('earth') || pLower.includes('stone') || pLower.includes('golem') || pLower.includes('dwarf') || pLower.includes('mountain')) {
-      elemIcon = '⛰️';
-      elemName = 'GEO';
-      elemColor = '#f59e0b';
-    } else if (pLower.includes('water') || pLower.includes('ocean') || pLower.includes('tsunami') || pLower.includes('siren') || pLower.includes('merfolk') || pLower.includes('tidal')) {
+      elemColor = '#0284c7';
+    } else if (pLower.includes('water') || pLower.includes('ocean') || pLower.includes('tidal')) {
       elemIcon = '💧';
       elemName = 'HYDRO';
-      elemColor = '#0284c7';
-    } else if (pLower.includes('shadow') || pLower.includes('void') || pLower.includes('death') || pLower.includes('abyss') || pLower.includes('necro') || pLower.includes('curse')) {
+      elemColor = '#2563eb';
+    } else if (pLower.includes('void') || pLower.includes('shadow') || pLower.includes('abyss')) {
       elemIcon = '🌌';
       elemName = 'ABYSS';
-      elemColor = '#8b5cf6';
-    } else if (pLower.includes('angel') || pLower.includes('seraph') || pLower.includes('holy') || pLower.includes('light') || pLower.includes('divine') || pLower.includes('demi-god')) {
-      elemIcon = '✨';
-      elemName = 'LUMEN';
-      elemColor = '#fbbf24';
+      elemColor = '#60a5fa';
+    } else {
+      elemIcon = '⚡';
+      elemName = 'ASTRAL';
+      elemColor = '#00f0ff';
     }
 
     // 3. Select Stylized Full-Body Silhouette Type

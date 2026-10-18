@@ -25,6 +25,10 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
   - Slices are dynamically clustered by rarity tier (Common $\rightarrow$ Uncommon $\rightarrow$ Rare $\rightarrow$ Epic $\rightarrow$ Legendary $\rightarrow$ Mythic $\rightarrow$ God-Tier $\rightarrow$ Chaos) for maximum anticipation as the wheel sweeps into the high-stakes danger zone.
   - Probability-weighted landing physics: landing on thin god-tier slivers now naturally matches actual rarity odds.
   - Built-in support for the *Equalizer* archetype rule-bending mode to equalize all wheel arcs.
+- **Unified Sapphire & Midnight Blue Monochromatic Wheel**:
+  - Eliminated disparate rainbow colors per slice/spin on the canvas wheel.
+  - Slices now render in a clean, alternating pattern of deep sapphire (`#1e3a8a` to `#2563eb`) and midnight oceanic blue (`#0e1d38` to `#162b50`) with electric ice-blue dividers (`#38bdf8`).
+  - Unified all rarity accents, victory particle sparks, vision crests, and character card frames into the pure blue/cyan/white palette.
 - **Clean Sapphire & Midnight Blue UI Overhaul**:
   - Ditching carnival aesthetic: removed yellow chasing LED bulbs and carnival crimson/gold rim.
   - New clean sapphire, midnight obsidian, and electric ice-blue palette across canvas outer rim, center hub, needle pointer, and buttons.

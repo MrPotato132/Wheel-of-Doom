@@ -280,14 +280,14 @@ class WheelOfFaith {
 
   spawnParticles(rarity) {
     const colors = {
-      common: ['#94a3b8', '#cbd5e1', '#64748b'],
-      uncommon: ['#34d399', '#10b981', '#6ee7b7'],
-      rare: ['#38bdf8', '#0284c7', '#93c5fd'],
-      epic: ['#a855f7', '#c084fc', '#818cf8'],
-      legendary: ['#fbbf24', '#f59e0b', '#fde68a'],
-      mythic: ['#f472b6', '#ec4899', '#fbcfe8'],
+      common: ['#94a3b8', '#cbd5e1', '#38bdf8'],
+      uncommon: ['#38bdf8', '#0284c7', '#93c5fd'],
+      rare: ['#00f0ff', '#38bdf8', '#2563eb'],
+      epic: ['#60a5fa', '#38bdf8', '#00f0ff'],
+      legendary: ['#00f0ff', '#38bdf8', '#ffffff'],
+      mythic: ['#93c5fd', '#38bdf8', '#00f0ff', '#ffffff'],
       godTier: ['#00f0ff', '#38bdf8', '#ffffff', '#7dd3fc'],
-      chaos: ['#ef4444', '#f87171', '#dc2626']
+      chaos: ['#00f0ff', '#2563eb', '#ffffff']
     };
 
     const palette = colors[rarity] || colors.rare;
@@ -371,18 +371,21 @@ class WheelOfFaith {
       ctx.arc(0, 0, this.radius, startAngle, endAngle);
       ctx.closePath();
 
-      // Modern deep navy radial gradient for slice
-      const grad = ctx.createRadialGradient(0, 0, 15, 0, 0, this.radius);
-      const baseColor = seg.color || '#1e3a8a';
-      grad.addColorStop(0, '#060d1a');
-      grad.addColorStop(0.35, baseColor);
-      grad.addColorStop(1, this.adjustBrightness(baseColor, -22));
+      // UNIFIED BLUE THEME: Alternating shades of deep sapphire & midnight oceanic blue
+      const isEven = i % 2 === 0;
+      const baseBlue = isEven ? '#1e3a8a' : '#0e1d38';
+      const edgeBlue = isEven ? '#2563eb' : '#162b50';
+
+      const grad = ctx.createRadialGradient(0, 0, 10, 0, 0, this.radius);
+      grad.addColorStop(0, '#040812');
+      grad.addColorStop(0.4, baseBlue);
+      grad.addColorStop(1, edgeBlue);
 
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // Clean, thin slice separator
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
+      // Crisp electric ice-blue separator line
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.38)';
       ctx.lineWidth = 1.2;
       ctx.stroke();
 

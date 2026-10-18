@@ -27,13 +27,13 @@
   --border-gold: rgba(245, 158, 11, 0.35);
   --border-crimson: rgba(239, 68, 68, 0.35);
   
-  --crimson-primary: #ef4444;
-  --crimson-deep: #991b1b;
-  --crimson-glow: rgba(239, 68, 68, 0.5);
+  --crimson-primary: #2563eb;
+  --crimson-deep: #1d4ed8;
+  --crimson-glow: rgba(37, 99, 235, 0.45);
   
-  --gold-primary: #f59e0b;
-  --gold-bright: #fbbf24;
-  --gold-glow: rgba(245, 158, 11, 0.4);
+  --gold-primary: #38bdf8;
+  --gold-bright: #00f0ff;
+  --gold-glow: rgba(0, 240, 255, 0.4);
   
   --cyan-celestial: #06b6d4;
   --purple-arcane: #a855f7;
@@ -767,14 +767,14 @@ canvas#wheelCanvas:active {
   border-radius: var(--radius-full);
 }
 
-.rarity-badge.common { background: #374151; color: #d1d5db; }
-.rarity-badge.uncommon { background: #065f46; color: #a7f3d0; }
-.rarity-badge.rare { background: #1e40af; color: #bfdbfe; }
-.rarity-badge.epic { background: #6b21a8; color: #f0abfc; }
-.rarity-badge.legendary { background: #b45309; color: #fde68a; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
-.rarity-badge.mythic { background: #831843; color: #fbcfe8; box-shadow: 0 0 14px rgba(236, 72, 153, 0.6); }
-.rarity-badge.godTier { background: #083344; color: #a5f3fc; border: 1px solid #06b6d4; box-shadow: 0 0 18px rgba(6, 182, 212, 0.8); }
-.rarity-badge.chaos { background: #7f1d1d; color: #fca5a5; border: 1px solid #ef4444; box-shadow: 0 0 18px rgba(239, 68, 68, 0.8); }
+.rarity-badge.common { background: #0f172a; color: #94a3b8; border: 1px solid #1e293b; }
+.rarity-badge.uncommon { background: #0c4a6e; color: #7dd3fc; border: 1px solid #0284c7; }
+.rarity-badge.rare { background: #1e3a8a; color: #93c5fd; border: 1px solid #2563eb; }
+.rarity-badge.epic { background: #172554; color: #bfdbfe; border: 1px solid #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+.rarity-badge.legendary { background: #0369a1; color: #e0f2fe; border: 1px solid #38bdf8; box-shadow: 0 0 14px rgba(56, 189, 248, 0.6); }
+.rarity-badge.mythic { background: #1e40af; color: #ffffff; border: 1px solid #00f0ff; box-shadow: 0 0 16px rgba(0, 240, 255, 0.6); }
+.rarity-badge.godTier { background: #082f49; color: #ffffff; border: 1.5px solid #00f0ff; box-shadow: 0 0 20px rgba(0, 240, 255, 0.85); }
+.rarity-badge.chaos { background: #1d4ed8; color: #e0f2fe; border: 1.5px solid #38bdf8; box-shadow: 0 0 16px rgba(56, 189, 248, 0.7); }
 
 .outcome-item-text {
   font-family: var(--font-heading);
@@ -2433,15 +2433,17 @@ canvas#wheelCanvas:active {
 }
 
 .showcase-stars.stars-5 {
-  color: #fbbf24;
+  color: #00f0ff;
+  filter: drop-shadow(0 0 8px #00f0ff);
 }
 
 .showcase-stars.stars-4 {
-  color: #c084fc;
+  color: #38bdf8;
+  filter: drop-shadow(0 0 6px #38bdf8);
 }
 
 .showcase-stars.stars-3 {
-  color: #38bdf8;
+  color: #93c5fd;
 }
 
 .showcase-level-pill {

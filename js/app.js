@@ -227,6 +227,9 @@ document.addEventListener('DOMContentLoaded', () => {
     characterManager.resetDraft();
     state.destinyStep = 0;
     state.fairyPowerSpinsRemaining = 0;
+    if (wheel && typeof wheel.setEqualizerMode === 'function') {
+      wheel.setEqualizerMode(false);
+    }
 
     // Define sequence
     state.destinyQueue = [
@@ -316,6 +319,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentTask = state.destinyQueue[state.destinyStep];
     characterManager.setAttribute(currentTask.category, segment);
     updateLiveDraftPreview();
+
+    // Equaliser archetype perk: equalize all remaining wheel slices!
+    if (currentTask.category === 'archetype' && segment.text === 'Equaliser') {
+      if (wheel && typeof wheel.setEqualizerMode === 'function') {
+        wheel.setEqualizerMode(true);
+      }
+    }
 
     // Check if segment has a subWheel to inject into queue!
     if (segment.subWheel && WHEEL_DATA[segment.subWheel]) {
@@ -574,7 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rankEl.textContent = `RANK ${rank}`;
     rankEl.className = `card-rank-badge rank-${rank}`;
 
-    // Generate Dynamic SVG Avatar
+    // Generate Animated Genshin-Impact Style Splash Card
     drawCharacterAvatar(char);
   }
 
@@ -615,6 +625,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('cardHeroTitle').textContent = characterManager.generateFullTitle(characterManager.currentDraft);
       const liveNameInput = document.getElementById('liveHeroNameInput');
       if (liveNameInput) liveNameInput.value = newName;
+      const bannerNameEl = document.getElementById('genshinSplashBannerName');
+      if (bannerNameEl) bannerNameEl.textContent = newName.toUpperCase();
     });
   }
 
@@ -639,258 +651,1156 @@ document.addEventListener('DOMContentLoaded', () => {
     num.textContent = val;
   }
 
+  // Active animation frame tracker for Genshin Character Splash Card
+  let activeSplashAnimId = null;
+
+  function hashCharString(str) {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return Math.abs(h);
+  }
+
   function drawCharacterAvatar(char) {
     const avatarContainer = document.getElementById('cardAvatarContainer');
     if (!avatarContainer) return;
 
-    const raceName = char.race ? char.race.text : 'Human';
-    const archetypeName = char.archetype ? char.archetype.text : 'Warrior';
-    const powerName = char.powers && char.powers.length ? char.powers[0].text : '';
-    const rarity = char.race ? (char.race.rarity || 'common') : 'common';
-    const auraColor = char.race ? (char.race.color || '#38bdf8') : '#38bdf8';
+    if (activeSplashAnimId) {
+      cancelAnimationFrame(activeSplashAnimId);
+      activeSplashAnimId = null;
+    }
 
-    // 1. Determine Genshin-style Star Rating
-    let stars = '★★★';
+    const raceName = char.race ? char.race.text : 'Human';
+    const subRaceName = char.subRace ? char.subRace.text : '';
+    const archetypeName = char.archetype ? char.archetype.text : 'Warrior';
+    const subArchName = char.archetypeSub ? char.archetypeSub.text : '';
+    const weaponName = char.weapon ? char.weapon.text : 'Bare Fists';
+    const powerList = (char.powers && char.powers.length) ? char.powers.map(p => p.text) : [];
+    const powerName = powerList[0] || '';
+    const weaknessName = char.weakness ? char.weakness.text : '';
+    const backstoryName = char.backstory ? char.backstory.text : '';
+    const rarity = char.race ? (char.race.rarity || 'common') : 'common';
+
+    const seedStr = `${char.id || ''}_${raceName}_${subRaceName}_${archetypeName}_${subArchName}_${weaponName}_${powerList.join(',')}`;
+    const seed = hashCharString(seedStr);
+
+    // 1. Star Rating & Rarity Tier
+    let starCount = 3;
     let starClass = 'stars-3';
     if (rarity === 'godTier' || rarity === 'mythic') {
-      stars = '★★★★★';
+      starCount = 5;
       starClass = 'stars-5';
     } else if (rarity === 'legendary' || rarity === 'epic') {
-      stars = '★★★★';
+      starCount = 4;
       starClass = 'stars-4';
     }
+    const starsHtml = Array.from({ length: starCount }, (_, i) =>
+      `<span class="genshin-star" style="animation-delay:${(0.45 + i * 0.1).toFixed(2)}s">★</span>`
+    ).join('');
 
-    // 2. Determine Elemental Affinity & Vision
-    let elemIcon = '⚡';
-    let elemName = 'ELECTRO';
-    let elemColor = '#38bdf8';
-    const pLower = (powerName + ' ' + raceName).toLowerCase();
+    // 2. Elemental Vision & Signature Palette
+    const combinedText = `${raceName} ${subRaceName} ${archetypeName} ${subArchName} ${weaponName} ${powerList.join(' ')}`.toLowerCase();
+    let elemIcon = '✦';
+    let elemName = 'ASTRAL';
+    let primaryColor = '#38bdf8';
+    let secondaryColor = '#0284c7';
+    let glowColor = '#bae6fd';
 
-    // Unified Blue Theme: All elemental sigils and halos in electric ice-blue & cyan
-    elemColor = '#38bdf8';
-    if (pLower.includes('pyro') || pLower.includes('fire') || pLower.includes('flame')) {
+    if (combinedText.includes('pyro') || combinedText.includes('fire') || combinedText.includes('flame') || combinedText.includes('solar') || combinedText.includes('phoenix') || combinedText.includes('infernal') || combinedText.includes('hell')) {
       elemIcon = '🔥';
       elemName = 'PYRO';
-      elemColor = '#38bdf8';
-    } else if (pLower.includes('cryo') || pLower.includes('ice') || pLower.includes('frost')) {
+      primaryColor = '#38bdf8';
+      secondaryColor = '#f97316';
+      glowColor = '#7dd3fc';
+    } else if (combinedText.includes('cryo') || combinedText.includes('ice') || combinedText.includes('frost') || combinedText.includes('glacier') || combinedText.includes('winter')) {
       elemIcon = '❄️';
       elemName = 'CRYO';
-      elemColor = '#00f0ff';
-    } else if (pLower.includes('wind') || pLower.includes('gale') || pLower.includes('tempest')) {
+      primaryColor = '#7dd3fc';
+      secondaryColor = '#0284c7';
+      glowColor = '#e0f2fe';
+    } else if (combinedText.includes('electro') || combinedText.includes('lightning') || combinedText.includes('thunder') || combinedText.includes('storm') || combinedText.includes('cyber') || combinedText.includes('railgun')) {
+      elemIcon = '⚡';
+      elemName = 'ELECTRO';
+      primaryColor = '#00f0ff';
+      secondaryColor = '#2563eb';
+      glowColor = '#a5f3fc';
+    } else if (combinedText.includes('wind') || combinedText.includes('gale') || combinedText.includes('tempest') || combinedText.includes('sky') || combinedText.includes('elf') || combinedText.includes('fairy')) {
       elemIcon = '🌪️';
       elemName = 'ANEMO';
-      elemColor = '#0284c7';
-    } else if (pLower.includes('water') || pLower.includes('ocean') || pLower.includes('tidal')) {
+      primaryColor = '#2dd4bf';
+      secondaryColor = '#0284c7';
+      glowColor = '#99f6e4';
+    } else if (combinedText.includes('water') || combinedText.includes('ocean') || combinedText.includes('tidal') || combinedText.includes('merfolk') || combinedText.includes('siren') || combinedText.includes('leviathan') || combinedText.includes('kraken')) {
       elemIcon = '💧';
       elemName = 'HYDRO';
-      elemColor = '#2563eb';
-    } else if (pLower.includes('void') || pLower.includes('shadow') || pLower.includes('abyss')) {
+      primaryColor = '#3b82f6';
+      secondaryColor = '#1d4ed8';
+      glowColor = '#93c5fd';
+    } else if (combinedText.includes('void') || combinedText.includes('shadow') || combinedText.includes('abyss') || combinedText.includes('demon') || combinedText.includes('vampire') || combinedText.includes('eldritch') || combinedText.includes('death') || combinedText.includes('necro')) {
       elemIcon = '🌌';
       elemName = 'ABYSS';
-      elemColor = '#60a5fa';
+      primaryColor = '#60a5fa';
+      secondaryColor = '#4f46e5';
+      glowColor = '#c7d2fe';
+    } else if (combinedText.includes('golem') || combinedText.includes('dwarf') || combinedText.includes('giant') || combinedText.includes('stone') || combinedText.includes('titan') || combinedText.includes('gargoyle')) {
+      elemIcon = '🪨';
+      elemName = 'GEO';
+      primaryColor = '#38bdf8';
+      secondaryColor = '#0369a1';
+      glowColor = '#bae6fd';
     } else {
-      elemIcon = '⚡';
-      elemName = 'ASTRAL';
-      elemColor = '#00f0ff';
+      elemIcon = '✦';
+      elemName = 'CELESTIA';
+      primaryColor = '#38bdf8';
+      secondaryColor = '#1d4ed8';
+      glowColor = '#e0f2fe';
     }
 
-    // 3. Select Stylized Full-Body Silhouette Type
-    let bodyType = 'warrior';
-    const rLower = raceName.toLowerCase();
-    const aLower = archetypeName.toLowerCase();
-
-    if (rLower.includes('angel') || rLower.includes('seraph') || rLower.includes('nephilim')) {
-      bodyType = 'celestial';
-    } else if (rLower.includes('demon') || rLower.includes('devil') || rLower.includes('shadow') || aLower.includes('cursed') || aLower.includes('cultist')) {
-      bodyType = 'infernal';
-    } else if (rLower.includes('dragon') || aLower.includes('dragon')) {
-      bodyType = 'dragon';
-    } else if (rLower.includes('android') || rLower.includes('cyborg') || rLower.includes('nucleite')) {
-      bodyType = 'cyber';
-    } else if (rLower.includes('werewolf') || rLower.includes('chimera') || rLower.includes('beast') || rLower.includes('animorph')) {
-      bodyType = 'beast';
-    } else if (rLower.includes('giant') || rLower.includes('golem') || rLower.includes('orc') || aLower.includes('goliath')) {
-      bodyType = 'titan';
-    } else if (aLower.includes('mage') || aLower.includes('lich') || rLower.includes('djinn') || aLower.includes('alchemist') || aLower.includes('spirit')) {
-      bodyType = 'mage';
-    } else if (rLower.includes('elf') || aLower.includes('ninja') || aLower.includes('assassin') || aLower.includes('gunslinger')) {
-      bodyType = 'scout';
-    }
-
-    // 4. Render Full-Body Vector SVG Silhouettes
-    let bodySvg = '';
-    if (bodyType === 'celestial') {
-      bodySvg = `
-        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Wings -->
-          <path d="M80 60 C50 10 10 20 5 60 C0 90 30 110 75 100 Z" fill="${elemColor}" opacity="0.35"/>
-          <path d="M80 60 C110 10 150 20 155 60 C160 90 130 110 85 100 Z" fill="${elemColor}" opacity="0.35"/>
-          <!-- Halo -->
-          <ellipse cx="80" cy="22" rx="20" ry="6" stroke="${elemColor}" stroke-width="2.5" fill="none" filter="drop-shadow(0 0 4px ${elemColor})"/>
-          <!-- Head -->
-          <circle cx="80" cy="38" r="12" fill="#f8fafc"/>
-          <!-- Torso & Armor -->
-          <path d="M72 52 L88 52 L94 95 L66 95 Z" fill="#e2e8f0"/>
-          <!-- Flowing Cape / Robes -->
-          <path d="M66 95 L94 95 L110 185 L50 185 Z" fill="${elemColor}" opacity="0.4"/>
-          <!-- Legs -->
-          <rect x="70" y="95" width="8" height="90" rx="3" fill="#cbd5e1"/>
-          <rect x="82" y="95" width="8" height="90" rx="3" fill="#cbd5e1"/>
-          <!-- Holy Blade -->
-          <line x1="105" y1="35" x2="105" y2="180" stroke="#f8fafc" stroke-width="3" filter="drop-shadow(0 0 5px ${elemColor})"/>
-          <line x1="97" y1="65" x2="113" y2="65" stroke="#fbbf24" stroke-width="3"/>
-        </svg>
-      `;
-    } else if (bodyType === 'infernal') {
-      bodySvg = `
-        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Demon Wings -->
-          <path d="M80 75 Q40 25 15 50 Q30 90 10 110 Q50 120 75 100 Z" fill="${elemColor}" opacity="0.4"/>
-          <path d="M80 75 Q120 25 145 50 Q130 90 150 110 Q110 120 85 100 Z" fill="${elemColor}" opacity="0.4"/>
-          <!-- Horns -->
-          <path d="M73 34 Q65 10 50 16 Q64 26 73 36 Z" fill="${elemColor}"/>
-          <path d="M87 34 Q95 10 110 16 Q96 26 87 36 Z" fill="${elemColor}"/>
-          <!-- Head -->
-          <circle cx="80" cy="40" r="11" fill="#cbd5e1"/>
-          <!-- Chestplate -->
-          <polygon points="68,54 92,54 98,95 62,95" fill="#1e293b" stroke="${elemColor}" stroke-width="1.5"/>
-          <!-- Legs -->
-          <rect x="69" y="95" width="9" height="95" rx="3" fill="#0f172a"/>
-          <rect x="82" y="95" width="9" height="95" rx="3" fill="#0f172a"/>
-          <!-- Dual Jagged Scythes -->
-          <path d="M40 30 Q25 70 45 180" stroke="${elemColor}" stroke-width="3.5"/>
-          <path d="M40 30 Q15 20 10 45 Q25 40 40 30" fill="${elemColor}"/>
-        </svg>
-      `;
-    } else if (bodyType === 'dragon') {
-      bodySvg = `
-        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Draconic Horns & Crest -->
-          <path d="M72 32 Q55 12 40 22 Q58 32 72 36" fill="${elemColor}"/>
-          <path d="M88 32 Q105 12 120 22 Q102 32 88 36" fill="${elemColor}"/>
-          <!-- Dragon Wings -->
-          <polygon points="80,70 15,35 30,110 75,100" fill="${elemColor}" opacity="0.35"/>
-          <polygon points="80,70 145,35 130,110 85,100" fill="${elemColor}" opacity="0.35"/>
-          <!-- Head -->
-          <circle cx="80" cy="38" r="12" fill="#f8fafc"/>
-          <!-- Heavy Dragonscale Armor -->
-          <polygon points="66,54 94,54 100,105 60,105" fill="#334155" stroke="${elemColor}" stroke-width="2"/>
-          <!-- Tail -->
-          <path d="M78 120 Q120 150 115 195" stroke="${elemColor}" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <!-- Legs -->
-          <rect x="68" y="105" width="10" height="85" rx="4" fill="#1e293b"/>
-          <rect x="82" y="105" width="10" height="85" rx="4" fill="#1e293b"/>
-          <!-- Greatsword -->
-          <polygon points="112,30 118,30 119,165 111,165" fill="#f8fafc" stroke="${elemColor}" stroke-width="1.5"/>
-        </svg>
-      `;
-    } else if (bodyType === 'mage') {
-      bodySvg = `
-        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Mystic Sigil Ring -->
-          <circle cx="80" cy="100" r="55" stroke="${elemColor}" stroke-dasharray="6,4" stroke-width="1.8" opacity="0.45"/>
-          <!-- Head & Hood -->
-          <path d="M68 45 Q80 20 92 45 Q90 55 68 45 Z" fill="${elemColor}"/>
-          <circle cx="80" cy="40" r="10" fill="#f8fafc"/>
-          <!-- Flowing Arcane Robes -->
-          <path d="M65 55 L95 55 L115 190 L45 190 Z" fill="#1e1b4b" stroke="${elemColor}" stroke-width="1.5"/>
-          <path d="M75 55 L85 55 L90 190 L70 190 Z" fill="${elemColor}" opacity="0.5"/>
-          <!-- Floating Arcane Staff & Crystal -->
-          <line x1="110" y1="20" x2="110" y2="190" stroke="#f8fafc" stroke-width="3"/>
-          <polygon points="110,12 118,22 110,32 102,22" fill="${elemColor}" filter="drop-shadow(0 0 6px ${elemColor})"/>
-        </svg>
-      `;
-    } else if (bodyType === 'titan') {
-      bodySvg = `
-        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Colossal Shoulders -->
-          <polygon points="50,45 110,45 120,70 40,70" fill="${elemColor}" opacity="0.45"/>
-          <!-- Head & Helm -->
-          <circle cx="80" cy="38" r="13" fill="#64748b"/>
-          <rect x="74" y="32" width="12" height="4" fill="${elemColor}"/>
-          <!-- Massive Chestplate -->
-          <rect x="54" y="68" width="52" height="45" rx="6" fill="#1e293b" stroke="${elemColor}" stroke-width="2"/>
-          <!-- Sturdy Legs -->
-          <rect x="58" y="113" width="18" height="85" rx="5" fill="#0f172a" stroke="#334155"/>
-          <rect x="84" y="113" width="18" height="85" rx="5" fill="#0f172a" stroke="#334155"/>
-          <!-- Colossal Warhammer -->
-          <line x1="125" y1="25" x2="125" y2="185" stroke="#64748b" stroke-width="4.5"/>
-          <rect x="110" y="25" width="30" height="24" rx="3" fill="#cbd5e1" stroke="${elemColor}" stroke-width="2"/>
-        </svg>
-      `;
-    } else if (bodyType === 'cyber') {
-      bodySvg = `
-        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Hex Grid Backdrop -->
-          <circle cx="80" cy="100" r="50" stroke="#00f0ff" stroke-width="1" stroke-dasharray="4,4" opacity="0.35"/>
-          <!-- Visor Head -->
-          <rect x="71" y="28" width="18" height="18" rx="4" fill="#1e293b"/>
-          <line x1="72" y1="36" x2="88" y2="36" stroke="#00f0ff" stroke-width="3" filter="drop-shadow(0 0 4px #00f0ff)"/>
-          <!-- Mechanical Chassis -->
-          <polygon points="66,50 94,50 98,95 62,95" fill="#0f172a" stroke="#00f0ff" stroke-width="1.8"/>
-          <!-- Glowing Arc Reactor Core -->
-          <circle cx="80" cy="72" r="7" fill="#00f0ff" filter="drop-shadow(0 0 8px #00f0ff)"/>
-          <!-- Hydraulic Legs -->
-          <rect x="68" y="95" width="10" height="95" rx="2" fill="#334155" stroke="#00f0ff" stroke-width="1"/>
-          <rect x="82" y="95" width="10" height="95" rx="2" fill="#334155" stroke="#00f0ff" stroke-width="1"/>
-          <!-- Plasma Blades -->
-          <line x1="50" y1="55" x2="40" y2="155" stroke="#00f0ff" stroke-width="3" filter="drop-shadow(0 0 5px #00f0ff)"/>
-        </svg>
-      `;
-    } else if (bodyType === 'scout') {
-      bodySvg = `
-        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Trailing Scarf -->
-          <path d="M80 48 Q115 55 125 90 Q120 70 80 54" fill="${elemColor}" opacity="0.6"/>
-          <!-- Hood & Head -->
-          <path d="M70 30 Q80 18 90 30 Q90 48 70 48 Z" fill="#334155"/>
-          <circle cx="80" cy="38" r="9" fill="#f8fafc"/>
-          <!-- Slim Leather Armor -->
-          <polygon points="70,50 90,50 94,92 66,92" fill="#1e293b" stroke="${elemColor}" stroke-width="1.2"/>
-          <!-- Agile Stance Legs -->
-          <rect x="71" y="92" width="7" height="98" rx="2" fill="#0f172a"/>
-          <rect x="82" y="92" width="7" height="98" rx="2" fill="#0f172a"/>
-          <!-- Composite Longbow -->
-          <path d="M42 25 Q32 95 42 165" stroke="#cbd5e1" stroke-width="2.5" fill="none"/>
-          <line x1="42" y1="25" x2="42" y2="165" stroke="${elemColor}" stroke-width="1" opacity="0.8"/>
-        </svg>
-      `;
-    } else {
-      // Default Heroic Warrior
-      bodySvg = `
-        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Radiant Crest Aura -->
-          <circle cx="80" cy="85" r="48" stroke="${elemColor}" stroke-width="1.5" opacity="0.35"/>
-          <!-- Head & Knight Helm -->
-          <circle cx="80" cy="36" r="12" fill="#94a3b8"/>
-          <rect x="75" y="34" width="10" height="3" fill="${elemColor}"/>
-          <!-- Cuirass -->
-          <polygon points="66,50 94,50 100,95 60,95" fill="#1e293b" stroke="${elemColor}" stroke-width="1.8"/>
-          <!-- Champion Cape -->
-          <path d="M64 52 L50 180 L75 180 Z" fill="${elemColor}" opacity="0.4"/>
-          <!-- Legs -->
-          <rect x="69" y="95" width="9" height="92" rx="3" fill="#0f172a"/>
-          <rect x="82" y="95" width="9" height="92" rx="3" fill="#0f172a"/>
-          <!-- Colosseum Sword & Shield -->
-          <polygon points="112,32 118,32 117,170 113,170" fill="#f8fafc" stroke="${elemColor}" stroke-width="1.2"/>
-          <ellipse cx="50" cy="95" rx="14" ry="24" fill="#334155" stroke="${elemColor}" stroke-width="2"/>
-        </svg>
-      `;
-    }
+    const constellationTitle = `Constellation: ${subRaceName || raceName} ${archetypeName}`;
+    const displayWeapon = weaponName;
+    const displaySubTrait = subArchName || subRaceName || powerName || 'Origin Awakened';
 
     avatarContainer.innerHTML = `
-      <div class="genshin-card-showcase" style="--element-color: ${elemColor}; --aura-color: ${auraColor}">
-        <div class="showcase-element-badge" style="background: ${elemColor}">
-          <span class="elem-icon">${elemIcon}</span>
-          <span class="elem-name">${elemName}</span>
+      <div class="genshin-card-showcase" style="--element-color: ${primaryColor}; --aura-color: ${glowColor}">
+        <canvas id="genshinSplashCanvas" class="genshin-splash-canvas" width="460" height="310"></canvas>
+        
+        <div class="showcase-top-hud">
+          <div class="showcase-element-badge" style="border-color: ${glowColor}; background: linear-gradient(135deg, rgba(7, 18, 38, 0.9), rgba(14, 116, 144, 0.65))">
+            <span class="elem-icon">${elemIcon}</span>
+            <span class="elem-name">${elemName}</span>
+          </div>
+          <div class="showcase-right-hud">
+            <button type="button" class="btn-replay-wish" id="btnReplayWish" title="Replay Genshin Wish Entrance">✨ Wish</button>
+            <div class="showcase-stars ${starClass}">${starsHtml}</div>
+          </div>
         </div>
-        <div class="showcase-stars ${starClass}">${stars}</div>
-        <div class="showcase-silhouette-stage">
-          ${bodySvg}
+
+        <div class="genshin-splash-banner">
+          <div class="splash-banner-tag">${constellationTitle}</div>
+          <div class="splash-banner-name" id="genshinSplashBannerName">${(char.name || 'Nameless Warrior').toUpperCase()}</div>
+          <div class="splash-banner-traits">
+            <span class="splash-chip">🗡️ ${displayWeapon}</span>
+            <span class="splash-chip">✨ ${displaySubTrait}</span>
+          </div>
         </div>
+
         <div class="showcase-level-pill">Lv. ${char.level || 1}</div>
       </div>
     `;
+
+    const canvas = document.getElementById('genshinSplashCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // Initialize Wish Entrance & Ambient Particles
+    let wishStartTime = performance.now();
+    const btnReplay = document.getElementById('btnReplayWish');
+    if (btnReplay) {
+      btnReplay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sounds.playFanfare(rarity === 'godTier' ? 'godTier' : 'legendary');
+        wishStartTime = performance.now();
+      });
+    }
+
+    // Generate deterministic constellation nodes unique to this character
+    const constellationNodes = [];
+    const nodeCount = 6 + (seed % 4);
+    for (let i = 0; i < nodeCount; i++) {
+      const angle = (i / nodeCount) * Math.PI * 2 + ((seed % 100) * 0.03);
+      const rad = 72 + ((seed >> (i + 1)) % 38);
+      constellationNodes.push({
+        x: Math.cos(angle) * rad,
+        y: Math.sin(angle) * rad,
+        lit: i < starCount + 1
+      });
+    }
+
+    // Ambient elemental particles
+    const particles = Array.from({ length: 34 }, (_, i) => ({
+      x: ((seed * (i + 3)) % 460),
+      y: ((seed * (i + 7)) % 310),
+      vx: (((seed >> (i % 8)) % 20) - 10) * 0.025,
+      vy: -0.35 - ((i % 7) * 0.14),
+      size: 1.5 + (i % 4) * 1.1,
+      alpha: 0.25 + (i % 5) * 0.14,
+      phase: i * 0.7
+    }));
+
+    const rLow = `${raceName} ${subRaceName}`.toLowerCase();
+    const aLow = `${archetypeName} ${subArchName}`.toLowerCase();
+    const wLow = weaponName.toLowerCase();
+    const pLow = powerList.join(' ').toLowerCase();
+
+    // Unique Hair & Armor Palette derived from character traits & seed
+    const hairPalettes = [
+      '#e2e8f0', '#38bdf8', '#93c5fd', '#f8fafc', '#cbd5e1',
+      '#7dd3fc', '#60a5fa', '#1e293b', '#f1f5f9', '#bae6fd'
+    ];
+    let hairColor = hairPalettes[seed % hairPalettes.length];
+    let skinColor = '#f1f5f9';
+    let eyeColor = '#00f0ff';
+    let armorMain = '#0f2547';
+    let armorTrim = primaryColor;
+
+    if (rLow.includes('orc') || rLow.includes('goblin') || rLow.includes('troll')) {
+      skinColor = '#6ee7b7';
+      eyeColor = '#38bdf8';
+    } else if (rLow.includes('demon') || rLow.includes('devil') || rLow.includes('tiefling')) {
+      skinColor = '#cbd5e1';
+      eyeColor = '#38bdf8';
+      hairColor = '#0f172a';
+    } else if (rLow.includes('dark elf') || rLow.includes('shadow') || rLow.includes('void')) {
+      skinColor = '#94a3b8';
+      hairColor = '#f8fafc';
+      eyeColor = '#00f0ff';
+    } else if (rLow.includes('skeleton') || rLow.includes('lich') || rLow.includes('undead')) {
+      skinColor = '#e2e8f0';
+      eyeColor = '#00f0ff';
+    } else if (rLow.includes('golem') || rLow.includes('gargoyle')) {
+      skinColor = '#64748b';
+      eyeColor = '#38bdf8';
+    } else if (rLow.includes('android') || rLow.includes('cyborg') || rLow.includes('nucleite')) {
+      skinColor = '#94a3b8';
+      eyeColor = '#00f0ff';
+    }
+
+    function renderFrame(now) {
+      if (!document.body.contains(canvas)) {
+        activeSplashAnimId = null;
+        return;
+      }
+
+      const elapsed = (now - wishStartTime) / 1000;
+      const t = now / 1000;
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // 1. Deep Celestial Genshin Splash Backdrop
+      const bgGrad = ctx.createRadialGradient(W * 0.52, H * 0.44, 15, W * 0.5, H * 0.5, W * 0.72);
+      bgGrad.addColorStop(0, '#133163');
+      bgGrad.addColorStop(0.55, '#091936');
+      bgGrad.addColorStop(1, '#040b18');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Diagonal Gacha Speed-Lines & Light Beams
+      ctx.save();
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx.lineWidth = 1.5;
+      for (let i = -3; i < 10; i++) {
+        const xOff = i * 58 + ((t * 14) % 58);
+        ctx.beginPath();
+        ctx.moveTo(xOff, 0);
+        ctx.lineTo(xOff - 140, H);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 2. Rotating Arcane Constellation & Astrolabe Ring Behind Character
+      const cx = W * 0.52;
+      const cy = H * 0.48;
+
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      // Outer Astrolabe Ring
+      ctx.save();
+      ctx.rotate(t * 0.22);
+      ctx.strokeStyle = 'rgba(125, 211, 252, 0.24)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 108, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.16)';
+      ctx.beginPath();
+      ctx.arc(0, 0, 94, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Sacred Geometry Square inside Astrolabe
+      for (let r = 0; r < 2; r++) {
+        ctx.save();
+        ctx.rotate((r * Math.PI) / 4);
+        ctx.strokeRect(-66, -66, 132, 132);
+        ctx.restore();
+      }
+      ctx.restore();
+
+      // Character-Unique Constellation Graph
+      ctx.save();
+      ctx.rotate(-t * 0.08);
+      ctx.strokeStyle = 'rgba(186, 230, 253, 0.35)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      constellationNodes.forEach((pt, idx) => {
+        if (idx === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      });
+      ctx.closePath();
+      ctx.stroke();
+
+      constellationNodes.forEach((pt, idx) => {
+        const pulse = 1 + 0.25 * Math.sin(t * 3 + idx);
+        ctx.fillStyle = pt.lit ? '#e0f2fe' : 'rgba(148, 163, 184, 0.45)';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = pt.lit ? 8 : 0;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, (pt.lit ? 3.2 : 2) * pulse, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+
+      // Power-Specific Background Phenomenon (Time Stop, Black Hole, Domain Expansion)
+      if (pLow.includes('time') || pLow.includes('chrono')) {
+        // Clockwork Roman Dial
+        ctx.save();
+        ctx.rotate(t * 0.6);
+        ctx.strokeStyle = 'rgba(224, 242, 254, 0.45)';
+        ctx.lineWidth = 2;
+        for (let h = 0; h < 12; h++) {
+          const ang = (h / 12) * Math.PI * 2;
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(ang) * 78, Math.sin(ang) * 78);
+          ctx.lineTo(Math.cos(ang) * 88, Math.sin(ang) * 88);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+      if (pLow.includes('black hole') || pLow.includes('void') || pLow.includes('gravity')) {
+        const bhGrad = ctx.createRadialGradient(-65, -45, 4, -65, -45, 36);
+        bhGrad.addColorStop(0, '#000000');
+        bhGrad.addColorStop(0.5, '#1e3a8a');
+        bhGrad.addColorStop(0.8, '#38bdf8');
+        bhGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = bhGrad;
+        ctx.beginPath();
+        ctx.arc(-65, -45, 36, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // 3. Pedestal Platform Under Character
+      ctx.save();
+      ctx.translate(cx, H - 36);
+      const pedGrad = ctx.createRadialGradient(0, 0, 6, 0, 0, 88);
+      pedGrad.addColorStop(0, 'rgba(56, 189, 248, 0.55)');
+      pedGrad.addColorStop(0.6, 'rgba(14, 116, 144, 0.22)');
+      pedGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = pedGrad;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 86, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = glowColor;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 64 + Math.sin(t * 2.5) * 3, 12, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // 4. Character Entrance Scale & Floating Breathing Motion
+      const revealProgress = Math.min(1, Math.max(0, (elapsed - 0.18) / 0.45));
+      const easeOutBack = revealProgress < 1
+        ? 1 + 1.7 * Math.pow(revealProgress - 1, 3) + 0.7 * Math.pow(revealProgress - 1, 2)
+        : 1;
+
+      const isFloatingRace = rLow.includes('angel') || rLow.includes('seraph') || rLow.includes('fairy') ||
+        rLow.includes('djinn') || rLow.includes('spirit') || rLow.includes('god') ||
+        rLow.includes('eldritch') || rLow.includes('phoenix') || pLow.includes('flight');
+      const bobY = Math.sin(t * (isFloatingRace ? 3.2 : 2.3)) * (isFloatingRace ? 6.5 : 3.2);
+      const breatheScale = 1 + Math.sin(t * 2.3) * 0.015;
+
+      if (revealProgress > 0.02) {
+        ctx.save();
+        ctx.translate(cx, cy + 18 + bobY);
+        ctx.scale(easeOutBack * breatheScale, easeOutBack * breatheScale);
+
+        // --- LAYER A: BACK COMPANIONS / STANDS / SHADOW ARMY / TENTACLES ---
+        if (rLow.includes('reincarnation') || rLow.includes('spirit') || aLow.includes('summoner') || pLow.includes('necromancy') || rLow.includes('shadow monarch')) {
+          // Ethereal Guardian Spirit / Shadow Stand behind the hero
+          ctx.save();
+          ctx.translate(-26, -38 + Math.sin(t * 3) * 4);
+          ctx.globalAlpha = 0.42 + 0.12 * Math.sin(t * 4);
+          ctx.fillStyle = '#38bdf8';
+          ctx.shadowColor = '#00f0ff';
+          ctx.shadowBlur = 16;
+          // Hooded Sovereign Stand Silhouette
+          ctx.beginPath();
+          ctx.arc(0, -45, 16, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(-28, -24);
+          ctx.lineTo(28, -24);
+          ctx.lineTo(18, 42);
+          ctx.lineTo(-18, 42);
+          ctx.closePath();
+          ctx.fill();
+          // Glowing Stand Eyes
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(-7, -47, 5, 2.5);
+          ctx.fillRect(2, -47, 5, 2.5);
+          ctx.restore();
+        }
+
+        if (rLow.includes('eldritch') || rLow.includes('kraken') || pLow.includes('tentacle')) {
+          // Animated Writhing Cosmic Tentacles
+          ctx.save();
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 6;
+          ctx.lineCap = 'round';
+          for (let k = 0; k < 6; k++) {
+            const side = k % 2 === 0 ? -1 : 1;
+            const baseAng = side * (0.4 + (k * 0.22));
+            const wave = Math.sin(t * 3.5 + k) * 14;
+            ctx.beginPath();
+            ctx.moveTo(0, -10);
+            ctx.quadraticCurveTo(side * 48, -35 + wave, side * (78 + k * 6), -65 - k * 8 + wave);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        // --- LAYER B: WINGS (Angel, Demon, Dragon, Fairy, Phoenix, Nephilim, Gargoyle) ---
+        const wingFlap = Math.sin(t * 4.2) * 0.16;
+        if (rLow.includes('angel') || rLow.includes('seraph') || rLow.includes('nephilim')) {
+          const wingPairs = rLow.includes('seraph') ? 3 : 1;
+          for (let wp = 0; wp < wingPairs; wp++) {
+            const yOff = wp * 16 - 28;
+            const scaleW = 1 - wp * 0.15;
+            [-1, 1].forEach(dir => {
+              // Nephilim has 1 angel wing and 1 demon wing!
+              if (rLow.includes('nephilim') && dir === 1) {
+                ctx.save();
+                ctx.translate(dir * 12, yOff);
+                ctx.rotate(dir * (0.2 + wingFlap));
+                ctx.fillStyle = 'rgba(30, 58, 138, 0.85)';
+                ctx.strokeStyle = '#60a5fa';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(48, -38, 78, -14);
+                ctx.quadraticCurveTo(55, 10, 62, 32);
+                ctx.quadraticCurveTo(32, 18, 0, 20);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+              } else {
+                ctx.save();
+                ctx.translate(dir * 12, yOff);
+                ctx.scale(dir * scaleW, scaleW);
+                ctx.rotate(0.18 + wingFlap);
+                const wGrad = ctx.createLinearGradient(0, -30, 75, 20);
+                wGrad.addColorStop(0, '#ffffff');
+                wGrad.addColorStop(0.6, '#bae6fd');
+                wGrad.addColorStop(1, '#38bdf8');
+                ctx.fillStyle = wGrad;
+                ctx.shadowColor = '#38bdf8';
+                ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(35, -42, 78, -28, 84, 4);
+                ctx.bezierCurveTo(66, 22, 38, 34, 0, 22);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+              }
+            });
+          }
+        } else if (rLow.includes('demon') || rLow.includes('devil') || rLow.includes('vampire') || rLow.includes('gargoyle')) {
+          [-1, 1].forEach(dir => {
+            ctx.save();
+            ctx.translate(dir * 12, -26);
+            ctx.scale(dir, 1);
+            ctx.rotate(0.15 + wingFlap);
+            ctx.fillStyle = 'rgba(15, 37, 71, 0.9)';
+            ctx.strokeStyle = primaryColor;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(52, -36);
+            ctx.lineTo(78, -8);
+            ctx.quadraticCurveTo(54, 4, 58, 28);
+            ctx.quadraticCurveTo(32, 12, 24, 32);
+            ctx.quadraticCurveTo(12, 16, 0, 18);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+          });
+        } else if (rLow.includes('dragon') || aLow.includes('dragon')) {
+          [-1, 1].forEach(dir => {
+            ctx.save();
+            ctx.translate(dir * 14, -28);
+            ctx.scale(dir, 1);
+            ctx.rotate(0.12 + wingFlap * 0.9);
+            ctx.fillStyle = 'rgba(2, 132, 199, 0.72)';
+            ctx.strokeStyle = '#7dd3fc';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(48, -42);
+            ctx.lineTo(84, -18);
+            ctx.lineTo(64, 24);
+            ctx.lineTo(32, 14);
+            ctx.lineTo(0, 22);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+          });
+        } else if (rLow.includes('fairy')) {
+          [-1, 1].forEach(dir => {
+            ctx.save();
+            ctx.translate(dir * 10, -24);
+            ctx.scale(dir, 1);
+            ctx.rotate(Math.sin(t * 9) * 0.22);
+            ctx.fillStyle = 'rgba(186, 230, 253, 0.55)';
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.ellipse(36, -16, 34, 18, -0.35, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.ellipse(28, 12, 24, 13, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+          });
+        } else if (rLow.includes('phoenix')) {
+          [-1, 1].forEach(dir => {
+            ctx.save();
+            ctx.translate(dir * 12, -28);
+            ctx.scale(dir, 1);
+            ctx.rotate(0.15 + wingFlap);
+            const pGrad = ctx.createLinearGradient(0, -20, 80, 10);
+            pGrad.addColorStop(0, '#e0f2fe');
+            pGrad.addColorStop(0.5, '#38bdf8');
+            pGrad.addColorStop(1, '#0284c7');
+            ctx.fillStyle = pGrad;
+            ctx.shadowColor = '#00f0ff';
+            ctx.shadowBlur = 16;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(45, -48, 86, -22);
+            ctx.quadraticCurveTo(62, 12, 74, 26);
+            ctx.quadraticCurveTo(38, 22, 0, 20);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          });
+        }
+
+        // --- LAYER C: FLOWING CAPE / CLOAK / TAIL ---
+        const capeWave = Math.sin(t * 3.1) * 10;
+        ctx.save();
+        const capeGrad = ctx.createLinearGradient(0, -35, 0, 75);
+        capeGrad.addColorStop(0, 'rgba(30, 58, 138, 0.92)');
+        capeGrad.addColorStop(1, 'rgba(7, 89, 133, 0.35)');
+        ctx.fillStyle = capeGrad;
+        ctx.strokeStyle = primaryColor;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(-20, -32);
+        ctx.lineTo(20, -32);
+        ctx.quadraticCurveTo(38 + capeWave, 25, 44 + capeWave * 1.3, 74);
+        ctx.lineTo(-42 + capeWave * 0.8, 74);
+        ctx.quadraticCurveTo(-34, 25, -20, -32);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        // Tail for Dragonkin, Werewolf, Beastfolk, Chimera, Demon, Merfolk
+        if (rLow.includes('dragon') || rLow.includes('werewolf') || rLow.includes('beast') || rLow.includes('chimera') || rLow.includes('demon') || rLow.includes('tiefling')) {
+          ctx.save();
+          ctx.strokeStyle = primaryColor;
+          ctx.lineWidth = rLow.includes('dragon') || rLow.includes('werewolf') ? 7 : 3.5;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(8, 18);
+          ctx.quadraticCurveTo(45, 32 + capeWave, 56, 4 + capeWave);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // --- LAYER D: BODY & RACE-SPECIFIC ANATOMY ---
+        const isTitan = rLow.includes('giant') || rLow.includes('golem') || rLow.includes('orc') || rLow.includes('troll') || aLow.includes('goliath');
+        const isDwarf = rLow.includes('dwarf') || rLow.includes('goblin') || rLow.includes('halfling');
+        const isSlime = rLow.includes('slime');
+        const isMerfolk = rLow.includes('merfolk') || rLow.includes('siren') || rLow.includes('leviathan');
+
+        if (isSlime) {
+          // Royal Translucent Bouncing Slime Sovereign Body
+          const slimeSquish = Math.sin(t * 4) * 4;
+          const sGrad = ctx.createRadialGradient(-10, 10, 6, 0, 20, 48);
+          sGrad.addColorStop(0, 'rgba(224, 242, 254, 0.92)');
+          sGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.78)');
+          sGrad.addColorStop(1, 'rgba(3, 105, 161, 0.85)');
+          ctx.fillStyle = sGrad;
+          ctx.strokeStyle = '#e0f2fe';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(-42 - slimeSquish, 55);
+          ctx.quadraticCurveTo(-46, -22 + slimeSquish, 0, -26 + slimeSquish);
+          ctx.quadraticCurveTo(46, -22 + slimeSquish, 42 + slimeSquish, 55);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Royal Crown on Slime
+          ctx.fillStyle = '#bae6fd';
+          ctx.strokeStyle = '#0284c7';
+          ctx.beginPath();
+          ctx.moveTo(-18, -24 + slimeSquish);
+          ctx.lineTo(-22, -42 + slimeSquish);
+          ctx.lineTo(-8, -32 + slimeSquish);
+          ctx.lineTo(0, -46 + slimeSquish);
+          ctx.lineTo(8, -32 + slimeSquish);
+          ctx.lineTo(22, -42 + slimeSquish);
+          ctx.lineTo(18, -24 + slimeSquish);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Slime Eyes
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.arc(-12, 6, 4.5, 0, Math.PI * 2);
+          ctx.arc(12, 6, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(-13, 4.5, 1.8, 0, Math.PI * 2);
+          ctx.arc(11, 4.5, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          const torsoW = isTitan ? 28 : (isDwarf ? 22 : 18);
+          const legLen = isDwarf ? 42 : 58;
+
+          // Legs or Merfolk Serpent Tail
+          if (isMerfolk) {
+            const finGrad = ctx.createLinearGradient(0, 15, 0, 78);
+            finGrad.addColorStop(0, '#0284c7');
+            finGrad.addColorStop(1, '#38bdf8');
+            ctx.fillStyle = finGrad;
+            ctx.strokeStyle = '#bae6fd';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-16, 16);
+            ctx.quadraticCurveTo(-22, 52, 8 + capeWave * 0.5, 72);
+            ctx.lineTo(28 + capeWave * 0.5, 82);
+            ctx.lineTo(14 + capeWave * 0.5, 64);
+            ctx.quadraticCurveTo(18, 40, 16, 16);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          } else {
+            // Left & Right Armored Boots/Legs
+            ctx.fillStyle = '#0f172a';
+            ctx.strokeStyle = primaryColor;
+            ctx.lineWidth = 1.6;
+            // Left Leg
+            ctx.beginPath();
+            ctx.roundRect(-torsoW * 0.65, 16, torsoW * 0.52, legLen, 4);
+            ctx.fill();
+            ctx.stroke();
+            // Right Leg
+            ctx.beginPath();
+            ctx.roundRect(torsoW * 0.15, 16, torsoW * 0.52, legLen, 4);
+            ctx.fill();
+            ctx.stroke();
+
+            // Knee Guards
+            ctx.fillStyle = glowColor;
+            ctx.fillRect(-torsoW * 0.55, 38, torsoW * 0.32, 5);
+            ctx.fillRect(torsoW * 0.25, 38, torsoW * 0.32, 5);
+          }
+
+          // Torso & Genshin-Style Ornate Coat / Cuirass
+          ctx.fillStyle = armorMain;
+          ctx.strokeStyle = armorTrim;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(-torsoW, -32);
+          ctx.lineTo(torsoW, -32);
+          ctx.lineTo(torsoW * 0.78, 18);
+          ctx.lineTo(-torsoW * 0.78, 18);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Skeleton Ribcage Detail
+          if (rLow.includes('skeleton') || rLow.includes('lich')) {
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 2.2;
+            for (let rb = -22; rb <= 4; rb += 8) {
+              ctx.beginPath();
+              ctx.moveTo(-12, rb);
+              ctx.quadraticCurveTo(0, rb + 4, 12, rb);
+              ctx.stroke();
+            }
+          } else {
+            // Glowing Elemental Vision Gem on Chest
+            ctx.fillStyle = '#00f0ff';
+            ctx.shadowColor = '#00f0ff';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.moveTo(0, -22);
+            ctx.lineTo(7, -14);
+            ctx.lineTo(0, -6);
+            ctx.lineTo(-7, -14);
+            ctx.closePath();
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+
+          // Pauldrons (Shoulders)
+          [-1, 1].forEach(dir => {
+            ctx.save();
+            ctx.translate(dir * (torsoW + 3), -28);
+            ctx.fillStyle = '#1e3a8a';
+            ctx.strokeStyle = glowColor;
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(0, -8);
+            ctx.lineTo(dir * 16, -2);
+            ctx.lineTo(dir * 12, 10);
+            ctx.lineTo(0, 8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+          });
+
+          // Head & Neck
+          const headY = -50;
+          const headR = isTitan ? 16 : 14;
+
+          ctx.fillStyle = skinColor;
+          ctx.strokeStyle = '#0f172a';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(0, headY, headR, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Race-Specific Ears / Facial Features
+          if (rLow.includes('elf') || rLow.includes('fairy') || rLow.includes('goblin') || rLow.includes('vampire')) {
+            // Long Pointed Ears
+            [-1, 1].forEach(dir => {
+              ctx.fillStyle = skinColor;
+              ctx.beginPath();
+              ctx.moveTo(dir * (headR - 2), headY - 2);
+              ctx.lineTo(dir * (headR + 14), headY - 9);
+              ctx.lineTo(dir * (headR - 1), headY + 5);
+              ctx.closePath();
+              ctx.fill();
+            });
+          }
+
+          if (rLow.includes('werewolf') || rLow.includes('beast') || rLow.includes('animorph') || rLow.includes('kitsune')) {
+            // Wolf / Fox Beast Ears on Top
+            [-1, 1].forEach(dir => {
+              ctx.fillStyle = hairColor;
+              ctx.strokeStyle = glowColor;
+              ctx.lineWidth = 1.2;
+              ctx.beginPath();
+              ctx.moveTo(dir * 5, headY - headR + 2);
+              ctx.lineTo(dir * 14, headY - headR - 14);
+              ctx.lineTo(dir * 15, headY - headR + 5);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            });
+          }
+
+          if (rLow.includes('orc') || rLow.includes('troll')) {
+            // Lower Tusks
+            ctx.fillStyle = '#f8fafc';
+            [-1, 1].forEach(dir => {
+              ctx.beginPath();
+              ctx.moveTo(dir * 5, headY + 6);
+              ctx.lineTo(dir * 7, headY + 1);
+              ctx.lineTo(dir * 9, headY + 6);
+              ctx.closePath();
+              ctx.fill();
+            });
+          }
+
+          if (rLow.includes('dwarf') || aLow.includes('viking') || aLow.includes('pirate')) {
+            // Magnificent Braided Beard
+            ctx.fillStyle = hairColor;
+            ctx.beginPath();
+            ctx.moveTo(-11, headY + 4);
+            ctx.lineTo(11, headY + 4);
+            ctx.lineTo(7, headY + 30);
+            ctx.lineTo(0, headY + 35);
+            ctx.lineTo(-7, headY + 30);
+            ctx.closePath();
+            ctx.fill();
+          }
+
+          // Eyes / Cyber Visor / Blindfold
+          if (rLow.includes('android') || rLow.includes('cyborg') || aLow.includes('cyber')) {
+            ctx.fillStyle = '#00f0ff';
+            ctx.shadowColor = '#00f0ff';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(-10, headY - 4, 20, 5);
+            ctx.shadowBlur = 0;
+          } else {
+            ctx.fillStyle = eyeColor;
+            ctx.shadowColor = eyeColor;
+            ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.arc(-5, headY - 1, 2.3, 0, Math.PI * 2);
+            ctx.arc(5, headY - 1, 2.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+
+          // Anime / Genshin Spiky & Flowing Hair Silhouette
+          if (!rLow.includes('skeleton') && !rLow.includes('golem')) {
+            ctx.fillStyle = hairColor;
+            ctx.beginPath();
+            ctx.arc(0, headY - 3, headR + 1.5, Math.PI, Math.PI * 2);
+            // Bangs & Spikes
+            ctx.lineTo(headR + 5, headY + 4);
+            ctx.lineTo(headR - 2, headY - 2);
+            ctx.lineTo(6, headY - 6);
+            ctx.lineTo(0, headY - 1);
+            ctx.lineTo(-6, headY - 6);
+            ctx.lineTo(-headR + 2, headY - 2);
+            ctx.lineTo(-headR - 5, headY + 4);
+            ctx.closePath();
+            ctx.fill();
+          }
+
+          // Horns / Halo / Crown / Pirate Tricorn / Wizard Hat
+          if (rLow.includes('demon') || rLow.includes('devil') || rLow.includes('dragon') || rLow.includes('tiefling') || rLow.includes('oni')) {
+            ctx.fillStyle = glowColor;
+            ctx.strokeStyle = '#0284c7';
+            ctx.lineWidth = 1.5;
+            [-1, 1].forEach(dir => {
+              ctx.beginPath();
+              ctx.moveTo(dir * 7, headY - headR + 2);
+              ctx.quadraticCurveTo(dir * 24, headY - headR - 18, dir * 18, headY - headR - 26);
+              ctx.quadraticCurveTo(dir * 12, headY - headR - 12, dir * 3, headY - headR + 1);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            });
+          }
+
+          if (rLow.includes('angel') || rLow.includes('seraph') || rLow.includes('god') || rLow.includes('celestial')) {
+            ctx.save();
+            ctx.strokeStyle = '#e0f2fe';
+            ctx.shadowColor = '#00f0ff';
+            ctx.shadowBlur = 12;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.ellipse(0, headY - headR - 10, 18, 5, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          if (aLow.includes('mage') || aLow.includes('wizard') || aLow.includes('witch') || aLow.includes('alchemist')) {
+            // Arcane Witch/Archmage Hat
+            ctx.fillStyle = '#0f2547';
+            ctx.strokeStyle = glowColor;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.ellipse(0, headY - headR + 2, 24, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(-14, headY - headR + 1);
+            ctx.lineTo(4, headY - headR - 26);
+            ctx.lineTo(14, headY - headR + 1);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          }
+        }
+
+        // --- LAYER E: UNIQUE PROCEDURAL WEAPON IN RIGHT HAND ---
+        ctx.save();
+        const weaponSway = Math.sin(t * 2.6) * 0.06;
+        ctx.translate(34, -8);
+        ctx.rotate(weaponSway);
+
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 10;
+
+        if (wLow.includes('scythe')) {
+          // Scythe of Eternity
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.moveTo(0, -68);
+          ctx.lineTo(0, 72);
+          ctx.stroke();
+          ctx.fillStyle = '#00f0ff';
+          ctx.beginPath();
+          ctx.moveTo(0, -64);
+          ctx.quadraticCurveTo(48, -72, 56, -34);
+          ctx.quadraticCurveTo(30, -48, 0, -50);
+          ctx.closePath();
+          ctx.fill();
+        } else if (wLow.includes('hammer') || wLow.includes('stormbreaker') || wLow.includes('mjolnir') || wLow.includes('mace') || wLow.includes('club')) {
+          // Thor's Hammer / Stormbreaker / Colossal Maul
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(0, -52);
+          ctx.lineTo(0, 62);
+          ctx.stroke();
+          ctx.fillStyle = '#bae6fd';
+          ctx.strokeStyle = '#0284c7';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(-22, -72, 44, 24, 4);
+          ctx.fill();
+          ctx.stroke();
+        } else if (wLow.includes('bow') || wLow.includes('crossbow') || wLow.includes('harp')) {
+          // Starshard Bow
+          ctx.strokeStyle = '#7dd3fc';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(-6, 0, 48, -Math.PI * 0.42, Math.PI * 0.42);
+          ctx.stroke();
+          ctx.strokeStyle = '#e0f2fe';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(6, -46);
+          ctx.lineTo(6, 46);
+          ctx.stroke();
+          // Glowing Arrow Drawn
+          ctx.strokeStyle = '#00f0ff';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(-4, 0);
+          ctx.lineTo(42, 0);
+          ctx.stroke();
+        } else if (wLow.includes('pistol') || wLow.includes('eagle') || wLow.includes('railgun') || wLow.includes('blaster') || wLow.includes('rifle') || wLow.includes('gun')) {
+          // Quantum Railgun / Dual Pistols
+          ctx.fillStyle = '#1e293b';
+          ctx.strokeStyle = '#00f0ff';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(-4, -14, 38, 12, 3);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillRect(-4, -4, 10, 18);
+          ctx.fillStyle = '#00f0ff';
+          ctx.fillRect(6, -11, 22, 4);
+        } else if (wLow.includes('staff') || wLow.includes('wand') || wLow.includes('grimoire') || wLow.includes('orb')) {
+          // Staff of the Cosmic Archmage
+          ctx.strokeStyle = '#e0f2fe';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, -64);
+          ctx.lineTo(0, 70);
+          ctx.stroke();
+          ctx.fillStyle = '#00f0ff';
+          ctx.beginPath();
+          ctx.arc(0, -72, 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#bae6fd';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(0, -72, 16, 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (wLow.includes('spear') || wLow.includes('gungnir') || wLow.includes('trident') || wLow.includes('halberd') || wLow.includes('lance')) {
+          // Gungnir / Celestial Trident
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, -75);
+          ctx.lineTo(0, 75);
+          ctx.stroke();
+          ctx.fillStyle = '#00f0ff';
+          ctx.beginPath();
+          ctx.moveTo(0, -94);
+          ctx.lineTo(9, -68);
+          ctx.lineTo(0, -73);
+          ctx.lineTo(-9, -68);
+          ctx.closePath();
+          ctx.fill();
+        } else if (wLow.includes('chair') || wLow.includes('spatula') || wLow.includes('baguette') || wLow.includes('nokia') || wLow.includes('chicken') || wLow.includes('chancla')) {
+          // Joke / Chaos Mythic Relic Weapon!
+          ctx.strokeStyle = '#38bdf8';
+          ctx.fillStyle = '#e0f2fe';
+          ctx.lineWidth = 2.5;
+          if (wLow.includes('chair')) {
+            ctx.strokeRect(-14, -48, 28, 36);
+            ctx.fillRect(-14, -30, 28, 8);
+          } else if (wLow.includes('spatula')) {
+            ctx.beginPath();
+            ctx.moveTo(0, -25);
+            ctx.lineTo(0, 45);
+            ctx.stroke();
+            ctx.strokeRect(-12, -52, 24, 26);
+          } else {
+            ctx.beginPath();
+            ctx.roundRect(-9, -55, 18, 52, 8);
+            ctx.fill();
+            ctx.stroke();
+          }
+        } else {
+          // Excalibur / Muramasa Katana / Nodachi / Greatsword
+          const isKatana = wLow.includes('katana') || wLow.includes('nodachi');
+          ctx.fillStyle = '#f8fafc';
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          if (isKatana) {
+            ctx.moveTo(0, -82);
+            ctx.quadraticCurveTo(9, -30, 4, 24);
+            ctx.lineTo(-2, 24);
+            ctx.quadraticCurveTo(2, -30, 0, -82);
+          } else {
+            ctx.moveTo(0, -80);
+            ctx.lineTo(7, -64);
+            ctx.lineTo(6, 22);
+            ctx.lineTo(-6, 22);
+            ctx.lineTo(-7, -64);
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          // Crossguard & Hilt
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(-14, 22, 28, 5);
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(-3, 27, 6, 18);
+        }
+        ctx.restore();
+
+        // --- LAYER F: TAMER PET / COMPANION BESIDE CHARACTER ---
+        if (aLow.includes('tamer') || wLow.includes('chihuahua') || subArchName) {
+          if (aLow.includes('tamer') || wLow.includes('chihuahua')) {
+            ctx.save();
+            const petBob = Math.sin(t * 5) * 3;
+            ctx.translate(-56, 36 + petBob);
+            ctx.fillStyle = '#38bdf8';
+            ctx.strokeStyle = '#e0f2fe';
+            ctx.lineWidth = 1.5;
+            // Companion Body & Head
+            ctx.beginPath();
+            ctx.ellipse(0, 8, 14, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(-8, -4, 9, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            // Pointy Pet Ears
+            ctx.beginPath();
+            ctx.moveTo(-14, -10);
+            ctx.lineTo(-16, -20);
+            ctx.lineTo(-8, -12);
+            ctx.moveTo(-4, -10);
+            ctx.lineTo(-2, -20);
+            ctx.lineTo(-8, -12);
+            ctx.fill();
+            // Glowing Pet Eyes
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(-12, -6, 3, 3);
+            ctx.fillRect(-6, -6, 3, 3);
+            ctx.restore();
+          }
+        }
+
+        ctx.restore(); // End Character Transform
+      }
+
+      // 5. Foreground Floating Elemental Particles & Lightning Arcs
+      particles.forEach((p, idx) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.y < -10) {
+          p.y = H + 10;
+          p.x = (seed * (idx + 5) + Math.floor(t * 30)) % W;
+        }
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+
+        const twinkle = 0.5 + 0.5 * Math.sin(t * 4 + p.phase);
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.fillStyle = idx % 3 === 0 ? '#ffffff' : primaryColor;
+        ctx.globalAlpha = p.alpha * twinkle;
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 8;
+
+        // Draw 4-point Genshin Primogem Star Sparkle
+        const s = p.size;
+        ctx.beginPath();
+        ctx.moveTo(0, -s * 1.8);
+        ctx.quadraticCurveTo(s * 0.3, -s * 0.3, s * 1.8, 0);
+        ctx.quadraticCurveTo(s * 0.3, s * 0.3, 0, s * 1.8);
+        ctx.quadraticCurveTo(-s * 0.3, s * 0.3, -s * 1.8, 0);
+        ctx.quadraticCurveTo(-s * 0.3, -s * 0.3, 0, -s * 1.8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // 6. Genshin Wish Shooting Star & Burst Entrance Overlay (0.0s -> 0.85s)
+      if (elapsed < 0.85) {
+        ctx.save();
+        if (elapsed < 0.25) {
+          // Shooting Wish Meteor streaking from top-left to center
+          const prog = elapsed / 0.25;
+          const mx = prog * cx;
+          const my = prog * cy;
+          const meteorGrad = ctx.createLinearGradient(mx - 120, my - 90, mx, my);
+          meteorGrad.addColorStop(0, 'transparent');
+          meteorGrad.addColorStop(0.6, '#38bdf8');
+          meteorGrad.addColorStop(1, '#ffffff');
+          ctx.strokeStyle = meteorGrad;
+          ctx.lineWidth = 8;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(mx - 120, my - 90);
+          ctx.lineTo(mx, my);
+          ctx.stroke();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = '#00f0ff';
+          ctx.shadowBlur = 24;
+          ctx.beginPath();
+          ctx.arc(mx, my, 12, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Expanding Wish Shockwave & Flash
+          const burstProg = (elapsed - 0.25) / 0.6;
+          const burstAlpha = Math.max(0, 1 - burstProg);
+          ctx.strokeStyle = `rgba(224, 242, 254, ${burstAlpha.toFixed(3)})`;
+          ctx.lineWidth = 6 * (1 - burstProg);
+          ctx.beginPath();
+          ctx.arc(cx, cy, burstProg * 220, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = `rgba(186, 230, 253, ${(burstAlpha * 0.55).toFixed(3)})`;
+          ctx.fillRect(0, 0, W, H);
+        }
+        ctx.restore();
+      }
+
+      activeSplashAnimId = requestAnimationFrame(renderFrame);
+    }
+
+    activeSplashAnimId = requestAnimationFrame(renderFrame);
   }
 
   // Save Character button

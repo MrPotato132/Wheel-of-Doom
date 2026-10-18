@@ -12,6 +12,36 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
 
 ---
 
+## [v2.2.0] - 2026-10-18
+### Fixed
+- **100% Wheel-to-Outcome Synchronization (`js/wheel.js`)**:
+  - Fixed a floating-point rotation bug where `extraRotations` used a non-integer multiplier (`(5 + Math.random() * 3) * Math.PI * 2`), which added an arbitrary fractional angle offset and caused the visual pointer to land on a different slice than the awarded outcome.
+  - Enforced exact integer full turns (`fullRotationsCount * Math.PI * 2`) plus a bounded safe in-slice jitter (`±20%` of target slice arc).
+  - Added `getSegmentIndexAtPointer(angle)` verification at spin completion so the outcome is 100% guaranteed to match the slice under the top needle (`3 * Math.PI / 2`).
+  - Added a winning slice highlight glow (`highlightedSegmentIdx`) and a 380ms visual pause before opening the outcome modal so players can clearly see the pointer resting on the winning slice.
+  - Preserved `originalIndex` across rarity sorting so clicking any entry in the Free-Spin Almanac spins directly to that exact slice.
+
+### Changed
+- **Dark-to-Light Blue Rarity Slice Gradient & Fair High-Rarity Odds (`js/wheel.js`)**:
+  - Implemented `RARITY_BLUE_PALETTE` so wheel slices progressively lighten with rarity:
+    - **Common**: Deep Midnight Navy (`#0b1d3a` / `#122b54`)
+    - **Uncommon**: Rich Ocean Blue (`#15396e` / `#1d4d91`)
+    - **Rare**: Royal Sapphire (`#1d56a8` / `#2563eb`)
+    - **Epic**: Brilliant Azure (`#0284c7` / `#0ea5e9`)
+    - **Legendary**: Electric Sky Blue (`#38bdf8` / `#60a5fa`)
+    - **Mythic**: Luminous Ice Blue (`#7dd3fc` / `#93c5fd`)
+    - **God-Tier**: Celestial Diamond White-Blue (`#bae6fd` / `#e0f2fe`)
+  - Added dark-navy text outlines (`ctx.strokeText`) on lighter high-rarity slices for crisp contrast and legibility.
+  - Re-balanced `RARITY_WEIGHTS` (`common: 4.0` down to `godTier: 1.15`) so rarer slices remain visibly slimmer than common ones while giving players a fair ~25–30% combined chance per spin to land on Epic, Legendary, Mythic, or God-Tier traits.
+- **Unique Animated Genshin-Impact Style Character Splash Card (`js/app.js`, `css/styles.css`)**:
+  - Replaced the static SVG stick-figure placeholder with a 60fps HTML5 Canvas **Genshin-Style Character Splash Renderer** (`#genshinSplashCanvas`) that uniquely animates every character based on their specific rolled Race, Sub-Race, Archetype, Sub-Archetype, Weapon, Powers, and Name:
+    - **Gacha Wish Entrance**: Shooting star meteor streak and expanding light shockwave on reveal, plus a `✨ Wish` replay button (`#btnReplayWish`) and sequential star pop-in animation (`★★★★★`).
+    - **Unique Per-Race Anatomy & Silhouette**: Custom animated wings (feathered Angel/Seraph 6-wings, Demon/Vampire bat wings, asymmetric Nephilim wings, Dragonkin scaled wings, Fairy butterfly wings, blazing Phoenix wings), horns, halos, pointed Elf ears, Wolf/Beast ears, Orc tusks, Dwarf braided beards, Skeleton ribcages, Bouncing Royal Slime bodies, Merfolk tails, Cyber visors, and Eldritch writhing tentacles.
+    - **Unique Animated Weapons & Companions**: Distinct procedural weapons drawn and swaying in hand (Scythes, Thor's Hammer/Stormbreaker, Starshard Bows, Quantum Railguns/Pistols, Cosmic Staffs, Gungnir Spears, Katanas/Excalibur, and Chaos relics like Folding Steel Chairs & Spatulas), plus animated Tamer Beast companions and Spirit/Shadow Monarch Stands behind the hero.
+    - **Constellation & Elemental Vision HUD**: Rotating character-seeded Constellation graph, Astrolabe geometry ring, diagonal Genshin splash name banner, and floating Primogem star particles.
+
+---
+
 ## [v2.1.0] - 2026-10-18
 ### Added
 - **Full Compendium Content Expansion (Added 11 Races, 14 Archetypes & 25+ Sub-Wheels)**:

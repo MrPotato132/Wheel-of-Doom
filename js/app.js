@@ -2627,7 +2627,9 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
       Nephilim: '🪽', 'Cyborg Titan': '🦾', Voidwalker: '🌌',
       'Slime Sovereign': '🫧', 'Eldritch Entity': '🐙', 'Djinn (Genie)': '🧞',
       'Beastfolk Chimera': '🦁', Gargoyle: '🗿', 'Insectoid Hivemaster': '🦗',
-      'Demi-God': '⚡', Homunculus: '🧪', 'Astral Seraph': '✨', 'Living Armor': '🛡️'
+      'Demi-God': '⚡', Homunculus: '🧪', 'Astral Seraph': '✨', 'Living Armor': '🛡️',
+      'Special Grade Cursed Spirit': '👁️', 'Death Painting Womb': '🩸',
+      'Six Eyes Clan Heir': '🤞', 'Heavenly Restricted (Toji Pact)': '🗡️'
     };
     return raceEmojis[raceName] || '👑';
   }
@@ -2682,6 +2684,18 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
     }
   });
 
+  // Test Black Flash Button in Arena Controls
+  const btnTestBlackFlash = document.getElementById('btnTestBlackFlash');
+  if (btnTestBlackFlash) {
+    btnTestBlackFlash.addEventListener('click', () => {
+      sounds.playBlackFlash();
+      const sampleAttacker = arenaState.combatants[0] || { name: 'Yuji Itadori (Awakened)' };
+      const sampleTarget = arenaState.combatants[1] || { name: 'Ryomen Sukuna (20F)' };
+      triggerBlackFlashAnimation(sampleAttacker, sampleTarget, 999);
+      appendArenaLogEntry(`⚡⚫ 黒閃! ${sampleAttacker.name} unleashes a test BLACK FLASH (Kokusen) spatial distortion storm! (^2.5 CRIT)`, 'crit');
+    });
+  }
+
   // Battle Speed Toggles
   document.querySelectorAll('.speed-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -2695,15 +2709,20 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
 
   // Visual Battle Action Callback
   function handleVisualBattleAction(data) {
-    const { type, attacker, target, damage, isCrit, text, sound, domainName, domainTheme } = data;
+    const { type, attacker, target, damage, isCrit, isBlackFlash, text, sound, domainName, domainTheme } = data;
 
     // Domain Expansion Cinematic Trigger
     if (type === 'domainExpansion') {
       triggerDomainExpansionAnimation(attacker, domainName, domainTheme);
     }
 
+    // Black Flash (Kokusen) Ultra-Flashy Multi-Bolt Strobe Trigger
+    if (type === 'blackFlash' || isBlackFlash) {
+      triggerBlackFlashAnimation(attacker, target, damage);
+    }
+
     // 1. Screen Shake on criticals, heavy blows, or domain expansions
-    if (isCrit || damage > 50 || type === 'explosion' || type === 'domainExpansion') {
+    if (isCrit || damage > 50 || type === 'explosion' || type === 'domainExpansion' || type === 'blackFlash') {
       arenaColosseum.classList.add('screen-shake');
       setTimeout(() => arenaColosseum.classList.remove('screen-shake'), 450);
     }
@@ -2761,6 +2780,226 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
     setTimeout(() => {
       arenaSlashFx.classList.add('hidden');
     }, 240);
+  }
+
+  // Ultra-Flashy Black Flash (Kokusen • 黒閃) Multi-Bolt Storm & Strobe Engine
+  let activeBlackFlashAnimId = null;
+  let activeBlackFlashTimeout = null;
+  function triggerBlackFlashAnimation(attacker, target, damage) {
+    const overlay = document.getElementById('arenaBlackFlashOverlay');
+    const canvas = document.getElementById('arenaBlackFlashCanvas');
+    const subEl = document.getElementById('blackFlashSub');
+    if (!overlay || !canvas) return;
+
+    if (activeBlackFlashAnimId) {
+      cancelAnimationFrame(activeBlackFlashAnimId);
+      activeBlackFlashAnimId = null;
+    }
+    if (activeBlackFlashTimeout) {
+      clearTimeout(activeBlackFlashTimeout);
+      activeBlackFlashTimeout = null;
+    }
+
+    if (subEl) {
+      const attName = attacker ? attacker.name.toUpperCase() : 'SORCERER';
+      subEl.textContent = `${attName} • ^2.5 SPATIAL CRIT (-${damage || 999} HP)`;
+    }
+
+    // Restart CSS impact strobe and colosseum megashake
+    overlay.classList.remove('hidden', 'bf-active');
+    arenaColosseum.classList.remove('bf-megashake');
+    void overlay.offsetWidth;
+    overlay.classList.add('bf-active');
+    arenaColosseum.classList.add('bf-megashake');
+
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width = overlay.clientWidth || 900;
+    const H = canvas.height = overlay.clientHeight || 450;
+    const cx = W * (0.38 + Math.random() * 0.24);
+    const cy = H * (0.38 + Math.random() * 0.24);
+
+    // Generate 75 high-velocity black & crimson sparks
+    const sparks = Array.from({ length: 75 }, () => {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = 5 + Math.random() * 20;
+      return {
+        x: cx,
+        y: cy,
+        vx: Math.cos(ang) * spd,
+        vy: Math.sin(ang) * spd,
+        len: 12 + Math.random() * 28,
+        thick: 2 + Math.random() * 4.5,
+        isBlack: Math.random() > 0.35
+      };
+    });
+
+    function drawJaggedBolt(x1, y1, x2, y2, displacement, branchDepth) {
+      const segs = 12;
+      const pts = [{ x: x1, y: y1 }];
+      for (let i = 1; i < segs; i++) {
+        const t = i / segs;
+        const jx = (Math.random() - 0.5) * displacement;
+        const jy = (Math.random() - 0.5) * displacement;
+        pts.push({
+          x: x1 + (x2 - x1) * t + jx,
+          y: y1 + (y2 - y1) * t + jy
+        });
+      }
+      pts.push({ x: x2, y: y2 });
+
+      // 1. Outer Crimson Aura
+      ctx.save();
+      ctx.beginPath();
+      pts.forEach((p, idx) => (idx === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+      ctx.strokeStyle = '#ff0033';
+      ctx.lineWidth = branchDepth > 0 ? 15 : 8;
+      ctx.shadowColor = '#ff0033';
+      ctx.shadowBlur = 32;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // 2. Electric White-Hot Rim
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = branchDepth > 0 ? 8 : 4;
+      ctx.shadowBlur = 10;
+      ctx.stroke();
+
+      // 3. Pitch-Black Spatial Void Core (Signature Kokusen Look)
+      ctx.strokeStyle = '#020003';
+      ctx.lineWidth = branchDepth > 0 ? 5.5 : 2.5;
+      ctx.shadowBlur = 0;
+      ctx.stroke();
+      ctx.restore();
+
+      // Recursive fork branches
+      if (branchDepth > 0) {
+        for (let i = 2; i < pts.length - 2; i += 3) {
+          if (Math.random() < 0.7) {
+            const p = pts[i];
+            const bAngle = Math.atan2(y2 - y1, x2 - x1) + (Math.random() - 0.5) * 1.7;
+            const bLen = 70 + Math.random() * 140;
+            drawJaggedBolt(
+              p.x,
+              p.y,
+              p.x + Math.cos(bAngle) * bLen,
+              p.y + Math.sin(bAngle) * bLen,
+              displacement * 0.6,
+              branchDepth - 1
+            );
+          }
+        }
+      }
+    }
+
+    let frame = 0;
+    const totalFrames = 46;
+
+    function renderBlackFlashFrame() {
+      frame++;
+      ctx.clearRect(0, 0, W, H);
+
+      // Multi-frame full-canvas strobe flashes (Frames 1-3, 6-8, 12-13, 18)
+      if (frame <= 3 || (frame >= 6 && frame <= 8) || frame === 12 || frame === 18) {
+        ctx.fillStyle = frame % 2 === 0 ? 'rgba(255,255,255,0.92)' : 'rgba(255,0,43,0.78)';
+        ctx.fillRect(0, 0, W, H);
+      } else if (frame < 34) {
+        const g = ctx.createRadialGradient(cx, cy, 10, cx, cy, Math.max(W, H) * 0.72);
+        g.addColorStop(0, `rgba(255, 0, 51, ${0.48 * (1 - frame / totalFrames)})`);
+        g.addColorStop(0.45, `rgba(10, 0, 4, ${0.76 * (1 - frame / totalFrames)})`);
+        g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      // Expanding Dual Shockwave Rings
+      for (let rIdx = 0; rIdx < 3; rIdx++) {
+        const rProgress = Math.max(0, (frame - rIdx * 4) / (totalFrames - 8));
+        if (rProgress > 0 && rProgress < 1) {
+          const radius = rProgress * Math.max(W, H) * 0.68;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+          ctx.strokeStyle = rIdx % 2 === 0 ? `rgba(255, 0, 51, ${1 - rProgress})` : `rgba(0, 0, 0, ${1 - rProgress})`;
+          ctx.lineWidth = (1 - rProgress) * 18;
+          ctx.shadowColor = '#ff0033';
+          ctx.shadowBlur = 24;
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      // Regenerating 16 Multi-Branching Black & Crimson Lightning Bolts!
+      if (frame < 38) {
+        const numBolts = frame < 22 ? 16 : 9;
+        for (let b = 0; b < numBolts; b++) {
+          const angle = (b / numBolts) * Math.PI * 2 + (Math.random() - 0.5) * 0.45;
+          const reach = Math.max(W, H) * (0.45 + Math.random() * 0.45);
+          drawJaggedBolt(
+            cx,
+            cy,
+            cx + Math.cos(angle) * reach,
+            cy + Math.sin(angle) * reach,
+            46,
+            1
+          );
+        }
+
+        // Central Black-Core Singularity Impact Sphere
+        const coreR = Math.max(6, (1 - frame / 38) * 58);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, coreR * 1.35, 0, Math.PI * 2);
+        ctx.fillStyle = '#ff0033';
+        ctx.shadowColor = '#ff0033';
+        ctx.shadowBlur = 40;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, coreR, 0, Math.PI * 2);
+        ctx.fillStyle = '#030002';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3.5;
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // High-velocity flying sparks
+      sparks.forEach(sp => {
+        sp.x += sp.vx;
+        sp.y += sp.vy;
+        sp.vx *= 0.95;
+        sp.vy *= 0.95;
+        const alpha = Math.max(0, 1 - frame / totalFrames);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.moveTo(sp.x, sp.y);
+        ctx.lineTo(sp.x - sp.vx * 2.2, sp.y - sp.vy * 2.2);
+        ctx.strokeStyle = sp.isBlack ? '#000000' : '#ff0033';
+        ctx.lineWidth = sp.thick;
+        ctx.shadowColor = '#ff0033';
+        ctx.shadowBlur = 14;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      if (frame < totalFrames) {
+        activeBlackFlashAnimId = requestAnimationFrame(renderBlackFlashFrame);
+      } else {
+        ctx.clearRect(0, 0, W, H);
+      }
+    }
+
+    activeBlackFlashAnimId = requestAnimationFrame(renderBlackFlashFrame);
+
+    activeBlackFlashTimeout = setTimeout(() => {
+      overlay.classList.add('hidden');
+      overlay.classList.remove('bf-active');
+      arenaColosseum.classList.remove('bf-megashake');
+    }, 920);
   }
 
   // Domain Expansion Metaphysical Animation Sequence

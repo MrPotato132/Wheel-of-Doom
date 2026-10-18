@@ -53,6 +53,7 @@ class BattleEngine {
         raceColor: c.race && c.race.color ? c.race.color : '#b3131b',
         archetype: c.archetype ? c.archetype.text : 'Warrior',
         archetypeSub: c.archetypeSub ? c.archetypeSub.text : null,
+        sukunaFingers: c.sukunaFingers || (c.archetypeSub && c.archetypeSub.fingers) || 0,
         weapon: c.weapon ? c.weapon.text : 'Bare Knuckles',
         weaponRarity: c.weapon ? c.weapon.rarity : 'common',
         enchantments: c.enchantments || [],
@@ -63,7 +64,7 @@ class BattleEngine {
         stats: stats,
         maxHp: actualMaxHp,
         currentHp: actualMaxHp,
-        shield: (c.powers && c.powers.some(p => (p.text || p) === 'Force Field Barrier')) ? 150 : 0,
+        shield: (c.powers && c.powers.some(p => (p.text || p) === 'Force Field Barrier' || (p.text || p) === 'Limitless & Hollow Purple')) ? 180 : 0,
         domainName: c.domainType ? (c.domainType.text || c.domainType) : (c.domainName || 'Infinite Void'),
         domainTheme: (c.domainType && c.domainType.theme) || c.domainTheme || 'void',
         isAlive: true,
@@ -71,6 +72,9 @@ class BattleEngine {
         isPhoenixRevived: false,
         usedIndomitableWill: false,
         hasRegened: false,
+        usedRCT: 0,
+        mahoragaSpins: 0,
+        inTheZone: false,
         hasShonenProtagonistBuff: false,
         kills: 0,
         damageDealt: 0,
@@ -261,14 +265,32 @@ class BattleEngine {
       }
     }
 
-    // 2. Target Dodge / Phasing / Full Counter Check
+    // 2. Target Dodge / Phasing / Boogie Woogie / Full Counter Check
+    const hasSpearOfHeaven = attacker.weapon.includes('Inverted Spear of Heaven') || attacker.weapon.includes('Black Rope');
+    if (hasSpearOfHeaven && target.shield > 0) {
+      this.logAction(`🗡️⚡ ${attacker.name}'s ${attacker.weapon} forcibly NULLIFIES ${target.name}'s active barrier!`, 'power');
+      target.shield = 0;
+    }
+
+    // Boogie Woogie Clap Swap
+    if (!hasSpearOfHeaven && target.powers.includes('Boogie Woogie') && Math.random() < 0.28) {
+      sounds.playDodge();
+      const swapDmg = Math.floor(target.stats.str * 0.55) + 25;
+      attacker.currentHp = Math.max(1, attacker.currentHp - swapDmg);
+      this.options.onHpUpdate(attacker);
+      this.logAction(`👏🌀 CLAP! ${target.name} activates BOOGIE WOOGIE, swapping positions mid-swing so ${attacker.name} strikes themselves for ${swapDmg} damage!`, 'power');
+      this.options.onAction({ type: 'counter', attacker: target, target: attacker, damage: swapDmg, text: `BOOGIE WOOGIE! 👏 -${swapDmg}`, sound: 'dodge' });
+      this.scheduleNextTurn(850);
+      return;
+    }
+
     let extraDodge = (attacker.weakness === 'Always Announces Attack') ? 0.18 : 0;
     const dodgeChance = Math.min(0.38, ((target.stats.spd / (attacker.stats.spd + 100)) * 0.4) + extraDodge);
-    const hasPhasing = target.powers.includes('Invisibility & Phasing') || target.powers.includes('Instant Teleportation') || target.race === 'Voidwalker';
+    const hasPhasing = target.powers.includes('Invisibility & Phasing') || target.powers.includes('Instant Teleportation') || target.race === 'Voidwalker' || target.race.includes('Heavenly Restricted');
     
     // Domain Expansion Negates Dodge
     const hasDomain = attacker.powers.includes('Domain Expansion');
-    if (!hasDomain && Math.random() < (hasPhasing ? 0.32 : dodgeChance)) {
+    if (!hasDomain && !hasSpearOfHeaven && Math.random() < (hasPhasing ? 0.32 : dodgeChance)) {
       sounds.playDodge();
       const msg = `💨 ${target.name} swiftly evades ${attacker.name}'s incoming strike!`;
       this.logAction(msg, 'dodge');
@@ -278,7 +300,7 @@ class BattleEngine {
     }
 
     // Full Counter Check on Magic / Elemental Powers
-    if (target.powers.includes('Full Counter') && Math.random() < 0.22) {
+    if (!hasSpearOfHeaven && target.powers.includes('Full Counter') && Math.random() < 0.22) {
       sounds.playMagicCast();
       const counterDmg = Math.floor(attacker.stats.str * 0.85) + 35;
       attacker.currentHp = Math.max(0, attacker.currentHp - counterDmg);
@@ -313,6 +335,18 @@ class BattleEngine {
         text: `DOMAIN EXPANSION: ${domainName.toUpperCase()}!`,
         sound: 'magic'
       });
+    } else if (attacker.powers.includes('Limitless & Hollow Purple') && Math.random() < 0.30) {
+      powerBonus += 85;
+      powerEffectText = '🟣🤞 HOLLOW TECHNIQUE: PURPLE! ';
+      attackSound = 'explosion';
+      sounds.playExplosion();
+      this.logAction(`🟣✨ ${attacker.name} collides Lapse Blue and Reversal Red—unleashing HOLLOW PURPLE imaginary mass erasure on ${target.name}!`, 'power');
+    } else if (attacker.powers.includes('Cleave & Dismantle (Shrine)') && Math.random() < 0.32) {
+      powerBonus += 70;
+      powerEffectText = '⛩️🩸 WORLD-CUTTING DISMANTLE! ';
+      attackSound = 'slash';
+      sounds.playSlash();
+      this.logAction(`⛩️🗡️ ${attacker.name} chants the twin tenets and bisects space itself with CLEAVE & DISMANTLE!`, 'power');
     } else if (attacker.powers.includes('Time Stop') && Math.random() < 0.22) {
       powerBonus += 50;
       powerEffectText = '⏳ TIME STOP! ';
@@ -339,9 +373,9 @@ class BattleEngine {
       this.logAction(`🕳️ ${attacker.name} collapses a singularity onto ${target.name}!`, 'power');
     } else if (attacker.powers.includes('Blood Bending') && Math.random() < 0.22) {
       powerBonus += 45;
-      powerEffectText = '🩸 BLOOD BENDING! ';
+      powerEffectText = '🩸 PIERCING BLOOD! ';
       attackSound = 'magic';
-      this.logAction(`🩸 ${attacker.name} seizes control of ${target.name}'s blood flow!`, 'power');
+      this.logAction(`🩸 ${attacker.name} condenses crimson energy and fires a supersonic PIERCING BLOOD beam at ${target.name}!`, 'power');
     } else if (attacker.powers.includes('Pyrokinesis') && Math.random() < 0.3) {
       powerBonus += 35;
       powerEffectText = '🔥 HELLFIRE! ';
@@ -367,7 +401,16 @@ class BattleEngine {
     let baseDmg = (attacker.stats.str * 0.75) + powerBonus;
 
     // Archetype modifier
-    if (attacker.archetype === 'Berserker') {
+    if (attacker.archetype === 'Cursed Vessel') {
+      const fingers = attacker.sukunaFingers || 10;
+      const vesselMult = 1 + (fingers * 0.035); // Up to +70% at 20 Fingers
+      baseDmg *= vesselMult;
+      if (fingers >= 15 && Math.random() < 0.3) {
+        powerEffectText += `👁️ SUKUNA VESSEL (${fingers}F) SURGE! `;
+      }
+    } else if (attacker.archetype === 'Special Grade Sorcerer') {
+      baseDmg *= 1.35;
+    } else if (attacker.archetype === 'Berserker') {
       const missingHpRatio = 1 - (attacker.currentHp / attacker.maxHp);
       baseDmg *= (1 + missingHpRatio * 0.9); // Up to +90% bonus when low
     } else if (attacker.archetype === 'Slayer' && attacker.archetypeSub) {
@@ -424,11 +467,32 @@ class BattleEngine {
       }
     }
 
-    // Weapon modifiers & Meme Weapon Effects
+    // Weapon modifiers & JJK Cursed Tools / Meme Weapon Effects
     if (attacker.weaponRarity === 'godTier') baseDmg *= 1.45;
     else if (attacker.weaponRarity === 'mythic' || attacker.weaponRarity === 'legendary') baseDmg *= 1.25;
 
-    if (attacker.weapon === 'Spatula With Lemon Juice') {
+    if (attacker.weapon.includes('Playful Cloud')) {
+      const strBonus = Math.floor(attacker.stats.str * 0.45);
+      baseDmg += strBonus;
+      powerEffectText += '⛓️🩸 PLAYFUL CLOUD FORCE! ';
+      attackSound = 'blunt';
+    } else if (attacker.weapon.includes('Inverted Spear of Heaven')) {
+      baseDmg += 45;
+      powerEffectText += '🗡️🚫 TECHNIQUE NULLIFICATION! ';
+    } else if (attacker.weapon.includes('Executioner\'s Sword')) {
+      if (Math.random() < 0.16) {
+        baseDmg += 550;
+        powerEffectText += '⚖️⚔️ DEATH PENALTY VERDICT! ';
+        this.logAction(`⚖️⚡ ${attacker.name}'s EXECUTIONER'S SWORD delivers a guilty Death Penalty sentence!`, 'power');
+      } else {
+        baseDmg += 55;
+        powerEffectText += '⚖️ GOLDEN GAVEL SLASH! ';
+      }
+    } else if (attacker.weapon.includes('Kamutoke')) {
+      baseDmg += 50;
+      powerEffectText += '⚡🔱 KAMUTOKE VAJRA THUNDER! ';
+      attackSound = 'explosion';
+    } else if (attacker.weapon === 'Spatula With Lemon Juice') {
       powerEffectText += '🍋 LEMON IN THE EYES! ';
       target.statusEffects.push('blinded');
     } else if (attacker.weapon === 'Enchanted Brick') {
@@ -458,27 +522,42 @@ class BattleEngine {
     let mitigation = (target.stats.dur * 0.35);
     if (target.archetype === 'Paladin') mitigation *= 1.5;
     if (target.race === 'Slime Sovereign') mitigation *= 1.6; // Fluid body absorbs physical blows
-    if (target.weakness === 'Fragile Bones' && (attacker.weapon.includes('Maul') || attacker.weapon.includes('Hammer') || attacker.weapon.includes('Brick') || attacker.weapon.includes('Crowbar') || attacker.weapon.includes('Nokia') || attacker.weapon.includes('Baguette'))) {
+    if (target.powers.includes('Limitless & Hollow Purple') && !hasSpearOfHeaven && !attacker.powers.includes('Domain Expansion')) {
+      mitigation *= 1.55; // Infinity slows incoming strikes
+    }
+    if (target.weakness === 'Fragile Bones' && (attacker.weapon.includes('Maul') || attacker.weapon.includes('Hammer') || attacker.weapon.includes('Brick') || attacker.weapon.includes('Crowbar') || attacker.weapon.includes('Nokia') || attacker.weapon.includes('Baguette') || attacker.weapon.includes('Playful Cloud'))) {
       mitigation *= 0.25; // Fragile bones shattered!
       powerEffectText += '💀 FRAGILE BONES SHATTERED! ';
     }
 
-    // Weapon Enchantment: Spacetime Rend completely ignores mitigation!
-    if (attacker.enchantments.includes('Spacetime Rend') || attacker.enchantments.includes('Armor Bypass Rend')) {
+    // Weapon Enchantment or Split Soul Katana / Cleave: completely ignores mitigation!
+    if (attacker.enchantments.includes('Spacetime Rend') || attacker.enchantments.includes('Armor Bypass Rend') || attacker.weapon.includes('Split Soul Katana') || powerEffectText.includes('DISMANTLE')) {
       mitigation = 0;
-      powerEffectText += '🌌 ARMOR BYPASS! ';
+      powerEffectText += attacker.weapon.includes('Split Soul Katana') ? '👻 SOUL SLASH (0 DEF)! ' : '🌌 ARMOR BYPASS! ';
     }
 
     // Chaos Variance
     const chaosRoll = 0.85 + (Math.random() * 0.35) * (attacker.stats.chaos / 100);
     let finalDamage = Math.max(14, Math.floor((baseDmg - mitigation) * chaosRoll));
 
-    // Critical Hit calculation
+    // BLACK FLASH (KOKUSEN) & Critical Hit Calculation
+    const hasBlackFlashTrait = attacker.powers.includes('Black Flash (Kokusen)') || attacker.archetype === 'Cursed Vessel' || attacker.archetype === 'Special Grade Sorcerer' || attacker.race === 'Death Painting Womb';
+    const blackFlashChance = hasBlackFlashTrait ? (attacker.inTheZone ? 0.42 : 0.32) : 0.08;
+    const isBlackFlash = Math.random() < blackFlashChance;
+
     let critMultiplier = (attacker.backstory === 'Won the Cosmic Lottery') ? 2.5 : 1.85;
     const critChance = Math.min(0.48, (attacker.stats.int * 0.0015) + (attacker.stats.chaos * 0.0015));
-    const isCrit = Math.random() < critChance || (attacker.powers.includes('Probability Manipulation') && Math.random() < 0.4) || attacker.hasShonenProtagonistBuff;
+    const isCrit = isBlackFlash || Math.random() < critChance || (attacker.powers.includes('Probability Manipulation') && Math.random() < 0.4) || attacker.hasShonenProtagonistBuff;
     
-    if (isCrit) {
+    if (isBlackFlash) {
+      finalDamage = Math.floor(finalDamage * 2.5);
+      attacker.inTheZone = true; // 120% Cursed Energy output zone
+      attacker.stats.str = Math.floor(attacker.stats.str * 1.08);
+      powerEffectText = `⚡⚫ 黒閃 • BLACK FLASH (KOKUSEN ^2.5)! ` + powerEffectText;
+      attackSound = 'blackFlash';
+      sounds.playBlackFlash();
+      this.logAction(`⚡⚫ 黒閃! The sparks of black choose ${attacker.name}! Spatial distortion strike hits ${target.name} for ^2.5 (${finalDamage}) damage!`, 'crit');
+    } else if (isCrit) {
       finalDamage = Math.floor(finalDamage * critMultiplier);
       attackSound = 'crit';
       sounds.playCrit();
@@ -493,11 +572,11 @@ class BattleEngine {
     if (target.shield > 0) {
       if (target.shield >= finalDamage) {
         target.shield -= finalDamage;
-        this.logAction(`🛡️ ${target.name}'s Force Field absorbed all ${finalDamage} damage! (${target.shield} shield remaining)`, 'info');
+        this.logAction(`🛡️ ${target.name}'s Barrier absorbed all ${finalDamage} damage! (${target.shield} shield remaining)`, 'info');
         finalDamage = 0;
       } else {
         finalDamage -= target.shield;
-        this.logAction(`🛡️ ${target.name}'s Force Field shattered after absorbing ${target.shield} damage!`, 'info');
+        this.logAction(`🛡️ ${target.name}'s Barrier shattered after absorbing ${target.shield} damage!`, 'info');
         target.shield = 0;
       }
     }
@@ -529,17 +608,18 @@ class BattleEngine {
     this.options.onHpUpdate(target);
 
     // Format Combat Log
-    const critText = isCrit ? '💥 CRITICAL HIT! ' : '';
+    const critText = isBlackFlash ? '⚡⚫ 黒閃 BLACK FLASH! ' : (isCrit ? '💥 CRITICAL HIT! ' : '');
     const logMsg = `${attacker.name} strikes ${target.name} with ${attacker.weapon}! ${powerEffectText}${critText}(-${finalDamage} HP)`;
     this.logAction(logMsg, isCrit ? 'crit' : 'hit');
 
     // Trigger visual action animation
     this.options.onAction({
-      type: 'attack',
+      type: isBlackFlash ? 'blackFlash' : 'attack',
       attacker,
       target,
       damage: finalDamage,
       isCrit,
+      isBlackFlash,
       powerEffectText,
       text: `${critText}-${finalDamage}`,
       sound: attackSound
@@ -581,6 +661,27 @@ class BattleEngine {
         this.options.onFighterFaint(target, attacker);
       }
     } else {
+      // Ten Shadows (Mahoraga) Eight-Handled Dharma Wheel Adaptation
+      if (target.powers.includes('Ten Shadows (Mahoraga)') && target.mahoragaSpins < 4) {
+        target.mahoragaSpins++;
+        const adaptHeal = Math.floor(target.maxHp * 0.16);
+        target.currentHp = Math.min(target.maxHp, target.currentHp + adaptHeal);
+        target.stats.dur += 22;
+        target.stats.str += 15;
+        this.options.onHpUpdate(target);
+        this.logAction(`☸️⚙️ CLANK! ${target.name}'s Eight-Handled Dharma Wheel turns (Spin #${target.mahoragaSpins})! Adapts to ${attacker.name}'s attacks (+${adaptHeal} HP, +22 DUR, +15 STR)!`, 'power');
+      }
+
+      // Reverse Cursed Technique (RCT) Positive Energy Healing
+      if (target.powers.includes('Reverse Cursed Technique') && target.currentHp < (target.maxHp * 0.45) && target.usedRCT < 2) {
+        target.usedRCT++;
+        const rctHeal = Math.floor(target.maxHp * 0.38);
+        target.currentHp = Math.min(target.maxHp, target.currentHp + rctHeal);
+        sounds.playMagicCast();
+        this.options.onHpUpdate(target);
+        this.logAction(`♻️✨ ${target.name} multiplies negative Cursed Energy into positive REVERSE CURSED TECHNIQUE! Regenerates +${rctHeal} HP!`, 'power');
+      }
+
       // Super Regeneration Check when HP low
       if (target.powers.includes('Super Regeneration') && target.currentHp < (target.maxHp * 0.3) && !target.hasRegened) {
         target.hasRegened = true;

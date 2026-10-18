@@ -459,6 +459,42 @@ class SoundEngine {
       o.stop(now + 1.25);
     });
   }
+
+  // Black Flash (Kokusen) Spatial Distortion Impact & Lightning Crackle
+  playBlackFlash() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+
+    // 1. Sub-bass spatial vacuum drop
+    const subOsc = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    subOsc.type = 'sawtooth';
+    subOsc.frequency.setValueAtTime(190, now);
+    subOsc.frequency.exponentialRampToValueAtTime(24, now + 0.55);
+    subGain.gain.setValueAtTime(0.45, now);
+    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    subOsc.connect(subGain);
+    subGain.connect(this.ctx.destination);
+    subOsc.start(now);
+    subOsc.stop(now + 0.62);
+
+    // 2. Multi-stage high-voltage crimson/black lightning crackle bursts
+    [0, 0.06, 0.14, 0.24].forEach((offset, idx) => {
+      const o = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      o.type = idx % 2 === 0 ? 'square' : 'sawtooth';
+      o.frequency.setValueAtTime(1600 - idx * 250, now + offset);
+      o.frequency.exponentialRampToValueAtTime(85, now + offset + 0.12);
+      g.gain.setValueAtTime(0.26, now + offset);
+      g.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.13);
+      o.connect(g);
+      g.connect(this.ctx.destination);
+      o.start(now + offset);
+      o.stop(now + offset + 0.14);
+    });
+  }
 }
 
 const sounds = new SoundEngine();

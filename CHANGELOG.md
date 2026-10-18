@@ -13,6 +13,20 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
 
 ---
 
+## [v2.4.0] - 2026-10-18
+### Added
+- **Jujutsu Kaisen (JJK) Expansion — Races, Cursed Vessel Archetype, Sub-Wheels, Cursed Tools, Techniques & Bosses (`js/wheelData.js`, `js/character.js`, `js/battle.js`, `index.html`)**:
+  - **4 JJK Races**: *Special Grade Cursed Spirit* (with `disasterCurseType` sub-wheel: *Mahito, Jogo, Hanami, Dagon, Rika, True Form Heian Sukuna*), *Death Painting Womb*, *Six Eyes Clan Heir*, and *Heavenly Restricted (Toji Pact)*.
+  - **3 JJK Archetypes**: *Cursed Vessel* (with `cursedVesselFingers` 1–20 Sukuna Fingers sub-wheel and dynamic `fingers * 4` stat scaling + combat multiplier), *Special Grade Sorcerer*, and *Cursed Corpse Puppet*.
+  - **6 Special Grade Cursed Tools**: *Inverted Spear of Heaven* (nullifies enemy barriers & dodge), *Playful Cloud* (scales with raw STR), *Split Soul Katana* (100% defense bypass), *Executioner's Sword* (Death Penalty instant-verdict proc), *Kamutoke (Vajra Dagger)*, and *Black Rope*.
+  - **6 JJK Cursed Techniques**: *Black Flash (Kokusen)* (`^2.5` critical strike & 120% Zone state), *Limitless & Hollow Purple* (Infinity shield + Imaginary Mass erasure), *Ten Shadows (Mahoraga)* (Eight-Handled Dharma Wheel adaptation & heal on hit), *Cleave & Dismantle (Shrine)*, *Boogie Woogie* (clap position-swap counter), and *Reverse Cursed Technique* (positive energy regeneration).
+  - **5 JJK Arena Bosses & Legends**: *Ryomen Sukuna (20F)*, *Satoru Gojo*, *Toji Fushiguro*, *Yuji Itadori (Awakened)*, and *Divine General Mahoraga* added to the Colosseum Legends roster.
+- **Ultra-Flashy Black Flash (`黒閃 • Kokusen`) Multi-Bolt Impact Storm (`index.html`, `css/styles.css`, `js/app.js`, `js/audio.js`, `sandbox/options.html`)**:
+  - Built a 60fps HTML5 Canvas + CSS impact strobe Black Flash engine (`#arenaBlackFlashOverlay` & `triggerBlackFlashAnimation()`) in both the Sandbox Lab and live Colosseum Arena.
+  - Features multi-frame white/crimson/inverted impact strobe frames, 16 dynamically regenerating multi-branching black-core + crimson-aura lightning bolts, expanding dual shockwave rings, 75 flying black-red sparks, a `⚡⚫ Test Black Flash` arena button, and procedural sub-bass + high-voltage crackle audio (`sounds.playBlackFlash()`).
+
+---
+
 ## [v2.3.1] - 2026-10-18
 ### Added
 - **Creative Director Sandbox Lab (`sandbox/options.html`, `index.html`)**:

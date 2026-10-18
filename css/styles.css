@@ -2786,3 +2786,130 @@ canvas#wheelCanvas:active {
   transform: translateY(0) scale(0.98);
 }
 
+/* ============================================================
+   BLACK FLASH (KOKUSEN • 黒閃) ULTRA-FLASHY IMPACT OVERLAY
+   ============================================================ */
+.arena-blackflash-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arena-blackflash-overlay.hidden {
+  display: none !important;
+}
+
+.blackflash-strobe-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+}
+
+.arena-blackflash-overlay.bf-active .blackflash-strobe-layer {
+  animation: kokusenImpactStrobe 0.68s steps(1, end) forwards;
+}
+
+@keyframes kokusenImpactStrobe {
+  0%   { opacity: 1; background: #ffffff; }
+  9%   { opacity: 1; background: #000000; box-shadow: inset 0 0 120px #ff002b; }
+  18%  { opacity: 1; background: #ff002b; mix-blend-mode: hard-light; }
+  27%  { opacity: 1; background: #ffffff; }
+  38%  { opacity: 0.92; background: radial-gradient(circle, rgba(255,0,43,0.45) 0%, rgba(0,0,0,0.96) 70%); }
+  52%  { opacity: 0.85; background: #050002; box-shadow: inset 0 0 90px #e11d48; }
+  68%  { opacity: 0.55; background: radial-gradient(circle, rgba(225,29,72,0.3) 0%, rgba(0,0,0,0.8) 80%); }
+  85%  { opacity: 0.25; background: #000000; }
+  100% { opacity: 0; }
+}
+
+.blackflash-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.blackflash-banner-wrap {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  transform: scale(0.4);
+  opacity: 0;
+}
+
+.arena-blackflash-overlay.bf-active .blackflash-banner-wrap {
+  animation: kokusenBannerSlam 0.88s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes kokusenBannerSlam {
+  0%   { opacity: 0; transform: scale(2.4) rotate(-6deg); filter: brightness(3); }
+  16%  { opacity: 1; transform: scale(0.95) rotate(2deg); filter: brightness(1.5); }
+  28%  { opacity: 1; transform: scale(1.08) rotate(-1deg); }
+  78%  { opacity: 1; transform: scale(1.02) rotate(0deg); }
+  100% { opacity: 0; transform: scale(1.25); }
+}
+
+.blackflash-kanji {
+  display: block;
+  font-size: 3.1rem;
+  font-weight: 900;
+  color: #050505;
+  -webkit-text-stroke: 2px #ff0033;
+  text-shadow: 0 0 24px #ff0033, 0 0 48px #e11d48, 4px 4px 0 #ffffff;
+  letter-spacing: 0.18em;
+  line-height: 1;
+}
+
+.blackflash-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.14em;
+  margin: 2px 0;
+  text-shadow: 0 0 18px #ff0033, 0 0 36px #991b1b, -3px -2px 0 #000, 3px 3px 0 #e11d48;
+}
+
+.blackflash-sub {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.92);
+  border: 1.5px solid #ff0033;
+  color: #fecdd3;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  padding: 3px 12px;
+  border-radius: 99px;
+  box-shadow: 0 0 18px rgba(255, 0, 51, 0.75);
+}
+
+.arena-colosseum.bf-megashake {
+  animation: kokusenColosseumShake 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes kokusenColosseumShake {
+  0%, 100% { transform: translate(0, 0) scale(1); filter: none; }
+  10% { transform: translate(-16px, -10px) rotate(-2.2deg) scale(1.03); filter: invert(0.95) contrast(2.2); }
+  20% { transform: translate(16px, 12px) rotate(2.2deg) scale(1.04); filter: hue-rotate(-30deg) contrast(1.8) saturate(2.2); }
+  32% { transform: translate(-14px, 8px) rotate(-1.6deg) scale(1.02); filter: invert(0.85) contrast(2); }
+  45% { transform: translate(12px, -8px) rotate(1.4deg) scale(1.015); filter: contrast(1.5) saturate(1.8); }
+  60% { transform: translate(-8px, 6px) rotate(-0.8deg); filter: none; }
+  78% { transform: translate(5px, -4px) rotate(0.4deg); }
+}
+
+.floating-dmg-item.blackFlash {
+  color: #ffffff !important;
+  font-size: 1.65rem !important;
+  font-weight: 900 !important;
+  text-shadow: 0 0 14px #ff0033, 0 0 28px #e11d48, 2px 2px 0 #000000 !important;
+}
+
+

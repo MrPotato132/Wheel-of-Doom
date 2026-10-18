@@ -121,8 +121,10 @@
               <option value="dryadOrigin">Dryad Nature Spirit Sub-Wheel</option>
               <option value="merfolkLineage">Merfolk Aquatic Lineage Sub-Wheel</option>
               <option value="reincarnationSoul">Past Season Arena Legend Sub-Wheel</option>
+              <option value="disasterCurseType">JJK Disaster Curse Lineage Sub-Wheel</option>
             </optgroup>
             <optgroup label="Archetype Modifier Sub-Wheels">
+              <option value="cursedVesselFingers">JJK Cursed Vessel (1–20 Sukuna Fingers) Sub-Wheel</option>
               <option value="slayerPrey">Slayer Prey Target Sub-Wheel</option>
               <option value="mageRank">Mage Academy Rank Sub-Wheel</option>
               <option value="paladinPowers">Paladin Sacred Miracles Sub-Wheel</option>
@@ -226,6 +228,17 @@
             </div>
           </div>
 
+          <!-- Black Flash (Kokusen) Multi-Bolt Spatial Distortion Overlay -->
+          <div class="arena-blackflash-overlay hidden" id="arenaBlackFlashOverlay">
+            <div class="blackflash-strobe-layer" id="blackFlashStrobeLayer"></div>
+            <canvas class="blackflash-canvas" id="arenaBlackFlashCanvas" width="900" height="450"></canvas>
+            <div class="blackflash-banner-wrap" id="blackFlashBannerWrap">
+              <span class="blackflash-kanji">黒閃</span>
+              <h2 class="blackflash-title" id="blackFlashTitle">BLACK FLASH!</h2>
+              <p class="blackflash-sub" id="blackFlashSub">SPATIAL DISTORTION • ^2.5 CRITICAL IMPACT</p>
+            </div>
+          </div>
+
           <!-- Floating Damage Text Container -->
           <div class="floating-damage-container" id="floatingDamageLayer"></div>
           
@@ -297,6 +310,7 @@
               <button class="speed-btn" data-speed="4">4x ⚡</button>
             </div>
             <button class="btn btn-sm btn-secondary" id="btnPauseBattle">⏸️ Pause</button>
+            <button class="btn btn-sm btn-secondary" id="btnTestBlackFlash" style="border-color:#ef4444;color:#fca5a5;" title="Preview the ultra-flashy Black Flash (Kokusen) impact storm!">⚡⚫ Test Black Flash</button>
           </div>
         </div>
 

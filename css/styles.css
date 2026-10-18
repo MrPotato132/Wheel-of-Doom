@@ -6,27 +6,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Fjalla+One&family=Outfit:wght@300;400;600;700;800&display=swap');
 
 :root {
+  /* ============================================================
+     WOF ARENA CORE THEME TOKENS (Sapphire / Midnight Blue / Titanium)
+     ============================================================ */
+  /* Surfaces & Backgrounds */
   --bg-primary: #060b14;
   --bg-card: rgba(10, 20, 38, 0.88);
   --bg-card-hover: rgba(16, 32, 60, 0.94);
   --bg-glass: rgba(8, 18, 34, 0.72);
   
+  /* Primary Sapphire & Midnight Blue Palette */
   --blue-primary: #2563eb;
   --blue-deep: #1e3a8a;
   --blue-bright: #38bdf8;
   --blue-glow: rgba(56, 189, 248, 0.4);
   
+  /* Electric Cyan Accents & Glows */
   --cyan-accent: #00f0ff;
   --cyan-glow: rgba(0, 240, 255, 0.35);
+  --cyan-celestial: #06b6d4;
   
+  /* Brushed Titanium & Silver Metals */
   --silver-primary: #cbd5e1;
   --silver-bright: #f8fafc;
   
+  /* Border Tokens */
   --border-blue: rgba(56, 189, 248, 0.32);
   --border-silver: rgba(148, 163, 184, 0.22);
   --border-gold: rgba(245, 158, 11, 0.35);
   --border-crimson: rgba(239, 68, 68, 0.35);
   
+  /* Unified Accent Aliases */
   --crimson-primary: #2563eb;
   --crimson-deep: #1d4ed8;
   --crimson-glow: rgba(37, 99, 235, 0.45);
@@ -35,18 +45,20 @@
   --gold-bright: #00f0ff;
   --gold-glow: rgba(0, 240, 255, 0.4);
   
-  --cyan-celestial: #06b6d4;
   --purple-arcane: #a855f7;
   
+  /* Typography Colors */
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   
+  /* Border Radii */
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 22px;
   --radius-full: 9999px;
   
+  /* Font Stacks */
   --font-heading: 'Cinzel', serif;
   --font-accent: 'Fjalla One', sans-serif;
   --font-body: 'Outfit', sans-serif;
@@ -2735,3 +2747,42 @@ canvas#wheelCanvas:active {
   border-radius: var(--radius-full);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
+
+/* ============================================================
+   FLOATING SANDBOX LAB SHORTCUT (Creative Director Mode)
+   ============================================================ */
+.btn-floating-sandbox {
+  position: fixed;
+  bottom: 20px;
+  right: 22px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(7, 18, 38, 0.88);
+  border: 1px solid var(--border-blue);
+  color: var(--blue-bright);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 14px var(--cyan-glow);
+  backdrop-filter: blur(8px);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-floating-sandbox:hover {
+  background: rgba(14, 116, 144, 0.9);
+  border-color: var(--cyan-accent);
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 240, 255, 0.6);
+}
+
+.btn-floating-sandbox:active {
+  transform: translateY(0) scale(0.98);
+}
+

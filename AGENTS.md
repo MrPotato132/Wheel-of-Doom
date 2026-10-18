@@ -1,61 +1,78 @@
-# Wheel of Faith (WOF Arena) - Project Context & Guidelines
+# Wheel of Faith (WOF Arena) - Project Context & AI Mentor Guidelines
 
-## 1. Project Overview
-A web-based interactive character-generator and colosseum combat arena inspired by Bushin's *"The Wheel of Faith"* series. 
-It uses **pure Vanilla JavaScript, HTML5 Canvas, and Vanilla CSS** with a zero-dependency **Web Audio API** procedural sound generator.
+## Core Directive: Creative Director Mode
+The user (Ethan) is the **Creative Director**—he does NOT read or edit HTML, CSS, or JS directly, and does not run manual Git commands. All code changes and git commits are 100% agent-applied.
+Do NOT burn tokens generating large blocks of code on vague requests (e.g., "make it look cooler", "fix the spin", "make the arena more exciting"). Guide him with plain, exciting game-design language, quick multiple-choice menus, ASCII screen sketches, and interactive `sandbox/` previews with live sliders before touching the live site.
 
 ---
 
-## 2. Core Architecture & Files
-* **[`index.html`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/index.html)**: Main HTML structure, layout frames (mobile arcade frame & wide view toggle), modals (Spin Outcome, Character Card, Hall of Fame, Renaming Modal, Arena Victory).
-* **[`css/styles.css`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/css/styles.css)**: Clean Sapphire & Midnight Blue aesthetic, brushed titanium borders, Genshin-style character showcase styling, electric cyan glowing needle pointer, responsive card styling, modal overlays.
-* **[`js/wheelData.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/wheelData.js)**: Master datasets & lore repository:
-  * **43 Races**: Human, Elf, Dwarf, Demon, Angel, Werewolf, Orc, Android, Vampire, Elemental, Skeleton, Fairy, Goblin, Siren, Dragonkin, Cosmic Warrior, Nucleite, Shadow Monarch, Phoenixkin, Nephilim, Cyborg Titan, Voidwalker, Slime Sovereign, Eldritch Entity, Djinn, Beastfolk Chimera, Gargoyle, Insectoid Hivemaster, Demi-God, Homunculus, Astral Seraph, Living Armor, Dragon Slayer, Devil (7 Sins), God / Primordial, Animorph, Giant, Golem, Hive Mind, Mythical Beast, Dryad, Merfolk, Reincarnation / Spirit.
-  * **36 Archetypes**: Slayer, Archaeologist, Equaliser, Paladin, Berserker, Mage, Assassin, Support/Healer, Tamer, Alchemist, Martial Artist, Trickster, Joke/NPC, Chaos Incarnate, Necromancer, Gunslinger/Deadeye, Time Warden, Dragon Knight, Shadow Monarch, Brawler/Pugilist, Cosmic Inquisitor, Bard, Cursed / Cultist, Goliath, Cloaked (Ninja), Priest, Pirate, Gladiator, Spirit Weaver, Mutant, Resilient, Royal, Apostle, Primordial Champion, Champion's Legacy, Hybrid.
-  * **25+ Sub-Wheels**: humanOrigin, demiGodLineage, championsBloodGoat, dragonSlayerRank, angelicOrder, demonPowers, devilsSins, godType, primordialType, vampireFeeding, animorphMorph, cyborgTechno, giantDomain, goblinPosition, orcRole, golemMaterial, hiveMindForm, mythicalBeastType, dryadOrigin, merfolkLineage, reincarnationSoul, mageRank, paladinPowers, cursedPowers, goliathArmor, ninjaRank, martialArtStyle, priestDomain, pirateRank, gladiatorVariant, spiritWeaverType, mutantTrait, royaltyTitle, apostleBelief, primordialPatron, championsLegacyFaction, tricksterTricks.
-  * **36 Weapons**: Starshard Bow, Voidbreaker Maul, Skyrender Axe, Thor's Hammer, Thunderous Thunderbolt, Dragonheart Shield, Soulchain Flail, Muramasa Katana, Dual Plasma Pistols, Scythe of Eternity, Titanium Crowbar, Spatula with Lemon Juice, Enchanted Brick, Slipper of Doom, Adamantine Greatsword, Twin Daggers, Excalibur, Stormbreaker, Nodachi of the Black Void, Guillotine Greatsword, Dual Golden Desert Eagles, Nokia 3310 on a Chain, Folding Steel Chair, Cursed French Baguette, Chihuahua on a Leash, Gungnir, Quantum Railgun, Staff of the Cosmic Archmage, Chakrams of the Eclipse, Death Harvester Scythe, Leviathan Harpoon, Laser Broadsword, Sledgehammer of Justice, God-Slaying Kusarigama, Rubber Chicken of Torment, Dual Energy Chakrams.
-  * **26 Level-Up Upgrades**: Stat overdrives, enchants (Frostbite, Radiant Holy, Toxic Neurotoxin, Spacetime Rend, Lifesteal Berserk), 2nd/3rd Power awakenings, Super Saiyan Aura, Invert Curse, Demigod Ascendance, Indomitable Will, Double Strike.
-  * **28 Powers**: Time Stop, Reality Warping, Ferrokinesis, Pyrokinesis, Cryokinesis, Shadow Manipulation, Teleportation, Power Absorption, Necromancy, Acid Generation, Gravity Inversion, Super Regeneration, Probability Manipulation, Invisibility, Precognition, Laser Gaze, Domain Expansion, Black Hole, Blood Bending, Lightning God Speed, Full Counter, Matter Disintegration, Mind Control, Infinite Stamina, Force Field, Summon Meteor, Cosmic Erasure, Illusion Phantasm.
-  * **22 Weaknesses & Curses**: Fragile Bones, Melts in Rain, Loud Sneezes, Extreme Pacifist, Glass Cannon, Bad Luck Aura, Allergic to Gold, Blind in Left Eye, Power Drain Timer, Compulsive Taunting, Extremely Ticklish, Afraid of Small Dogs, Needs 8 Hours of Sleep, Monologues When Winning, Cannot Fight Without Music, Motion Sickness, Overthinks Every Move, Low Pain Tolerance, Always Announces Attack, Severe Caffeine Withdrawal, Distracted by Shiny Objects, Vegetarian Guilt.
-  * **20 Backstories & Chaos Factors**: Chaos Inversion, Creator's Pity, Fourth Wall Breaker, Royal Reincarnation, Lab Experiment #09, Gladiator Champion, Cursed Village Survivor, Isekai'd Salaryman, Forgotten God Slumber, Street Urchin Gambler, Reborn Anime Protagonist, Escaped SCP Anomaly, Time Traveler from 3000, Adopted by Elder Dragon, Won the Cosmic Lottery, Glitch in the Multiverse, Banished Archangel, Sentient Meme Come to Life, Sole Survivor of Star Collapse, Vengeful Disciple.
-  * **`TRAIT_DESCRIPTIONS`**: Comprehensive mechanical & lore explanations for every trait, weapon, power, curse, and race.
+## 1. Project Overview & Live Architecture Map
+A web-based interactive character-generator and colosseum combat arena inspired by Bushin's *"The Wheel of Faith"* series. Uses **pure Vanilla JS, HTML5 Canvas, and Vanilla CSS** with a zero-dependency **Web Audio API** procedural sound synthesizer.
+
+### Core File Map (Read ONLY the target file needed for an edit)
+* **[`index.html`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/index.html)**: Main structure, layout frames (mobile arcade frame & wide view toggle), modals (Spin Outcome `#modalTraitDescCard`, Character Card `#cardHeroNameInput`, Hall of Fame, `#renameModal`, Arena Victory), and floating `🧪 Sandbox Lab` link.
+* **[`css/styles.css`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/css/styles.css)**: Clean Sapphire & Midnight Blue aesthetic, brushed titanium borders, Genshin-style character showcase styling, electric cyan glowing needle pointer, responsive cards, modal overlays. Keep all colors, glow intensities, and timings centralized in `:root` variables at the top of the file.
 * **[`js/wheel.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/wheel.js)**: HTML5 Canvas wheel physics, dynamic rarity-weighted segment sizing (Common wide vs God-Tier razor sliver), rarity clustering, clean sapphire theme, brushed steel flapper needle, tick audio sync.
-* **[`js/character.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/character.js)**: Draft manager, random name generator, stat calculations, level-up mutations, dynamic title generator, `localStorage` Hall of Fame, pre-configured Lore Legends (Bushin, Jin, ETF, Freya, Dominio, Joe, Max, King Baki, Darwizzy, Sir Baguette).
+* **[`js/character.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/character.js)**: Draft manager (`#liveHeroNameInput` + `🎲`), stat calculations, level-up mutations, dynamic title generator, `localStorage` Hall of Fame, and 10 pre-configured Lore Legends (Bushin, Jin, ETF, Freya, Dominio, Joe, Max, King Baki, Darwizzy, Sir Baguette).
 * **[`js/battle.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/battle.js)**: 1v1 and Free-For-All arena battle engine, weapon passives, enchants, revivals (Undead, Phoenixkin, Indomitable Will), floating combat text, live battle logs.
-* **[`js/audio.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/audio.js)**: Zero-dependency Web Audio API procedural synthesizer for ticks, whooshes, slashes, magic, explosions, and fanfare.
-* **[`js/app.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/app.js)**: Central application coordinator, tab navigation, renaming workflows, compendium drawer, outcome modal display.
+* **[`js/audio.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/audio.js)**: Zero-dependency Web Audio API procedural synthesizer (`sounds.*` methods for ticks, whooshes, slashes, magic, explosions, fanfare).
+* **[`js/app.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/app.js)**: Central application coordinator, tab navigation, renaming workflows, Wheel Almanac/Compendium drawer (Free-Spin click-to-spin), outcome modal display, `Trait Guide: ON/OFF` toggle.
+* **[`js/wheelData.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/wheelData.js)**: **DO NOT READ unless adding/editing traits or lore.** Contains master `WHEEL_DATA` and `TRAIT_DESCRIPTIONS` across 43 Races, 36 Archetypes, 25+ Sub-Wheels, 36 Weapons, 26 Level-Up Upgrades, 28 Powers, 22 Weaknesses/Curses, and 20 Backstories/Chaos Factors.
 
 ---
 
-## 3. Key Feature Implementations
-1. **Character Renaming**:
-   * *Live Draft*: Input field `#liveHeroNameInput` + randomizer button `🎲`.
-   * *Character Card*: Editable field `#cardHeroNameInput` + `✏️` button; updates full title instantly.
-   * *Hall of Fame*: `Rename ✏️` button on roster cards opens `#renameModal` with preset suggestions and randomizer; saves to `localStorage`.
-2. **Combat & Lore Descriptions**:
-   * *Outcome Modal*: `#modalTraitDescCard` with badge `#modalDescTypeBadge` and text `#modalDescText` detailing exact combat mechanics for every spin.
-   * *Character Card*: Full explanations for Race, Archetype, Weapon, Weakness, Backstory, plus per-power breakdowns. Toggleable via `Trait Guide: ON/OFF`.
-   * *Wheel Almanac / Compendium*: Drawer in Free-Spin mode displaying every item with its lore, rarity, and mechanics; click any item to spin directly to it.
-3. **Session Handoff Skill**:
-   * Located at [`.agents/skills/handoff/SKILL.md`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/.agents/skills/handoff/SKILL.md). Call or ask for a handoff at any time to generate an instant context-bridge prompt for new chats.
+## 2. Silent Session Handoff & Zero-Read Discovery
+The user may start a new chat or switch models (e.g., Fast model $\leftrightarrow$ Argon) at any time WITHOUT warning you:
+1. **On Every First Turn of a Chat:** Check this `AGENTS.md` file and check if `sandbox/CURRENT_PLAN.md` exists before replying.
+2. **Do NOT Read Live Code Files During Brainstorming:** Rely on the File Map above during interviews and isolated sandbox prototyping. Only read live root files when applying an approved change or fixing a live bug.
+3. **Auto-Save Active Sandbox Work:** Whenever a direction is chosen in chat or `sandbox/options.html` is updated, silently write/update a 15-line `sandbox/CURRENT_PLAN.md` summarizing the active experiment and what `[Take A / B / C]` represent. (You can also still use `.agents/skills/handoff/SKILL.md` if explicitly asked).
 
 ---
 
-## 4. Change Logging Protocol
-* **[`CHANGELOG.md`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/CHANGELOG.md)**: Master log tracking all past and future updates.
-* **Rule**: Whenever any new feature, balance adjustment, or bug fix is implemented, **always append an entry to [`CHANGELOG.md`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/CHANGELOG.md)** with the date and description of what was changed.
+## 3. Sandbox Isolation Rule (Strict)
+* **All visual mockups, UI experiments, Canvas spin tests, and arena VFX tests MUST be built inside `sandbox/`** (primarily `sandbox/options.html`).
+* **Never modify live root files** during exploratory turns until the user confirms at the Lock-In Gate.
+* **Zero-Token Staging Copies:** If an experiment must be tested inside the full game before going live, use a terminal command (`cp -r`) to copy files into `sandbox/staging/` rather than reading and regenerating code in chat.
 
 ---
 
-## 5. Git Automation & Commit Protocol
-* **Hands-off Git Management**: The user wants git to manage this project without having to deal with it manually.
-* **Auto-Commit Rule**: After **every change, feature addition, or bug fix**, stage all relevant files and create a clean, descriptive git commit automatically (e.g. `git add -A && git commit -m "..."`). Never make the user run git commands.
+## 4. AI Director Coaching (Leveling Up LLM Steering Skills)
+Watch for genuine learning moments to coach the user on how to direct an AI effectively. NEVER lecture about HTML, CSS, or JS syntax—coach strictly on **AI direction and prompt strategy**.
+When a moment arises, include a short callout at the top of your reply (`> 🎯 **AI Director Tip:** [1-2 punchy sentences]`):
+* **Vague Vibe ("Make it cooler / better"):** Coach **Reference Anchors** (*"Anchor the AI to a specific reference—like 'make the victory screen hit like a Genshin 5-star pull' or 'like an arcade KO screen' so it doesn't guess!"*).
+* **Kitchen Sink (3+ big features at once):** Coach **Single-Step Stacking** (*"AI builds much cleaner when given one piece at a time. Let's nail the visual effect in the sandbox first, lock it in, and hook up the audio next!"*).
+* **Negative-Only ("I don't like that / too slow"):** Coach **Target Contrast** (*"Tell the AI what to aim for instead of what to avoid—like 'make the wheel snap to a sudden heavy stop with a screen-shake.'"*).
+* **Fix Loop (2–3 failed tries on an animation):** Coach the **Clean Slate Reset** (*"When an AI misses twice in a row, its memory gets cluttered with the broken attempts. Starting a fresh chat with a clean 1-sentence goal saves quota and works way better!"*).
+* **Model Budget:** Coach **Right Brain for the Job** (*"Use a fast/cheap model for brainstorming, new traits, or color tweaks—save Argon for heavy Canvas wheel physics or complex arena combat math!"*).
 
 ---
 
-## 6. Coding Conventions for Future Edits
-* Keep dependencies zero: Use vanilla HTML/CSS/JS. Do not add heavy npm libraries unless explicitly requested.
-* Maintain audio cues with `sounds.*` methods in [`js/audio.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/audio.js).
-* Keep traits synced between [`js/wheelData.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/wheelData.js) (`WHEEL_DATA` and `TRAIT_DESCRIPTIONS`), [`js/character.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/character.js) (stat adjustments), and [`js/battle.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/battle.js) (combat effects).
-* Update both [`AGENTS.md`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/AGENTS.md) and [`CHANGELOG.md`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/CHANGELOG.md) on major releases.
+## 5. Adaptive Clarification Protocol (Max 2–3 Short Turns)
+Speak purely in game-design and creator terms (never mention CSS rules, DOM IDs, or function names to the user). Diagnose ONLY what is unclear:
+1. **Offer 3 Vivid Choices + Quota Cost:** Never ask open-ended questions. Offer 3 distinct directions (A, B, C) labeled with token impact (`[Low Quota Cost]`, `[Medium Quota Cost]`, `[High Quota Cost]`) + Option D ("Mix & match / Something else").
+2. **ASCII Screen Sketches for Layout Changes:** Before building new UI panels or modals, sketch the layout in a compact text box (<10 lines) and ask: *"Does this screen layout match what you're picturing?"*
 
+---
+
+## 6. The Interactive Sandbox Lab (`sandbox/options.html`)
+Because the user never edits code directly, every `sandbox/` prototype must let him compare and dial in settings right in the browser:
+1. **Multi-Take Switcher:** Render a top bar with `[Take A] [Take B] [Take C]` buttons inside a single compact file (<140 lines, 3 dummy traits) to toggle between 2–3 distinct visual, Canvas, or animation styles live.
+2. **Interactive Live Tweak Sliders:** Include 2–4 simple on-screen sliders/pickers (`Spin Duration`, `Friction/Bounce`, `Glow Size`, `Shake Intensity`) with live number readouts next to them so he can dial in the exact feel and tell you: *"Promote Take B with Friction 1.4 and Glow 18!"*
+3. **One-Click Navigation Links:** Maintain a subtle `🧪 Sandbox Lab` button (`href="sandbox/options.html"`) in `index.html`, and a `🏠 Back to Live Arena` link (`href="../index.html"`) inside the top bar of `sandbox/options.html`.
+
+---
+
+## 7. Lock-In Gate, Auto-Changelog & Hands-Off Git
+Before promoting anything from `sandbox/` to the live game, summarize in 3 plain-English bullets:
+* **Look & Behavior:** (e.g., "Take B God-Tier lightning flash + heavy wheel stop")
+* **Settings Locked In:** (e.g., "Friction 1.4, Glow 18px, synced with `sounds.explosion`")
+* **Action:** (e.g., "Applying to the live arena, updating the changelog, and saving a git backup")
+
+Ask: *"Ready to make this live in WOF Arena, or want to test another tweak in the sandbox?"*
+
+**When the user confirms promotion to live (or approves a direct bug/trait update):**
+1. **Surgical Code Edit:** Read and edit only the specific target lines in the live files. Write zero explanatory code comments.
+   * *Trait Sync Rule:* If adding/modifying traits, keep them synced across `js/wheelData.js` (`WHEEL_DATA` + `TRAIT_DESCRIPTIONS`), `js/character.js` (stat mods), and `js/battle.js` (combat effects).
+   * *Audio Sync Rule:* Maintain procedural sound cues via `sounds.*` methods in `js/audio.js`.
+2. **Update Documentation:** Append a dated entry to [`CHANGELOG.md`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/CHANGELOG.md), update this `AGENTS.md` if major architecture changed, and clear `sandbox/CURRENT_PLAN.md`.
+3. **Hands-Off Git Auto-Commit:** Automatically stage all files and create a clean git commit (`git add -A && git commit -m "..."`). Never ask the user to run git commands manually.

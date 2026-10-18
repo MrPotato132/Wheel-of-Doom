@@ -5,10 +5,21 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
 ---
 
 ## [Unreleased / In-Progress]
+- [x] Initialized Sandbox Lab workflow and theme variables.
 - [ ] Customizable sound packs / sound volume sliders.
 - [ ] Arena Tournament Bracket mode (Quarter-finals, Semi-finals, Finals).
 - [ ] Export battle replay / animated combat GIF or WebM.
 - [ ] Boss Raid Mode (All arena fighters team up against Calamity Bosses).
+
+---
+
+## [v2.3.1] - 2026-10-18
+### Added
+- **Creative Director Sandbox Lab (`sandbox/options.html`, `index.html`)**:
+  - Initialized isolated Sandbox Lab workflow matching AGENTS.md directives.
+  - Added subtle floating `🧪 Sandbox Lab` shortcut button to live arena (`index.html`).
+  - Created standalone starter sandbox environment (`sandbox/options.html`) featuring multi-take style selector (`Take A`, `Take B`, `Take C`) and dynamic live parameter sliders (Glow, Shake, Speed) with instant DOM feedback.
+  - Cleanly grouped and documented all core theme tokens (`:root` CSS variables) in `css/styles.css` without modifying live pixel output.
 
 ---
 

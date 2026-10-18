@@ -641,49 +641,256 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function drawCharacterAvatar(char) {
     const avatarContainer = document.getElementById('cardAvatarContainer');
+    if (!avatarContainer) return;
+
     const raceName = char.race ? char.race.text : 'Human';
+    const archetypeName = char.archetype ? char.archetype.text : 'Warrior';
+    const powerName = char.powers && char.powers.length ? char.powers[0].text : '';
+    const rarity = char.race ? (char.race.rarity || 'common') : 'common';
+    const auraColor = char.race ? (char.race.color || '#38bdf8') : '#38bdf8';
 
-    const raceEmojis = {
-      Human: '⚔️',
-      Elf: '🧝',
-      Dwarf: '⚒️',
-      Demon: '👿',
-      Angel: '😇',
-      Werewolf: '🐺',
-      Orc: '👹',
-      Android: '🤖',
-      Vampire: '🧛',
-      Elemental: '🔥',
-      Skeleton: '💀',
-      Fairy: '🧚',
-      Goblin: '👺',
-      Siren: '🧜',
-      Dragonkin: '🐲',
-      'Cosmic Warrior': '🌌',
-      Nucleite: '☣️',
-      'Shadow Monarch': '👑',
-      Phoenixkin: '🦅',
-      Nephilim: '🪽',
-      'Cyborg Titan': '🦾',
-      Voidwalker: '🌌',
-      'Slime Sovereign': '🫧',
-      'Eldritch Entity': '🐙',
-      'Djinn (Genie)': '🧞',
-      'Beastfolk Chimera': '🦁',
-      Gargoyle: '🗿',
-      'Insectoid Hivemaster': '🦗',
-      'Demi-God': '⚡',
-      Homunculus: '🧪',
-      'Astral Seraph': '✨',
-      'Living Armor': '🛡️'
-    };
+    // 1. Determine Genshin-style Star Rating
+    let stars = '★★★';
+    let starClass = 'stars-3';
+    if (rarity === 'godTier' || rarity === 'mythic') {
+      stars = '★★★★★';
+      starClass = 'stars-5';
+    } else if (rarity === 'legendary' || rarity === 'epic') {
+      stars = '★★★★';
+      starClass = 'stars-4';
+    }
 
-    const emoji = raceEmojis[raceName] || '👑';
-    const auraColor = char.race ? char.race.color : '#b3131b';
+    // 2. Determine Elemental Affinity & Vision
+    let elemIcon = '⚡';
+    let elemName = 'ELECTRO';
+    let elemColor = '#38bdf8';
+    const pLower = (powerName + ' ' + raceName).toLowerCase();
+
+    if (pLower.includes('pyro') || pLower.includes('fire') || pLower.includes('flame') || pLower.includes('magma') || pLower.includes('phoenix') || pLower.includes('eruption')) {
+      elemIcon = '🔥';
+      elemName = 'PYRO';
+      elemColor = '#ef4444';
+    } else if (pLower.includes('cryo') || pLower.includes('ice') || pLower.includes('frost') || pLower.includes('blizzard')) {
+      elemIcon = '❄️';
+      elemName = 'CRYO';
+      elemColor = '#06b6d4';
+    } else if (pLower.includes('wind') || pLower.includes('tempest') || pLower.includes('hurricane') || pLower.includes('gale') || pLower.includes('fairy')) {
+      elemIcon = '🌪️';
+      elemName = 'ANEMO';
+      elemColor = '#10b981';
+    } else if (pLower.includes('earth') || pLower.includes('stone') || pLower.includes('golem') || pLower.includes('dwarf') || pLower.includes('mountain')) {
+      elemIcon = '⛰️';
+      elemName = 'GEO';
+      elemColor = '#f59e0b';
+    } else if (pLower.includes('water') || pLower.includes('ocean') || pLower.includes('tsunami') || pLower.includes('siren') || pLower.includes('merfolk') || pLower.includes('tidal')) {
+      elemIcon = '💧';
+      elemName = 'HYDRO';
+      elemColor = '#0284c7';
+    } else if (pLower.includes('shadow') || pLower.includes('void') || pLower.includes('death') || pLower.includes('abyss') || pLower.includes('necro') || pLower.includes('curse')) {
+      elemIcon = '🌌';
+      elemName = 'ABYSS';
+      elemColor = '#8b5cf6';
+    } else if (pLower.includes('angel') || pLower.includes('seraph') || pLower.includes('holy') || pLower.includes('light') || pLower.includes('divine') || pLower.includes('demi-god')) {
+      elemIcon = '✨';
+      elemName = 'LUMEN';
+      elemColor = '#fbbf24';
+    }
+
+    // 3. Select Stylized Full-Body Silhouette Type
+    let bodyType = 'warrior';
+    const rLower = raceName.toLowerCase();
+    const aLower = archetypeName.toLowerCase();
+
+    if (rLower.includes('angel') || rLower.includes('seraph') || rLower.includes('nephilim')) {
+      bodyType = 'celestial';
+    } else if (rLower.includes('demon') || rLower.includes('devil') || rLower.includes('shadow') || aLower.includes('cursed') || aLower.includes('cultist')) {
+      bodyType = 'infernal';
+    } else if (rLower.includes('dragon') || aLower.includes('dragon')) {
+      bodyType = 'dragon';
+    } else if (rLower.includes('android') || rLower.includes('cyborg') || rLower.includes('nucleite')) {
+      bodyType = 'cyber';
+    } else if (rLower.includes('werewolf') || rLower.includes('chimera') || rLower.includes('beast') || rLower.includes('animorph')) {
+      bodyType = 'beast';
+    } else if (rLower.includes('giant') || rLower.includes('golem') || rLower.includes('orc') || aLower.includes('goliath')) {
+      bodyType = 'titan';
+    } else if (aLower.includes('mage') || aLower.includes('lich') || rLower.includes('djinn') || aLower.includes('alchemist') || aLower.includes('spirit')) {
+      bodyType = 'mage';
+    } else if (rLower.includes('elf') || aLower.includes('ninja') || aLower.includes('assassin') || aLower.includes('gunslinger')) {
+      bodyType = 'scout';
+    }
+
+    // 4. Render Full-Body Vector SVG Silhouettes
+    let bodySvg = '';
+    if (bodyType === 'celestial') {
+      bodySvg = `
+        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Wings -->
+          <path d="M80 60 C50 10 10 20 5 60 C0 90 30 110 75 100 Z" fill="${elemColor}" opacity="0.35"/>
+          <path d="M80 60 C110 10 150 20 155 60 C160 90 130 110 85 100 Z" fill="${elemColor}" opacity="0.35"/>
+          <!-- Halo -->
+          <ellipse cx="80" cy="22" rx="20" ry="6" stroke="${elemColor}" stroke-width="2.5" fill="none" filter="drop-shadow(0 0 4px ${elemColor})"/>
+          <!-- Head -->
+          <circle cx="80" cy="38" r="12" fill="#f8fafc"/>
+          <!-- Torso & Armor -->
+          <path d="M72 52 L88 52 L94 95 L66 95 Z" fill="#e2e8f0"/>
+          <!-- Flowing Cape / Robes -->
+          <path d="M66 95 L94 95 L110 185 L50 185 Z" fill="${elemColor}" opacity="0.4"/>
+          <!-- Legs -->
+          <rect x="70" y="95" width="8" height="90" rx="3" fill="#cbd5e1"/>
+          <rect x="82" y="95" width="8" height="90" rx="3" fill="#cbd5e1"/>
+          <!-- Holy Blade -->
+          <line x1="105" y1="35" x2="105" y2="180" stroke="#f8fafc" stroke-width="3" filter="drop-shadow(0 0 5px ${elemColor})"/>
+          <line x1="97" y1="65" x2="113" y2="65" stroke="#fbbf24" stroke-width="3"/>
+        </svg>
+      `;
+    } else if (bodyType === 'infernal') {
+      bodySvg = `
+        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Demon Wings -->
+          <path d="M80 75 Q40 25 15 50 Q30 90 10 110 Q50 120 75 100 Z" fill="${elemColor}" opacity="0.4"/>
+          <path d="M80 75 Q120 25 145 50 Q130 90 150 110 Q110 120 85 100 Z" fill="${elemColor}" opacity="0.4"/>
+          <!-- Horns -->
+          <path d="M73 34 Q65 10 50 16 Q64 26 73 36 Z" fill="${elemColor}"/>
+          <path d="M87 34 Q95 10 110 16 Q96 26 87 36 Z" fill="${elemColor}"/>
+          <!-- Head -->
+          <circle cx="80" cy="40" r="11" fill="#cbd5e1"/>
+          <!-- Chestplate -->
+          <polygon points="68,54 92,54 98,95 62,95" fill="#1e293b" stroke="${elemColor}" stroke-width="1.5"/>
+          <!-- Legs -->
+          <rect x="69" y="95" width="9" height="95" rx="3" fill="#0f172a"/>
+          <rect x="82" y="95" width="9" height="95" rx="3" fill="#0f172a"/>
+          <!-- Dual Jagged Scythes -->
+          <path d="M40 30 Q25 70 45 180" stroke="${elemColor}" stroke-width="3.5"/>
+          <path d="M40 30 Q15 20 10 45 Q25 40 40 30" fill="${elemColor}"/>
+        </svg>
+      `;
+    } else if (bodyType === 'dragon') {
+      bodySvg = `
+        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Draconic Horns & Crest -->
+          <path d="M72 32 Q55 12 40 22 Q58 32 72 36" fill="${elemColor}"/>
+          <path d="M88 32 Q105 12 120 22 Q102 32 88 36" fill="${elemColor}"/>
+          <!-- Dragon Wings -->
+          <polygon points="80,70 15,35 30,110 75,100" fill="${elemColor}" opacity="0.35"/>
+          <polygon points="80,70 145,35 130,110 85,100" fill="${elemColor}" opacity="0.35"/>
+          <!-- Head -->
+          <circle cx="80" cy="38" r="12" fill="#f8fafc"/>
+          <!-- Heavy Dragonscale Armor -->
+          <polygon points="66,54 94,54 100,105 60,105" fill="#334155" stroke="${elemColor}" stroke-width="2"/>
+          <!-- Tail -->
+          <path d="M78 120 Q120 150 115 195" stroke="${elemColor}" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <!-- Legs -->
+          <rect x="68" y="105" width="10" height="85" rx="4" fill="#1e293b"/>
+          <rect x="82" y="105" width="10" height="85" rx="4" fill="#1e293b"/>
+          <!-- Greatsword -->
+          <polygon points="112,30 118,30 119,165 111,165" fill="#f8fafc" stroke="${elemColor}" stroke-width="1.5"/>
+        </svg>
+      `;
+    } else if (bodyType === 'mage') {
+      bodySvg = `
+        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Mystic Sigil Ring -->
+          <circle cx="80" cy="100" r="55" stroke="${elemColor}" stroke-dasharray="6,4" stroke-width="1.8" opacity="0.45"/>
+          <!-- Head & Hood -->
+          <path d="M68 45 Q80 20 92 45 Q90 55 68 45 Z" fill="${elemColor}"/>
+          <circle cx="80" cy="40" r="10" fill="#f8fafc"/>
+          <!-- Flowing Arcane Robes -->
+          <path d="M65 55 L95 55 L115 190 L45 190 Z" fill="#1e1b4b" stroke="${elemColor}" stroke-width="1.5"/>
+          <path d="M75 55 L85 55 L90 190 L70 190 Z" fill="${elemColor}" opacity="0.5"/>
+          <!-- Floating Arcane Staff & Crystal -->
+          <line x1="110" y1="20" x2="110" y2="190" stroke="#f8fafc" stroke-width="3"/>
+          <polygon points="110,12 118,22 110,32 102,22" fill="${elemColor}" filter="drop-shadow(0 0 6px ${elemColor})"/>
+        </svg>
+      `;
+    } else if (bodyType === 'titan') {
+      bodySvg = `
+        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Colossal Shoulders -->
+          <polygon points="50,45 110,45 120,70 40,70" fill="${elemColor}" opacity="0.45"/>
+          <!-- Head & Helm -->
+          <circle cx="80" cy="38" r="13" fill="#64748b"/>
+          <rect x="74" y="32" width="12" height="4" fill="${elemColor}"/>
+          <!-- Massive Chestplate -->
+          <rect x="54" y="68" width="52" height="45" rx="6" fill="#1e293b" stroke="${elemColor}" stroke-width="2"/>
+          <!-- Sturdy Legs -->
+          <rect x="58" y="113" width="18" height="85" rx="5" fill="#0f172a" stroke="#334155"/>
+          <rect x="84" y="113" width="18" height="85" rx="5" fill="#0f172a" stroke="#334155"/>
+          <!-- Colossal Warhammer -->
+          <line x1="125" y1="25" x2="125" y2="185" stroke="#64748b" stroke-width="4.5"/>
+          <rect x="110" y="25" width="30" height="24" rx="3" fill="#cbd5e1" stroke="${elemColor}" stroke-width="2"/>
+        </svg>
+      `;
+    } else if (bodyType === 'cyber') {
+      bodySvg = `
+        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Hex Grid Backdrop -->
+          <circle cx="80" cy="100" r="50" stroke="#00f0ff" stroke-width="1" stroke-dasharray="4,4" opacity="0.35"/>
+          <!-- Visor Head -->
+          <rect x="71" y="28" width="18" height="18" rx="4" fill="#1e293b"/>
+          <line x1="72" y1="36" x2="88" y2="36" stroke="#00f0ff" stroke-width="3" filter="drop-shadow(0 0 4px #00f0ff)"/>
+          <!-- Mechanical Chassis -->
+          <polygon points="66,50 94,50 98,95 62,95" fill="#0f172a" stroke="#00f0ff" stroke-width="1.8"/>
+          <!-- Glowing Arc Reactor Core -->
+          <circle cx="80" cy="72" r="7" fill="#00f0ff" filter="drop-shadow(0 0 8px #00f0ff)"/>
+          <!-- Hydraulic Legs -->
+          <rect x="68" y="95" width="10" height="95" rx="2" fill="#334155" stroke="#00f0ff" stroke-width="1"/>
+          <rect x="82" y="95" width="10" height="95" rx="2" fill="#334155" stroke="#00f0ff" stroke-width="1"/>
+          <!-- Plasma Blades -->
+          <line x1="50" y1="55" x2="40" y2="155" stroke="#00f0ff" stroke-width="3" filter="drop-shadow(0 0 5px #00f0ff)"/>
+        </svg>
+      `;
+    } else if (bodyType === 'scout') {
+      bodySvg = `
+        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Trailing Scarf -->
+          <path d="M80 48 Q115 55 125 90 Q120 70 80 54" fill="${elemColor}" opacity="0.6"/>
+          <!-- Hood & Head -->
+          <path d="M70 30 Q80 18 90 30 Q90 48 70 48 Z" fill="#334155"/>
+          <circle cx="80" cy="38" r="9" fill="#f8fafc"/>
+          <!-- Slim Leather Armor -->
+          <polygon points="70,50 90,50 94,92 66,92" fill="#1e293b" stroke="${elemColor}" stroke-width="1.2"/>
+          <!-- Agile Stance Legs -->
+          <rect x="71" y="92" width="7" height="98" rx="2" fill="#0f172a"/>
+          <rect x="82" y="92" width="7" height="98" rx="2" fill="#0f172a"/>
+          <!-- Composite Longbow -->
+          <path d="M42 25 Q32 95 42 165" stroke="#cbd5e1" stroke-width="2.5" fill="none"/>
+          <line x1="42" y1="25" x2="42" y2="165" stroke="${elemColor}" stroke-width="1" opacity="0.8"/>
+        </svg>
+      `;
+    } else {
+      // Default Heroic Warrior
+      bodySvg = `
+        <svg class="genshin-body-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Radiant Crest Aura -->
+          <circle cx="80" cy="85" r="48" stroke="${elemColor}" stroke-width="1.5" opacity="0.35"/>
+          <!-- Head & Knight Helm -->
+          <circle cx="80" cy="36" r="12" fill="#94a3b8"/>
+          <rect x="75" y="34" width="10" height="3" fill="${elemColor}"/>
+          <!-- Cuirass -->
+          <polygon points="66,50 94,50 100,95 60,95" fill="#1e293b" stroke="${elemColor}" stroke-width="1.8"/>
+          <!-- Champion Cape -->
+          <path d="M64 52 L50 180 L75 180 Z" fill="${elemColor}" opacity="0.4"/>
+          <!-- Legs -->
+          <rect x="69" y="95" width="9" height="92" rx="3" fill="#0f172a"/>
+          <rect x="82" y="95" width="9" height="92" rx="3" fill="#0f172a"/>
+          <!-- Colosseum Sword & Shield -->
+          <polygon points="112,32 118,32 117,170 113,170" fill="#f8fafc" stroke="${elemColor}" stroke-width="1.2"/>
+          <ellipse cx="50" cy="95" rx="14" ry="24" fill="#334155" stroke="${elemColor}" stroke-width="2"/>
+        </svg>
+      `;
+    }
 
     avatarContainer.innerHTML = `
-      <div class="avatar-glow-ring" style="box-shadow: 0 0 25px ${auraColor}; border-color: ${auraColor}">
-        <span class="avatar-emoji">${emoji}</span>
+      <div class="genshin-card-showcase" style="--element-color: ${elemColor}; --aura-color: ${auraColor}">
+        <div class="showcase-element-badge" style="background: ${elemColor}">
+          <span class="elem-icon">${elemIcon}</span>
+          <span class="elem-name">${elemName}</span>
+        </div>
+        <div class="showcase-stars ${starClass}">${stars}</div>
+        <div class="showcase-silhouette-stage">
+          ${bodySvg}
+        </div>
+        <div class="showcase-level-pill">Lv. ${char.level || 1}</div>
       </div>
     `;
   }

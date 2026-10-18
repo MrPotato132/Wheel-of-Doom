@@ -21,24 +21,35 @@ const WHEEL_DATA = {
   // 1. RACE WHEEL (32 Distinct Lineages)
   // ============================================================
   race: {
+    'Dragon Slayer': 'Wyrm Hunter Heritage: Trained specifically in ancient anti-dragon martial forms. Naturally resistant to elemental breath and gains +35% armor penetration against scale and heavy beast armor.',
+    'Devil (7 Sins)': 'Infernal Deadly Sin Avatar: Channeler of one of the 7 capital sins. Gains devastating passive stat bonuses and dark hellfire enhancements that overwhelm pure mortal warriors.',
+    'God / Primordial': 'Cosmic Deity Transcendent: Embodiment of a universal concept or divine pantheon. Possesses near-infinite combat potential (+45 All Stats) and reality-bending domain authority.',
+    'Animorph': 'Adaptive Beast Shifter: Capable of mutating biological forms mid-combat to counter opponent weapon ranges and elemental properties.',
+    'Giant': 'Colossal Titan Physiology: Massive stone/terrestrial mass (+50 Durability, +40 Strength, -20 Speed). Unstoppable heavy swings that shatter enemy footing.',
+    'Golem': 'Construct Frame: Inanimate body of animated clay, stone, iron, diamond, or obsidian. Immune to bleeding, poison, and mental panic.',
+    'Hive Mind': 'Swarm Consciousness: Billions of interconnected organisms. Physical attacks only destroy a fraction of the swarm, giving 35% passive damage mitigation.',
+    'Mythical Beast': 'Apex Mythological Creature: The ferocity of legendary monsters (Nemean Lion, Phoenix, Cerberus, Leviathan). High raw stats and innate mythological auras.',
+    'Dryad': 'Primeval Nature Spirit: Birthed from sacred groves and celestial alignments. Passive health regeneration and root entanglements when fighting on earth.',
+    'Merfolk': 'Aquatic Sovereign: Fluid agility and hydrokinetic mastery (+30 SPD, +25 INT). Can summon ocean torrents to disorient and drown enemy fire.',
+    'Reincarnation / Spirit': 'Past Champion Rebirth: Hosts the awakened combat instincts of past tournament GOATs (Achilles, Joe, Sammy, Darwizzy). Starts duels with max tactical IQ.',
     id: 'race',
     name: 'Race Wheel',
     subtitle: 'Determine your mortal, infernal, or celestial origin',
     icon: '👤',
     segments: [
-      { text: 'Human', subtext: 'Middest Race with Infinite Growth', rarity: 'common', color: '#4b5563', subWheel: null },
+      { text: 'Human', subtext: 'Middest Race with Infinite Growth', rarity: 'common', color: '#4b5563', subWheel: 'humanOrigin' },
       { text: 'Elf', subtext: 'Graceful & Rizz-Blessed', rarity: 'uncommon', color: '#047857', subWheel: 'elfOrigin' },
       { text: 'Dwarf', subtext: 'Anti-Magic Blacksmith Master', rarity: 'uncommon', color: '#92400e', subWheel: 'dwarfForge' },
-      { text: 'Demon', subtext: 'Fiery Infernal Conqueror', rarity: 'rare', color: '#991b1b', subWheel: null },
-      { text: 'Angel', subtext: 'Celestial Radiance & Wings', rarity: 'rare', color: '#eab308', subWheel: null },
+      { text: 'Demon', subtext: 'Fiery Infernal Conqueror', rarity: 'rare', color: '#991b1b', subWheel: 'demonPowers' },
+      { text: 'Angel', subtext: 'Celestial Radiance & Wings', rarity: 'rare', color: '#eab308', subWheel: 'angelicOrder' },
       { text: 'Werewolf', subtext: 'Feral Instincts & Full Moon Rage', rarity: 'uncommon', color: '#6b7280', subWheel: null },
-      { text: 'Orc', subtext: 'Brutal Bone Density & Warlord Blood', rarity: 'common', color: '#15803d', subWheel: null },
-      { text: 'Android', subtext: 'Cybernetic Precision & Overcharge Core', rarity: 'rare', color: '#0284c7', subWheel: null },
-      { text: 'Vampire', subtext: 'Blood Magic & Night Sovereign', rarity: 'rare', color: '#881337', subWheel: null },
+      { text: 'Orc', subtext: 'Brutal Bone Density & Warlord Blood', rarity: 'common', color: '#15803d', subWheel: 'orcRole' },
+      { text: 'Android', subtext: 'Cybernetic Precision & Overcharge Core', rarity: 'rare', color: '#0284c7', subWheel: 'cyborgTechno' },
+      { text: 'Vampire', subtext: 'Blood Magic & Night Sovereign', rarity: 'rare', color: '#881337', subWheel: 'vampireFeeding' },
       { text: 'Elemental', subtext: 'Living Natural Calamity', rarity: 'epic', color: '#ea580c', subWheel: 'elementalCalamity' },
       { text: 'Skeleton', subtext: 'Chaotic Bone Rattler', rarity: 'common', color: '#52525b', subWheel: 'skeletonOrigin' },
       { text: 'Fairy', subtext: 'Tiny Hitbox, Multi-Power Menace', rarity: 'epic', color: '#db2777', subWheel: 'fairyBlessing' },
-      { text: 'Goblin', subtext: 'Scrappy Trickster & Gremlin Alchemy', rarity: 'common', color: '#65a30d', subWheel: null },
+      { text: 'Goblin', subtext: 'Scrappy Trickster & Gremlin Alchemy', rarity: 'common', color: '#65a30d', subWheel: 'goblinPosition' },
       { text: 'Siren', subtext: 'Hypnotic Voice of the Deep Abyss', rarity: 'uncommon', color: '#0891b2', subWheel: null },
       { text: 'Dragonkin', subtext: 'Draconic Breath & Ancient Pride', rarity: 'legendary', color: '#c2410c', subWheel: null },
       { text: 'Cosmic Warrior', subtext: 'Galactic Conqueror of Starfields', rarity: 'mythic', color: '#7c3aed', subWheel: 'cosmicTerritory' },
@@ -55,10 +66,21 @@ const WHEEL_DATA = {
       { text: 'Beastfolk Chimera', subtext: 'Apex Multi-Predator Sensory Instincts', rarity: 'uncommon', color: '#854d0e', subWheel: null },
       { text: 'Gargoyle', subtext: 'Living Obsidian Stone Hide & Impenetrable Wings', rarity: 'rare', color: '#334155', subWheel: null },
       { text: 'Insectoid Hivemaster', subtext: 'Hyper-Reflex Chitin Carapace & Swarm', rarity: 'rare', color: '#4d7c0f', subWheel: null },
-      { text: 'Demi-God', subtext: 'Olympian Lineage Blessed with Golden Ichor', rarity: 'legendary', color: '#ca8a04', subWheel: null },
+      { text: 'Demi-God', subtext: 'Olympian Lineage Blessed with Golden Ichor', rarity: 'legendary', color: '#ca8a04', subWheel: 'demiGodLineage' },
       { text: 'Homunculus', subtext: 'Alchemical Prodigy Spliced in Secret Vats', rarity: 'uncommon', color: '#0d9488', subWheel: null },
       { text: 'Astral Seraph', subtext: 'Six-Winged Entity of Pure Sacred Light', rarity: 'mythic', color: '#38bdf8', subWheel: null },
-      { text: 'Living Armor', subtext: 'Hollow Steel Plate Possessed by Ancient Wrath', rarity: 'rare', color: '#57534e', subWheel: null }
+      { text: 'Living Armor', subtext: 'Hollow Steel Plate Possessed by Ancient Wrath', rarity: 'rare', color: '#57534e', subWheel: null },
+      { text: 'Dragon Slayer', subtext: 'Martial Hunter of Draconic Beasts', rarity: 'rare', color: '#c2410c', subWheel: 'dragonSlayerRank' },
+      { text: 'Devil (7 Sins)', subtext: 'Infernal Avatar of Capital Sins', rarity: 'epic', color: '#991b1b', subWheel: 'devilsSins' },
+      { text: 'God / Primordial', subtext: 'Cosmic Abstract Embodiment of Universal Constants', rarity: 'godTier', color: '#06b6d4', subWheel: 'godType' },
+      { text: 'Animorph', subtext: 'Adaptive Beast-Shifter of Shifting Forms', rarity: 'uncommon', color: '#854d0e', subWheel: 'animorphMorph' },
+      { text: 'Giant', subtext: 'Colossal Terrestrial Titan', rarity: 'rare', color: '#334155', subWheel: 'giantDomain' },
+      { text: 'Golem', subtext: 'Inanimate Construct Infused with Arcane Core', rarity: 'uncommon', color: '#57534e', subWheel: 'golemMaterial' },
+      { text: 'Hive Mind', subtext: 'Unified Swarm Consciousness', rarity: 'epic', color: '#4d7c0f', subWheel: 'hiveMindForm' },
+      { text: 'Mythical Beast', subtext: 'Legendary Apex Chimera of Myth', rarity: 'legendary', color: '#b45309', subWheel: 'mythicalBeastType' },
+      { text: 'Dryad', subtext: 'Nature-Bound Spirit of Primeval Forests', rarity: 'uncommon', color: '#16a34a', subWheel: 'dryadOrigin' },
+      { text: 'Merfolk', subtext: 'Aquatic Sovereign of the Ocean Depths', rarity: 'uncommon', color: '#0891b2', subWheel: 'merfolkLineage' },
+      { text: 'Reincarnation / Spirit', subtext: 'Past Season Arena Legend Reborn', rarity: 'legendary', color: '#7c3aed', subWheel: 'reincarnationSoul' },
     ]
   },
 
@@ -148,6 +170,20 @@ const WHEEL_DATA = {
   // 2. ARCHETYPE WHEEL (22 Tactical Combat Roles)
   // ============================================================
   archetype: {
+    'Cursed / Cultist': 'Forbidden Arcana Channeler: Sacrifices mortal safety to brand dark demonic techniques into the arena, unleashing hellfire, necrosis, and soul drain.',
+    'Goliath': 'Defensive Exosuit Juggernaut: Equips massive specialized armor plates (Darwinite, Dragon Scale, Void Fortress) that absorb colossal punishment.',
+    'Cloaked (Ninja)': 'Shadow Infiltration Specialist: Masters silent movement, smoke decoys, and critical ambush strikes that bypass 50% of enemy armor.',
+    'Priest': 'High Cleric of Deific Domains: Channels blessings of War, Wisdom, Sun, or Thunder to cleanse debuffs and smite opponents with holy fury.',
+    'Pirate': 'High-Seas Marauder: Ruthless naval combatant that loots fallen weapons and gains +2 Weapon Mastery with heavy broadside attacks.',
+    'Gladiator': 'Blood-and-Sand Veteran: Masters bare-knuckle combat, beast mutations, or relic weaponry with ferocious low-HP attack multipliers.',
+    'Spirit Weaver': 'Spectral Artisan: Weaves ancestral phantom blades and spirit armor into physical combat, gaining extra power slots and protection.',
+    'Mutant': 'Biophysical Anomaly: Mutates cellular anomalies (Quantum manipulation, Kinetic absorption, Runic flesh) that grant supernatural adaptations.',
+    'Resilient': 'Bad-Luck Protection: If any core attribute rolls below Peak Human (4/10), the warrior automatically re-spins that attribute until it reaches greatness!',
+    'Royal': 'Sovereign Authority: Noble monarchs commanding imperial poise, battlefield leadership, and devastating royal decree stat buffs.',
+    'Apostle': 'Reality-Bending Philosopher: Adheres to absolute philosophical creeds (Existentialism, Determinism, Daoism) that alter the rules of combat.',
+    'Primordial Champion': 'Hand of the Universal Constants: Anointed champion of Time, Eternity, Reality, or Void; commands divine reality-warping strikes.',
+    "Champion's Legacy": "Heir to the GOATs: Fights under the banner of legendary tournament winners (Ethan's Weapon Mimic, Musam's Steaming Honeybun, Boodro's Fortitude).",
+    'Hybrid': 'Dual Archetype Master: Rare prodigy possessing two distinct tactical archetypes simultaneously, fusing their perks and playstyles.',
     id: 'archetype',
     name: 'Archetype Wheel',
     subtitle: 'Your tactical role, playstyle, and combat modifier',
@@ -156,15 +192,15 @@ const WHEEL_DATA = {
       { text: 'Slayer', subtext: 'Deals 200% damage to designated prey', rarity: 'rare', color: '#dc2626', subWheel: 'slayerPrey' },
       { text: 'Archaeologist', subtext: 'Wields ancient forgotten relics', rarity: 'epic', color: '#d97706', subWheel: 'archaeologistRelic' },
       { text: 'Equaliser', subtext: 'Forces divine foes down to equal stats', rarity: 'legendary', color: '#2563eb', subWheel: null },
-      { text: 'Paladin', subtext: 'Unshakable holy aura & defensive barrier', rarity: 'rare', color: '#eab308', subWheel: null },
+      { text: 'Paladin', subtext: 'Unshakable holy aura & defensive barrier', rarity: 'rare', color: '#eab308', subWheel: 'paladinPowers' },
       { text: 'Berserker', subtext: 'Strength multiplies as HP drops', rarity: 'uncommon', color: '#991b1b', subWheel: null },
-      { text: 'Mage', subtext: 'High burst arcane incantations', rarity: 'uncommon', color: '#7c3aed', subWheel: null },
+      { text: 'Mage', subtext: 'High burst arcane incantations', rarity: 'uncommon', color: '#7c3aed', subWheel: 'mageRank' },
       { text: 'Assassin', subtext: 'One-shot potential from unseen shadows', rarity: 'rare', color: '#475569', subWheel: null },
       { text: 'Support / Healer', subtext: 'Regenerates lethal blows & cleanses', rarity: 'common', color: '#16a34a', subWheel: null },
       { text: 'Tamer', subtext: 'Commands a monstrous companion beast', rarity: 'epic', color: '#0d9488', subWheel: 'tamerBeast' },
       { text: 'Alchemist', subtext: 'Concocts mutating battle brews', rarity: 'uncommon', color: '#65a30d', subWheel: 'alchemistPotion' },
-      { text: 'Martial Artist', subtext: 'Counters any weapon with bare knuckles', rarity: 'uncommon', color: '#b45309', subWheel: null },
-      { text: 'Trickster', subtext: 'Illusion decoys, traps, and mind games', rarity: 'rare', color: '#ec4899', subWheel: null },
+      { text: 'Martial Artist', subtext: 'Counters any weapon with bare knuckles', rarity: 'uncommon', color: '#b45309', subWheel: 'martialArtStyle' },
+      { text: 'Trickster', subtext: 'Illusion decoys, traps, and mind games', rarity: 'rare', color: '#ec4899', subWheel: 'tricksterTricks' },
       { text: 'Joke / NPC', subtext: 'Suspiciously lucky, surviving impossible odds', rarity: 'chaos', color: '#ef4444', subWheel: null },
       { text: 'Chaos Incarnate', subtext: 'Rewrites the laws of combat randomly', rarity: 'godTier', color: '#8b5cf6', subWheel: null },
       // --- NEW ARCHETYPES ---
@@ -175,7 +211,21 @@ const WHEEL_DATA = {
       { text: 'Shadow Monarch', subtext: 'Extracts fallen combatants as loyal thralls', rarity: 'mythic', color: '#312e81', subWheel: null },
       { text: 'Brawler / Pugilist', subtext: 'Heavy kinetic impact counters & unbreakable grit', rarity: 'uncommon', color: '#78350f', subWheel: null },
       { text: 'Cosmic Inquisitor', subtext: 'Bans supernatural cheating & purges buffs', rarity: 'godTier', color: '#4338ca', subWheel: null },
-      { text: 'Bard / Battle Rocker', subtext: 'Hypnotic riffs that disorient and stun opponents', rarity: 'rare', color: '#db2777', subWheel: null }
+      { text: 'Bard / Battle Rocker', subtext: 'Hypnotic riffs that disorient and stun opponents', rarity: 'rare', color: '#db2777', subWheel: null },
+      { text: 'Cursed / Cultist', subtext: 'Channeler of Forbidden Demonic Powers', rarity: 'epic', color: '#7f1d1d', subWheel: 'cursedPowers' },
+      { text: 'Goliath', subtext: 'Defensive Juggernaut in Heavy Exosuit', rarity: 'rare', color: '#475569', subWheel: 'goliathArmor' },
+      { text: 'Cloaked (Ninja)', subtext: 'Stealth and Assassination Specialist', rarity: 'rare', color: '#334155', subWheel: 'ninjaRank' },
+      { text: 'Priest', subtext: 'Clergy Dedicated to a Deific Domain', rarity: 'uncommon', color: '#fbbf24', subWheel: 'priestDomain' },
+      { text: 'Pirate', subtext: 'High-Seas Marauder & Weapon Looter', rarity: 'uncommon', color: '#0284c7', subWheel: 'pirateRank' },
+      { text: 'Gladiator', subtext: 'Brutal Colosseum Tournament Veteran', rarity: 'uncommon', color: '#dc2626', subWheel: 'gladiatorVariant' },
+      { text: 'Spirit Weaver', subtext: 'Infuses Ancestral Spirits into Combat', rarity: 'epic', color: '#8b5cf6', subWheel: 'spiritWeaverType' },
+      { text: 'Mutant', subtext: 'Undergoes Biophysical Mutations & Anomalies', rarity: 'rare', color: '#10b981', subWheel: 'mutantTrait' },
+      { text: 'Resilient', subtext: 'Bad-Luck Protection: Re-spins Any Stat Below Peak Human (4/10)', rarity: 'rare', color: '#059669', subWheel: null },
+      { text: 'Royal', subtext: 'Monarch Lineage Commanding Royal Decrees', rarity: 'legendary', color: '#eab308', subWheel: 'royaltyTitle' },
+      { text: 'Apostle', subtext: 'Philosophical Adherent with Reality-Bending Tenets', rarity: 'legendary', color: '#6366f1', subWheel: 'apostleBelief' },
+      { text: 'Primordial Champion', subtext: 'Mortal Chosen by Universal Constants', rarity: 'godTier', color: '#06b6d4', subWheel: 'primordialPatron' },
+      { text: "Champion's Legacy", subtext: 'Aligns with Factions of Tournament GOATs (Ethan, Musam, Boodro)', rarity: 'mythic', color: '#d97706', subWheel: 'championsLegacyFaction' },
+      { text: 'Hybrid', subtext: 'Possesses Two Distinct Archetypes Simultaneously', rarity: 'godTier', color: '#ec4899', subWheel: null },
     ]
   },
 
@@ -210,15 +260,20 @@ const WHEEL_DATA = {
 
   tamerBeast: {
     id: 'tamerBeast',
-    name: 'Tamer Beast Companion Sub-Wheel',
+    name: 'Tamer Companion Beast Sub-Wheel',
     subtitle: 'What creature fights by your side in the arena?',
     icon: '🐾',
     segments: [
-      { text: 'Shadow Direwolf', subtext: 'Flanks targets from within darkness', rarity: 'rare', color: '#374151' },
-      { text: 'Celestial Griffin', subtext: 'Dives with supersonic razor talons', rarity: 'legendary', color: '#eab308' },
-      { text: 'Bone Chimera', subtext: 'Three-headed draconic monstrosity', rarity: 'epic', color: '#991b1b' },
-      { text: 'Void Slime', subtext: 'Absorbs physical impacts completely', rarity: 'uncommon', color: '#7c3aed' },
-      { text: 'Cosmic Leviathan Pup', subtext: 'Breathes miniature solar supernovas', rarity: 'godTier', color: '#06b6d4' }
+      { text: 'Bald Cat', subtext: 'Meme / Discount Dirk: Scratches ankles and distracts', rarity: 'common', color: '#6b7280' },
+      { text: 'Alpha Ape', subtext: 'Brutal kinetic ground slams (+20 STR)', rarity: 'uncommon', color: '#854d0e' },
+      { text: 'Pyro Penguin', subtext: 'Sliding incendiary torpedo spitting flames', rarity: 'rare', color: '#dc2626' },
+      { text: 'Thunder Hawk', subtext: 'Supersonic diving divebomb with electric talons', rarity: 'rare', color: '#eab308' },
+      { text: 'Spectral Wolf', subtext: 'Phases through armor to bite unprotected vitals', rarity: 'rare', color: '#3b82f6' },
+      { text: 'Tidal Tiger', subtext: 'Riptide pounce sweeping enemies off balance', rarity: 'epic', color: '#0284c7' },
+      { text: 'Gale Griffin', subtext: 'Razor cyclone wingbeats knocking back foes', rarity: 'epic', color: '#06b6d4' },
+      { text: 'Rune Bear', subtext: 'Inscribed armor plate impervious to physical slashes', rarity: 'epic', color: '#7c3aed' },
+      { text: 'Void Panther', subtext: 'Shadow stalker striking from dimensional rifts', rarity: 'legendary', color: '#312e81' },
+      { text: 'Infernal Hellhound', subtext: 'Three-headed hellfire jaws incinerating shields', rarity: 'godTier', color: '#991b1b' }
     ]
   },
 
@@ -232,6 +287,591 @@ const WHEEL_DATA = {
       { text: 'Liquid Diamond Skin', subtext: 'Impervious to bladed slashes', rarity: 'epic', color: '#0284c7' },
       { text: 'Acidic Blood Reagent', subtext: 'Attackers take corroding splash damage', rarity: 'uncommon', color: '#16a34a' },
       { text: "Philosopher's Drop", subtext: 'Instant auto-resurrection on death', rarity: 'godTier', color: '#f59e0b' }
+    ]
+  },
+
+
+  // ============================================================
+  // EXPANDED CANON SUB-WHEELS (From WoF Compendium)
+  // ============================================================
+  humanOrigin: {
+    id: 'humanOrigin',
+    name: 'Human Origin Sub-Wheel',
+    subtitle: 'What mortal bloodline forged your destiny?',
+    icon: '👤',
+    segments: [
+      { text: 'NPC Baseline', subtext: 'Standard ordinary human, infinite growth potential', rarity: 'common', color: '#6b7280' },
+      { text: 'Old Bloodline', subtext: 'Ancient resilient lineage (+25 Durability, +15 STR)', rarity: 'uncommon', color: '#0284c7' },
+      { text: 'The Chosen One', subtext: 'Rarest human tier; gains top-tier potential and max luck', rarity: 'godTier', color: '#06b6d4' }
+    ]
+  },
+
+  demiGodLineage: {
+    id: 'demiGodLineage',
+    name: 'Demi-God Origin Sub-Wheel',
+    subtitle: 'From which divine heritage do you descend?',
+    icon: '⚡',
+    segments: [
+      { text: "Champion's Blood", subtext: 'Descendant of tournament GOATs', rarity: 'rare', color: '#ca8a04', subWheel: 'championsBloodGoat' },
+      { text: 'Divine Child', subtext: 'Direct offspring of an Olympian god', rarity: 'epic', color: '#eab308' },
+      { text: 'Chosen One', subtext: 'Anointed champion of the heavens', rarity: 'godTier', color: '#06b6d4' }
+    ]
+  },
+
+  championsBloodGoat: {
+    id: 'championsBloodGoat',
+    name: "Champion's Blood GOAT Ancestor",
+    subtitle: 'Which legendary tournament winner’s blood flows through you?',
+    icon: '🏆',
+    segments: [
+      { text: 'Boodro Bloodline', subtext: 'Legendary colosseum titan fortitude', rarity: 'legendary', color: '#b45309' },
+      { text: 'Ethan Bloodcult (S4 Winner)', subtext: 'Season 4 Champion: Weapon Mimic & Bloodcult aura', rarity: 'godTier', color: '#991b1b' },
+      { text: 'Max the Calamity', subtext: 'Elemental devastation instincts', rarity: 'epic', color: '#ea580c' },
+      { text: 'Madox', subtext: 'Relentless tactical pressure', rarity: 'epic', color: '#0284c7' },
+      { text: 'Sammy', subtext: 'Swift blade finesse', rarity: 'rare', color: '#16a34a' },
+      { text: 'Michael', subtext: 'Unyielding defense', rarity: 'rare', color: '#6366f1' },
+      { text: 'Joe the Dragon Slayer', subtext: 'Draconic slayer reflexes', rarity: 'legendary', color: '#15803d' },
+      { text: 'Griffin', subtext: 'Aerial dominance and precision', rarity: 'rare', color: '#eab308' },
+      { text: 'Siothz', subtext: 'Dark arcana manipulation', rarity: 'rare', color: '#8b5cf6' },
+      { text: 'Redpans', subtext: 'Explosive burst damage', rarity: 'rare', color: '#ef4444' },
+      { text: 'Jekixoxo', subtext: 'Trickster evasion stance', rarity: 'rare', color: '#ec4899' },
+      { text: 'Itsmitchyyeah', subtext: 'High-speed combat pacing', rarity: 'rare', color: '#06b6d4' },
+      { text: 'Foxthepizzagod', subtext: 'Chaotic meme wildcard procs', rarity: 'chaos', color: '#f59e0b' },
+      { text: 'Radley', subtext: 'Pragmatic colosseum survival', rarity: 'rare', color: '#10b981' },
+      { text: 'The Cosmic Jester', subtext: 'Unpredictable reality warping', rarity: 'chaos', color: '#a855f7' },
+      { text: 'Cfox', subtext: 'Strategic counter-striking', rarity: 'rare', color: '#3b82f6' },
+      { text: 'True Reincarnation', subtext: 'Awakened memories of all past champions', rarity: 'godTier', color: '#f43f5e' }
+    ]
+  },
+
+  dragonSlayerRank: {
+    id: 'dragonSlayerRank',
+    name: 'Dragon Slayer Hunter Rank',
+    subtitle: 'What rank of draconic mastery have you achieved?',
+    icon: '🐉',
+    segments: [
+      { text: 'Iron Claw', subtext: 'Rookie wyrm stalker (+15 STR)', rarity: 'common', color: '#6b7280' },
+      { text: 'Quartz Knight', subtext: 'Hardened scale deflector (+20 DUR)', rarity: 'uncommon', color: '#94a3b8' },
+      { text: 'Bronze Berserker', subtext: 'Heavy draconic cleaves (+25 STR)', rarity: 'uncommon', color: '#b45309' },
+      { text: 'Emerald Prowler', subtext: 'Venom-scale resistance (+25 SPD)', rarity: 'rare', color: '#16a34a' },
+      { text: 'Jade Juggernaut', subtext: 'Earth-shaking impact force (+30 DUR)', rarity: 'rare', color: '#0d9488' },
+      { text: 'Ruby Renegade', subtext: 'Hellfire blood affinity (+35 STR)', rarity: 'epic', color: '#dc2626' },
+      { text: 'Obsidian Overlord', subtext: 'Void-scale sovereign (+40 DUR, +30 STR)', rarity: 'legendary', color: '#312e81' },
+      { text: 'Diamond Dragoon', subtext: 'Apex Wyrm God Executioner (+50 All Stats)', rarity: 'godTier', color: '#06b6d4' }
+    ]
+  },
+
+  angelicOrder: {
+    id: 'angelicOrder',
+    name: 'Angelic Order Sub-Wheel',
+    subtitle: 'What station in the celestial choir do you hold?',
+    icon: '🪽',
+    segments: [
+      { text: 'Cupid', subtext: 'Swift arrow of affection and charm', rarity: 'common', color: '#f472b6' },
+      { text: 'Messenger', subtext: 'Supersonic herald of divine decrees (+35 SPD)', rarity: 'uncommon', color: '#93c5fd' },
+      { text: 'Valkyrie', subtext: 'Chooses the slain in combat (+35 STR, +30 DUR)', rarity: 'epic', color: '#38bdf8' },
+      { text: 'Archangel', subtext: 'Supreme Commander of Heaven’s Host (+50 All Stats)', rarity: 'mythic', color: '#fbbf24' }
+    ]
+  },
+
+  demonPowers: {
+    id: 'demonPowers',
+    name: 'Infernal Demon Ability Sub-Wheel',
+    subtitle: 'Which dark gift do you unleash upon mortal realms?',
+    icon: '🔥',
+    segments: [
+      { text: 'Shadow Blend', subtext: 'Dissolves harmlessly into darkness', rarity: 'common', color: '#475569' },
+      { text: 'Dark Healing', subtext: 'Feeds on enemy suffering to regenerate health', rarity: 'uncommon', color: '#065f46' },
+      { text: 'Cursed Touch', subtext: 'Decays weapons and armor on physical contact', rarity: 'uncommon', color: '#7f1d1d' },
+      { text: 'Hellish Flame', subtext: 'Incinerates targets with inextinguishable fire', rarity: 'rare', color: '#dc2626' },
+      { text: 'Corruption Aura', subtext: 'Passively drains nearby combatants’ stamina', rarity: 'rare', color: '#581c87' },
+      { text: 'Demonic Possession', subtext: 'Overrides enemy limbs for 1 turn', rarity: 'epic', color: '#7e22ce' },
+      { text: 'Hellgate Opening', subtext: 'Summons lesser infernal imps to swarm the foe', rarity: 'epic', color: '#b91c1c' },
+      { text: 'Pact Making', subtext: 'Forces a mutual blood sacrifice for extreme burst', rarity: 'rare', color: '#b45309' },
+      { text: 'Soul Harvest', subtext: 'Reaps defeated souls into permanent power boosts', rarity: 'legendary', color: '#4c1d95' },
+      { text: 'Darkness Manipulation', subtext: 'Shapes solid umbral blades and barriers', rarity: 'epic', color: '#1e1b4b' },
+      { text: 'Abyssal Chains', subtext: 'Immobilizes target in indestructible spikes', rarity: 'legendary', color: '#6d28d9' },
+      { text: 'Reality Corruption', subtext: 'Warps laws of combat into chaotic hellscapes', rarity: 'mythic', color: '#db2777' },
+      { text: 'Primordial Annihilation', subtext: 'Erases mortal essence with infernal singularity', rarity: 'godTier', color: '#ef4444' }
+    ]
+  },
+
+  devilsSins: {
+    id: 'devilsSins',
+    name: 'The 7 Deadly Sins Sub-Wheel',
+    subtitle: 'Which capital infernal sin rules your soul?',
+    icon: '😈',
+    segments: [
+      { text: 'Wrath', subtext: 'Attack quadruples as health decreases', rarity: 'epic', color: '#dc2626' },
+      { text: 'Pride', subtext: 'Immune to debuffs while above 75% HP', rarity: 'epic', color: '#eab308' },
+      { text: 'Gluttony', subtext: 'Devours enemy attacks to restore health', rarity: 'rare', color: '#d97706' },
+      { text: 'Sloth', subtext: 'Passive heavy damage reflection while stationary', rarity: 'uncommon', color: '#64748b' },
+      { text: 'Greed', subtext: 'Steals opponent weapon passives and enchants', rarity: 'rare', color: '#16a34a' },
+      { text: 'Envy', subtext: 'Copies the highest stat of the opponent', rarity: 'rare', color: '#059669' },
+      { text: 'Lust', subtext: 'Charms opponents into skipping their first attack', rarity: 'epic', color: '#db2777' }
+    ]
+  },
+
+  godType: {
+    id: 'godType',
+    name: 'Divine Domain Sub-Wheel',
+    subtitle: 'Over what concept of the cosmos do you reign?',
+    icon: '👑',
+    segments: [
+      { text: 'God of Life', subtext: 'Infinite cellular restoration and vitality', rarity: 'legendary', color: '#10b981' },
+      { text: 'God of Animals', subtext: 'Commands every beast in the multiverse', rarity: 'rare', color: '#854d0e' },
+      { text: 'God of Space', subtext: 'Folds dimensions and compresses distance to 0', rarity: 'mythic', color: '#6366f1' },
+      { text: 'God of Chaos', subtext: 'Inverts outcomes and rewrites battle logic', rarity: 'chaos', color: '#ef4444' },
+      { text: 'God of War', subtext: 'Absolute combat mastery; never misses strikes', rarity: 'epic', color: '#dc2626' },
+      { text: 'God of Love', subtext: 'Pacifies enemies and converts foes to allies', rarity: 'rare', color: '#ec4899' },
+      { text: 'God of Death', subtext: 'Touch of decay; bypasses physical durability', rarity: 'mythic', color: '#1e1b4b' },
+      { text: 'God of Wind', subtext: 'Supersonic gale velocity and tempest shields', rarity: 'rare', color: '#06b6d4' },
+      { text: 'God of Fire', subtext: 'Solar thermonuclear infernos', rarity: 'epic', color: '#ea580c' },
+      { text: 'God of Water', subtext: 'Oceanic depths pressure and tsunami waves', rarity: 'rare', color: '#0284c7' },
+      { text: 'God of Thunder', subtext: 'Heavenly lightning strikes that stun targets', rarity: 'epic', color: '#eab308' },
+      { text: 'God of Wisdom', subtext: 'Omniscience; foresees every enemy strike', rarity: 'legendary', color: '#3b82f6' },
+      { text: 'God of Earth', subtext: 'Tectonic mountain shields and earthquakes', rarity: 'rare', color: '#78350f' },
+      { text: 'God of Mischief', subtext: 'Illusory decoys, stat swaps, and trickery', rarity: 'chaos', color: '#a855f7' },
+      { text: 'God of Gods', subtext: 'Supreme Ruler of the Multiverse Pantheon', rarity: 'godTier', color: '#fde047' }
+    ]
+  },
+
+  primordialType: {
+    id: 'primordialType',
+    name: 'Primordial Constant Sub-Wheel',
+    subtitle: 'Which eternal law of reality embodies your being?',
+    icon: '🌌',
+    segments: [
+      { text: 'Primordial of Time', subtext: 'Rewinds, pauses, and fast-forwards turns', rarity: 'godTier', color: '#06b6d4' },
+      { text: 'Primordial of Eternity', subtext: 'Immune to all status effects and death', rarity: 'godTier', color: '#8b5cf6' },
+      { text: 'Primordial of Reality', subtext: 'Rewrites combat physics at will', rarity: 'godTier', color: '#ec4899' },
+      { text: 'Primordial of Void', subtext: 'Consumes incoming attacks into nothingness', rarity: 'godTier', color: '#1e1b4b' },
+      { text: 'Primordial of Order', subtext: 'Enforces strict absolute equality of stats', rarity: 'godTier', color: '#fbbf24' },
+      { text: 'Primordial of Chaos', subtext: 'Wild magic roulette on every single action', rarity: 'chaos', color: '#ef4444' },
+      { text: 'Primordial of Life', subtext: 'Automatic full resurrection with 2x stats', rarity: 'godTier', color: '#10b981' },
+      { text: 'Primordial of Death', subtext: 'Fatal touch that disintegrates targets', rarity: 'godTier', color: '#374151' }
+    ]
+  },
+
+  vampireFeeding: {
+    id: 'vampireFeeding',
+    name: 'Vampire Feeding Diet Sub-Wheel',
+    subtitle: 'What prey fuels your immortal nocturnal bloodlust?',
+    icon: '🩸',
+    segments: [
+      { text: 'Mortal Prey', subtext: 'Feeds on humans and baseline mortals', rarity: 'common', color: '#6b7280' },
+      { text: 'Apex Beasts & Monsters', subtext: 'Drains dragons, demons, and chimeras', rarity: 'rare', color: '#991b1b' },
+      { text: 'Divine Heroes & Gods', subtext: 'Feeds on celestial ichor and demigods', rarity: 'legendary', color: '#831843' }
+    ]
+  },
+
+  animorphMorph: {
+    id: 'animorphMorph',
+    name: 'Animorph Beast Shifting Sub-Wheel',
+    subtitle: 'What tier of adaptive shapeshifting do you command?',
+    icon: '🐺',
+    segments: [
+      { text: 'Pets Morphing', subtext: 'Shifts into agile domesticated animals', rarity: 'common', color: '#6b7280' },
+      { text: 'Single Apex Morph', subtext: 'Transforms into a specific deadly predator', rarity: 'uncommon', color: '#78350f' },
+      { text: 'Multiple Morphs', subtext: 'Swaps between land, air, and aquatic beasts', rarity: 'rare', color: '#15803d' },
+      { text: 'Adaptive Morphing', subtext: 'Instantly mutates counters to enemy attacks', rarity: 'epic', color: '#0284c7' },
+      { text: 'Omni-Morph', subtext: 'Can become any biological creature in existence', rarity: 'legendary', color: '#7c3aed' },
+      { text: 'True Elemental Morph', subtext: 'Shifts into living magma, storm, and frost chimeras', rarity: 'godTier', color: '#ea580c' }
+    ]
+  },
+
+  cyborgTechno: {
+    id: 'cyborgTechno',
+    name: 'Cyborg Tech Augment Sub-Wheel',
+    subtitle: 'What cybernetic system was installed into your chassis?',
+    icon: '🤖',
+    segments: [
+      { text: 'Quantum Processing', subtext: 'Calculates optimal attack trajectories instantly', rarity: 'rare', color: '#06b6d4' },
+      { text: 'Force Field Core', subtext: 'Deploys a 150 HP energy bubble shield', rarity: 'uncommon', color: '#3b82f6' },
+      { text: 'Gravity Manipulation', subtext: 'Crushes enemies under 10G graviton fields', rarity: 'legendary', color: '#7c3aed' },
+      { text: 'Nanite Regeneration', subtext: 'Repairs metal frame damage continuously', rarity: 'epic', color: '#10b981' },
+      { text: 'Power Absorption Array', subtext: 'Copies and replicates opponent energy attacks', rarity: 'mythic', color: '#ec4899' },
+      { text: 'Holographic Projection', subtext: 'Spawns 3 decoy sensor signatures', rarity: 'uncommon', color: '#38bdf8' },
+      { text: 'Sonic Disruption Cannon', subtext: 'Emits deafening concussion blasts', rarity: 'rare', color: '#f59e0b' },
+      { text: 'Plasma Overcharge Blast', subtext: 'High-voltage laser beam cutting through armor', rarity: 'rare', color: '#ef4444' },
+      { text: 'Adaptive Camouflage', subtext: 'Complete visual and radar invisibility', rarity: 'uncommon', color: '#64748b' }
+    ]
+  },
+
+  giantDomain: {
+    id: 'giantDomain',
+    name: 'Giant Titan Biome Sub-Wheel',
+    subtitle: 'From which primordial landscape was your frame chiseled?',
+    icon: '🗿',
+    segments: [
+      { text: 'Arctic Titan', subtext: 'Glacial armor and frostbite shockwaves', rarity: 'rare', color: '#0284c7' },
+      { text: 'Mountain Monarch', subtext: 'Granite density that shatters mortal weapons', rarity: 'rare', color: '#78350f' },
+      { text: 'Forest Behemoth', subtext: 'Living redwood armor and vine snares', rarity: 'uncommon', color: '#15803d' },
+      { text: 'Desert Colossus', subtext: 'Blinding sandstorm aura and crushing weight', rarity: 'uncommon', color: '#d97706' },
+      { text: 'Ocean Leviathan', subtext: 'Tidal surges and impenetrable blubber hide', rarity: 'epic', color: '#0891b2' },
+      { text: 'Inferno Elder', subtext: 'Molten volcanic core erupting on impact', rarity: 'epic', color: '#dc2626' },
+      { text: 'Celestial Sentinel', subtext: 'Cosmic scale titan walking between starfields', rarity: 'godTier', color: '#fbbf24' }
+    ]
+  },
+
+  goblinPosition: {
+    id: 'goblinPosition',
+    name: 'Goblin Clan Station Sub-Wheel',
+    subtitle: 'Where do you rank in the goblin pack hierarchy?',
+    icon: '👺',
+    segments: [
+      { text: 'A Bitch (Underling)', subtext: 'Scrappy distraction taking hits for the horde', rarity: 'common', color: '#65a30d' },
+      { text: 'The Leader (Gremlin King)', subtext: 'Commands the entire goblin swarm with dirty tricks', rarity: 'rare', color: '#eab308' }
+    ]
+  },
+
+  orcRole: {
+    id: 'orcRole',
+    name: 'Orcish Tribe Role Sub-Wheel',
+    subtitle: 'What duty did you carry out in the grand horde?',
+    icon: '👹',
+    segments: [
+      { text: 'Orc Bard', subtext: 'Intimidating war drums and screeching bagpipes', rarity: 'common', color: '#ec4899' },
+      { text: 'Orc Blacksmith', subtext: 'Forges jagged cleavers with high critical bleed', rarity: 'uncommon', color: '#92400e' },
+      { text: 'Orc Berserker', subtext: 'Unchecked blood frenzy scaling with lost HP', rarity: 'rare', color: '#dc2626' },
+      { text: 'Orc Shaman', subtext: 'Totemic lightning and ancestral war spirits', rarity: 'epic', color: '#7c3aed' },
+      { text: 'Orc Warlord', subtext: 'Supreme chieftain dominating the battlefield', rarity: 'legendary', color: '#b91c1c' }
+    ]
+  },
+
+  golemMaterial: {
+    id: 'golemMaterial',
+    name: 'Golem Core Composition Sub-Wheel',
+    subtitle: 'What matter forms your physical construct body?',
+    icon: '🧱',
+    segments: [
+      { text: 'Clay Golem', subtext: 'Malleable body absorbing blunt force', rarity: 'common', color: '#78350f' },
+      { text: 'Stone Golem', subtext: 'Heavy granite plates with high defense', rarity: 'uncommon', color: '#6b7280' },
+      { text: 'Iron Golem', subtext: 'Heavy forged metal frame impervious to slashes', rarity: 'rare', color: '#475569' },
+      { text: 'Diamond Golem', subtext: 'Crystalline hardness deflecting magic rays', rarity: 'epic', color: '#38bdf8' },
+      { text: 'Obsidian Golem', subtext: 'Volcanic glass core exploding upon defeat', rarity: 'legendary', color: '#312e81' }
+    ]
+  },
+
+  hiveMindForm: {
+    id: 'hiveMindForm',
+    name: 'Hive Mind Swarm Matrix Sub-Wheel',
+    subtitle: 'What form does your unified consciousness take?',
+    icon: '🦗',
+    segments: [
+      { text: 'Insect Swarm', subtext: 'Millions of locusts devouring armor and flesh', rarity: 'common', color: '#4d7c0f' },
+      { text: 'Parasite Horde', subtext: 'Burrows into enemy nerves to disrupt actions', rarity: 'uncommon', color: '#854d0e' },
+      { text: 'Mycelial Mass', subtext: 'Fungal spore network rotting opponent stamina', rarity: 'rare', color: '#059669' },
+      { text: 'Nanite Matrix', subtext: 'Technopathic micro-machines dissolving weapons', rarity: 'epic', color: '#0284c7' },
+      { text: 'Aquatic Colony', subtext: 'Liquid organism capable of total liquefaction', rarity: 'rare', color: '#0891b2' },
+      { text: 'Shadow Ensemble', subtext: 'Amorphous darkness shifting into multiple clones', rarity: 'legendary', color: '#312e81' },
+      { text: 'Psychic Network', subtext: 'Telepathic synaptic web overwhelming minds', rarity: 'godTier', color: '#a855f7' }
+    ]
+  },
+
+  mythicalBeastType: {
+    id: 'mythicalBeastType',
+    name: 'Mythical Beast Breed Sub-Wheel',
+    subtitle: 'Which legendary creature of ancient fable are you?',
+    icon: '🦁',
+    segments: [
+      { text: 'Nemean Lion', subtext: 'Golden pelt impervious to mortal weapons', rarity: 'rare', color: '#b45309' },
+      { text: 'Minotaur', subtext: 'Labyrinthine charging horns breaking guards', rarity: 'uncommon', color: '#78350f' },
+      { text: 'Phoenix', subtext: 'Rebirth from solar ashes with full health', rarity: 'legendary', color: '#ea580c' },
+      { text: 'Pegasus', subtext: 'Winged aerial charge striking undefended flanks', rarity: 'rare', color: '#38bdf8' },
+      { text: 'Sphinx', subtext: 'Enigmatic riddle aura that silences magic', rarity: 'epic', color: '#eab308' },
+      { text: 'Leviathan', subtext: 'Abyssal sea serpent crushing warships', rarity: 'legendary', color: '#0284c7' },
+      { text: 'Cerberus', subtext: 'Three-headed hellhound breathing magma', rarity: 'epic', color: '#991b1b' },
+      { text: 'Unicorn', subtext: 'Purity horn piercing curses and dark magic', rarity: 'rare', color: '#ec4899' },
+      { text: 'Basilisk', subtext: 'Petrifying gaze turning limbs to stone', rarity: 'rare', color: '#15803d' }
+    ]
+  },
+
+  dryadOrigin: {
+    id: 'dryadOrigin',
+    name: 'Dryad Nature Spirit Sub-Wheel',
+    subtitle: 'Which sacred wilderness gave birth to your essence?',
+    icon: '🌿',
+    segments: [
+      { text: 'Tree Born', subtext: 'Rooted connection with ancient elder trees', rarity: 'common', color: '#15803d' },
+      { text: 'Natural Phenomena', subtext: 'Birthed from seasonal solstices and equinoxes', rarity: 'uncommon', color: '#059669' },
+      { text: 'Moon Child', subtext: 'Lunar photosynthesis granting night vision and evasion', rarity: 'rare', color: '#818cf8' },
+      { text: 'Celestial Alignment', subtext: 'Cosmic star roots channeling stellar magic', rarity: 'epic', color: '#38bdf8' },
+      { text: "Nature's Wrath", subtext: 'Vengeful primeval avatar entangling foes in briars', rarity: 'legendary', color: '#16a34a' }
+    ]
+  },
+
+  merfolkLineage: {
+    id: 'merfolkLineage',
+    name: 'Merfolk Aquatic Lineage Sub-Wheel',
+    subtitle: 'From what trench of the ocean depths do you emerge?',
+    icon: '🧜',
+    segments: [
+      { text: 'Frogling', subtext: 'Amphibious jumper with toxic skin secretions', rarity: 'common', color: '#65a30d' },
+      { text: 'Cecelia (Abyssal)', subtext: 'Bioluminescent deep-sea huntress with tentacles', rarity: 'uncommon', color: '#0d9488' },
+      { text: 'True-Born Royal Merfolk', subtext: 'Commands ocean currents and sonic sirens', rarity: 'rare', color: '#0284c7' }
+    ]
+  },
+
+  reincarnationSoul: {
+    id: 'reincarnationSoul',
+    name: 'Past Season Arena Legend Sub-Wheel',
+    subtitle: 'Whose glorious tournament soul reincarnated inside you?',
+    icon: '✨',
+    segments: [
+      { text: 'Achilles', subtext: 'Near-invulnerable hero with lethal spear precision', rarity: 'legendary', color: '#fbbf24' },
+      { text: 'The Mexican', subtext: 'Speedster legend known for supersonic evasion', rarity: 'rare', color: '#ea580c' },
+      { text: 'Kevin', subtext: 'Chaotic wildcard defying all battle predictions', rarity: 'chaos', color: '#ef4444' },
+      { text: 'Kanemckillop', subtext: 'Brutal relentless tournament powerhouse', rarity: 'epic', color: '#7c3aed' },
+      { text: 'Nyta', subtext: 'Ethereal spellblade slicing across dimensions', rarity: 'rare', color: '#06b6d4' },
+      { text: 'Joe the Great', subtext: 'Colosseum warlord champion', rarity: 'legendary', color: '#15803d' },
+      { text: 'Sammy the Swift', subtext: 'Fierce duelist with lightning quickdraws', rarity: 'rare', color: '#16a34a' },
+      { text: 'TFCK', subtext: 'Unshakable fortress of durability and grit', rarity: 'epic', color: '#f59e0b' },
+      { text: 'Darwizzy', subtext: 'Transcendental archmage with infinite IQ', rarity: 'godTier', color: '#8b5cf6' }
+    ]
+  },
+
+  mageRank: {
+    id: 'mageRank',
+    name: 'Mage Academy Rank Sub-Wheel',
+    subtitle: 'What level of arcane mastery have you attained?',
+    icon: '🔮',
+    segments: [
+      { text: 'Apprentice', subtext: 'Grants 1 additional supernatural power roll', rarity: 'common', color: '#6b7280' },
+      { text: 'Sorcerer', subtext: 'Grants 2 additional simultaneous power rolls!', rarity: 'rare', color: '#2563eb' },
+      { text: 'Archmage', subtext: 'Grants 3 simultaneous power rolls + 30 INT!', rarity: 'epic', color: '#7c3aed' },
+      { text: 'Lich King', subtext: 'Ascends into immortality with 2 Lich powers!', rarity: 'godTier', color: '#06b6d4' }
+    ]
+  },
+
+  paladinPowers: {
+    id: 'paladinPowers',
+    name: 'Paladin Sacred Miracles Sub-Wheel',
+    subtitle: 'Which holy grace is bestowed by the High Heavens?',
+    icon: '🛡️',
+    segments: [
+      { text: 'Healing Touch', subtext: 'Restores 40 HP upon taking damage', rarity: 'common', color: '#34d399' },
+      { text: 'Divine Shielding', subtext: 'Nullifies the first 2 enemy attacks', rarity: 'uncommon', color: '#60a5fa' },
+      { text: 'Celestial Arrows', subtext: 'Radiant spears that never miss target', rarity: 'rare', color: '#facc15' },
+      { text: 'Sacred Fire', subtext: 'Purging solar flame dealing extra vs fiends', rarity: 'rare', color: '#f97316' },
+      { text: 'Divine Perfection', subtext: 'Immune to all curses, debuffs, and stuns', rarity: 'epic', color: '#eab308' },
+      { text: 'Blessed Maelstrom', subtext: 'Holy tempest damaging all arena foes', rarity: 'epic', color: '#38bdf8' },
+      { text: 'Resurrection', subtext: 'Revives automatically once with 50% health', rarity: 'legendary', color: '#f59e0b' },
+      { text: 'Miracle Creation', subtext: 'Rewrites a fatal blow into an instant victory', rarity: 'godTier', color: '#a855f7' }
+    ]
+  },
+
+  cursedPowers: {
+    id: 'cursedPowers',
+    name: 'Cursed Cultist Dark Arcana Sub-Wheel',
+    subtitle: 'Which forbidden abyssal technique was branded into your soul?',
+    icon: '🩸',
+    segments: [
+      { text: 'Demonic Regeneration', subtext: 'Regrows limbs and heals 30 HP per turn', rarity: 'common', color: '#065f46' },
+      { text: 'Shadow Grasp', subtext: 'Shadow tentacles root opponents in place', rarity: 'uncommon', color: '#374151' },
+      { text: 'Hellfire', subtext: 'Burns enemy armor and deals stacking fire damage', rarity: 'rare', color: '#dc2626' },
+      { text: 'Abyssal Chains', subtext: 'Locks enemy weapon, preventing weapon perks', rarity: 'rare', color: '#581c87' },
+      { text: 'Necrotic Wave', subtext: 'Pulses decaying energy across the arena', rarity: 'epic', color: '#15803d' },
+      { text: 'Inferno Travel', subtext: 'Teleports through flames to strike enemy back', rarity: 'rare', color: '#ea580c' },
+      { text: 'Plague Unleashing', subtext: 'Inflicts neurotoxin that cuts enemy stats by 30%', rarity: 'epic', color: '#84cc16' },
+      { text: 'Power Negation', subtext: 'Silences all supernatural powers of the foe', rarity: 'legendary', color: '#7c3aed' },
+      { text: 'Reality Corruption', subtext: 'Corrupts battle formulas into deadly anomalies', rarity: 'godTier', color: '#db2777' }
+    ]
+  },
+
+  goliathArmor: {
+    id: 'goliathArmor',
+    name: 'Goliath Exosuit Armor Sub-Wheel',
+    subtitle: 'What defensive plate encapsulates your massive frame?',
+    icon: '🛡️',
+    segments: [
+      { text: 'Darwinite Armor', subtext: 'Heavy reinforced standard combat plating', rarity: 'common', color: '#6b7280' },
+      { text: 'Heavy Plate (+2 DUR)', subtext: 'Colossal steel slab granting massive damage reduction', rarity: 'uncommon', color: '#475569' },
+      { text: "Gambler's Coat", subtext: '50% chance to take 0 damage, 50% chance for double', rarity: 'rare', color: '#f59e0b' },
+      { text: 'Latex Suit (Pain Suppression)', subtext: 'Total pain immunity; never flinches or drops stance', rarity: 'rare', color: '#10b981' },
+      { text: "Dragon's Scale Mail", subtext: '+1 Durability and 75% elemental resistance', rarity: 'epic', color: '#c2410c' },
+      { text: 'Plasma Augment Shield', subtext: 'Kinetic energy shield absorbing laser and force hits', rarity: 'epic', color: '#06b6d4' },
+      { text: "Void's Fortress", subtext: 'Negates all powers & void manipulation, -1 DUR/fight', rarity: 'godTier', color: '#312e81' }
+    ]
+  },
+
+  ninjaRank: {
+    id: 'ninjaRank',
+    name: 'Ninja Stealth Rank Sub-Wheel',
+    subtitle: 'What tier of unseen shadow discipline have you mastered?',
+    icon: '🥷',
+    segments: [
+      { text: 'Clumsy Ninja', subtext: 'Trips over own shurikens (+5 Speed)', rarity: 'common', color: '#6b7280' },
+      { text: 'Rookie Genin', subtext: 'Standard smoke bombs and kunai (+15 SPD)', rarity: 'uncommon', color: '#475569' },
+      { text: 'Quiet Chunin', subtext: 'Soundless footwork (+25 SPD, +15 Fight)', rarity: 'rare', color: '#2563eb' },
+      { text: 'Silent Jonin', subtext: 'One-shot ambush strikes from blind spots', rarity: 'epic', color: '#7c3aed' },
+      { text: 'Grandmaster Kage', subtext: 'Shadow clone techniques and illusion decoys', rarity: 'legendary', color: '#b91c1c' },
+      { text: 'Shadow (Ascended)', subtext: '+2 Stealth Skills, Poison Enchant, Ambush Mastery', rarity: 'godTier', color: '#312e81' }
+    ]
+  },
+
+  martialArtStyle: {
+    id: 'martialArtStyle',
+    name: 'Martial Discipline Sub-Wheel',
+    subtitle: 'Which unarmed combat discipline governs your fists?',
+    icon: '🥋',
+    segments: [
+      { text: 'Boxing', subtext: 'Heavy hooks and slips (+2 Fight, +2 Weapon Mastery)', rarity: 'common', color: '#b45309' },
+      { text: 'MMA', subtext: 'All-around grappling (+1 STR, +1 SPD, +1 DUR, +2 Fight)', rarity: 'uncommon', color: '#dc2626' },
+      { text: 'Kung Fu', subtext: 'Flowing forms and pressure points (+1 IQ, +1 Fight)', rarity: 'uncommon', color: '#d97706' },
+      { text: 'Capoeira', subtext: 'Acrobatic rhythm and sweep kicks (+1 Fight, +2 Speed)', rarity: 'rare', color: '#16a34a' },
+      { text: 'Muay Thai', subtext: 'Eight limbs striking with iron shins (+2 STR, +2 Fight)', rarity: 'rare', color: '#ea580c' },
+      { text: 'Judo', subtext: 'Shattering throws reversing enemy kinetic energy', rarity: 'rare', color: '#0284c7' },
+      { text: 'Taekwondo', subtext: 'Hypersonic 540 spinning kicks breaking guards', rarity: 'uncommon', color: '#7c3aed' }
+    ]
+  },
+
+  priestDomain: {
+    id: 'priestDomain',
+    name: 'Priest Deific Domain Sub-Wheel',
+    subtitle: 'Which altar of divinity do you serve as high cleric?',
+    icon: '⛪',
+    segments: [
+      { text: 'Domain of Festivity', subtext: 'High spirits granting morale and speed boosts', rarity: 'common', color: '#ec4899' },
+      { text: 'Domain of Wisdom', subtext: 'Arcane clarity increasing crit rates (+30 INT)', rarity: 'uncommon', color: '#3b82f6' },
+      { text: 'Domain of War', subtext: 'Blesses weapons with +35% holy damage', rarity: 'rare', color: '#dc2626' },
+      { text: 'Domain of Nature', subtext: 'Regenerates health and cleanses poisons', rarity: 'uncommon', color: '#16a34a' },
+      { text: 'Domain of Sea', subtext: 'Tidal waves and water manipulation', rarity: 'rare', color: '#0284c7' },
+      { text: 'Domain of Light', subtext: 'Blinds enemy sights and reflects dark magic', rarity: 'epic', color: '#facc15' },
+      { text: 'Domain of Fortune', subtext: 'Guarantees lucky critical procs', rarity: 'legendary', color: '#f59e0b' },
+      { text: 'Domain of Thunder', subtext: 'Calls down divine thunderbolts', rarity: 'rare', color: '#eab308' },
+      { text: 'Domain of Sun', subtext: 'Blazes with solar fire vaporizing shields', rarity: 'godTier', color: '#fbbf24' }
+    ]
+  },
+
+  pirateRank: {
+    id: 'pirateRank',
+    name: 'Pirate Vessel Hierarchy Sub-Wheel',
+    subtitle: 'What position do you command on the pirate brigantine?',
+    icon: '🏴‍☠️',
+    segments: [
+      { text: 'Pirate Captain', subtext: 'Guaranteed weapon, +2 Mastery, +1 STR, loots fallen weapons', rarity: 'epic', color: '#0284c7' },
+      { text: 'Pirate Crewmate', subtext: 'Swabs the deck: +1 Weapon Mastery, -1 IQ', rarity: 'common', color: '#6b7280' }
+    ]
+  },
+
+  gladiatorVariant: {
+    id: 'gladiatorVariant',
+    name: 'Gladiator Fighting Form Sub-Wheel',
+    subtitle: 'What bloody discipline do you bring to the sands?',
+    icon: '⚔️',
+    segments: [
+      { text: 'Feral Gladiator', subtext: 'Disdains weapons: Fights with Enchanted Bare Knuckles', rarity: 'uncommon', color: '#dc2626' },
+      { text: 'Monster Gladiator', subtext: 'Wields Claws + receives free Mutation wheel spin', rarity: 'rare', color: '#b45309' },
+      { text: 'Berserker Gladiator', subtext: 'Unstoppable blood rage multiplying attack at low HP', rarity: 'rare', color: '#991b1b' },
+      { text: 'Pactmaker Gladiator', subtext: 'Bound to demons for temporary stat surges', rarity: 'epic', color: '#7e22ce' },
+      { text: 'Relic Keeper Gladiator', subtext: 'Enters arena bearing ancient colosseum treasures', rarity: 'legendary', color: '#d97706' }
+    ]
+  },
+
+  spiritWeaverType: {
+    id: 'spiritWeaverType',
+    name: 'Spirit Weaver Lineage Sub-Wheel',
+    subtitle: 'What spectral medium do you weave into physical combat?',
+    icon: '🧵',
+    segments: [
+      { text: 'Weaver of Blades', subtext: 'Conjures floating phantom swords striking independently', rarity: 'rare', color: '#06b6d4' },
+      { text: 'Weaver of Mind', subtext: 'Expands psyche to command 2 additional powers', rarity: 'epic', color: '#8b5cf6' },
+      { text: 'Weaver of Body', subtext: 'Spectral muscle fibers doubling physical durability', rarity: 'uncommon', color: '#10b981' },
+      { text: 'Weaver of Relics', subtext: 'Channels ancient enchanted armaments of old gods', rarity: 'legendary', color: '#f59e0b' },
+      { text: 'Chaos Weaver', subtext: 'Rewires combat reality with unpredictable wildcard procs', rarity: 'chaos', color: '#ef4444' }
+    ]
+  },
+
+  mutantTrait: {
+    id: 'mutantTrait',
+    name: 'Mutant Biological Anomaly Sub-Wheel',
+    subtitle: 'Which genetic or cosmic mutation manifested in your cells?',
+    icon: '🧬',
+    segments: [
+      { text: 'Quantum Being', subtext: 'Quantum Manipulation & phasing through solid matter', rarity: 'godTier', color: '#06b6d4' },
+      { text: 'Kinetic Absorption', subtext: 'Absorbs physical impacts and discharges 2x force', rarity: 'legendary', color: '#3b82f6' },
+      { text: 'Runic Flesh', subtext: 'Carved runes granting +20 to Strength, Speed, and Durability', rarity: 'epic', color: '#7c3aed' },
+      { text: 'Solar Sail', subtext: 'Atmospheric flight and solar weather control', rarity: 'rare', color: '#f59e0b' },
+      { text: 'Vapor Form', subtext: 'Shifts into untouchable gaseous mist', rarity: 'uncommon', color: '#0891b2' },
+      { text: 'Bramble Bind', subtext: 'Sprouts thorned vines snaring enemy limbs', rarity: 'uncommon', color: '#16a34a' },
+      { text: 'Luminous Form', subtext: 'Emits blinding photon bursts disrupting enemy aim', rarity: 'rare', color: '#facc15' },
+      { text: 'Magma Mantle', subtext: 'Skin burns at 2000 degrees, melting enemy swords', rarity: 'epic', color: '#ea580c' },
+      { text: 'Featherflight', subtext: 'Weightless aerial agility dodging heavy ground slams', rarity: 'uncommon', color: '#38bdf8' },
+      { text: 'Plasma Core', subtext: 'Overcharging chest reactor firing laser supernovas', rarity: 'mythic', color: '#ec4899' }
+    ]
+  },
+
+  royaltyTitle: {
+    id: 'royaltyTitle',
+    name: 'Royal Heritage Sub-Wheel',
+    subtitle: 'Which crown do you claim over the realm?',
+    icon: '👑',
+    segments: [
+      { text: 'Prince', subtext: 'Noble heir commanding vanguard legions (+20 All Stats)', rarity: 'rare', color: '#2563eb' },
+      { text: 'Princess', subtext: 'Royal diplomat possessing charm and strategic intellect', rarity: 'rare', color: '#ec4899' },
+      { text: 'Queen of Light', subtext: 'Radiant monarch casting protective heavenly wards', rarity: 'epic', color: '#facc15' },
+      { text: 'Dark Queen', subtext: 'Ruthless sovereign wielding blood decrees and curses', rarity: 'epic', color: '#7e22ce' },
+      { text: 'Emperor / King', subtext: 'Supreme Imperial Majesty commanding total obedience', rarity: 'legendary', color: '#d97706' }
+    ]
+  },
+
+  apostleBelief: {
+    id: 'apostleBelief',
+    name: 'Apostle Philosophical Creed Sub-Wheel',
+    subtitle: 'Which fundamental philosophy dictates your reality?',
+    icon: '📜',
+    segments: [
+      { text: 'Existentialism', subtext: 'Forges own destiny; immune to pre-determined fate', rarity: 'rare', color: '#3b82f6' },
+      { text: 'Absurdism', subtext: 'Embraces the void; laughs off fatal damage', rarity: 'rare', color: '#ec4899' },
+      { text: 'Nihilism', subtext: 'Believes in nothing; cuts through enemy illusions', rarity: 'uncommon', color: '#64748b' },
+      { text: 'Natural Pantheism', subtext: 'One with nature; heals while standing on earth', rarity: 'uncommon', color: '#16a34a' },
+      { text: 'Daoism', subtext: 'Yields like water to deflect 100% of physical force', rarity: 'epic', color: '#06b6d4' },
+      { text: 'Determinism (Precognition)', subtext: 'Sees the unalterable future 3 steps ahead', rarity: 'legendary', color: '#7c3aed' },
+      { text: 'Stoicism', subtext: 'Unshakable mental fortress; completely immune to fear and stuns', rarity: 'rare', color: '#475569' },
+      { text: 'Chaoism', subtext: 'Wild unpredictability causing erratic critical multipliers', rarity: 'chaos', color: '#ef4444' }
+    ]
+  },
+
+  primordialPatron: {
+    id: 'primordialPatron',
+    name: 'Primordial Patron Sub-Wheel',
+    subtitle: 'Which fundamental cosmic constant chose you as champion?',
+    icon: '🌌',
+    segments: [
+      { text: 'Time Patron', subtext: 'Granted temporal stops and turn rewinds', rarity: 'godTier', color: '#06b6d4' },
+      { text: 'Void Patron', subtext: 'Devours incoming enemy projectile magic', rarity: 'godTier', color: '#1e1b4b' },
+      { text: 'Eternity Patron', subtext: 'Impervious to permanent death or status wounds', rarity: 'godTier', color: '#8b5cf6' },
+      { text: 'Order Patron', subtext: 'Forces opponent stats down to equal baseline', rarity: 'godTier', color: '#fbbf24' },
+      { text: 'Life Patron', subtext: 'Continual regeneration and resurrection bloom', rarity: 'godTier', color: '#10b981' },
+      { text: 'Death Patron', subtext: 'Cuts through immortality and armor', rarity: 'godTier', color: '#374151' },
+      { text: 'Fate Patron', subtext: 'Guarantees miraculous critical strike outcomes', rarity: 'godTier', color: '#ea580c' }
+    ]
+  },
+
+  championsLegacyFaction: {
+    id: 'championsLegacyFaction',
+    name: "Champion's Legacy Faction Sub-Wheel",
+    subtitle: 'Which historic tournament GOATs lineage do you inherit?',
+    icon: '🏆',
+    segments: [
+      { text: "Ethan's Legacy (Weapon Mimic)", subtext: 'Copies opponent weapon perks and gains Bloodcult fury', rarity: 'godTier', color: '#991b1b' },
+      { text: "Musam's Legacy (The Honey Bun)", subtext: 'Transcendent Weapon Mastery + Steaming Honeybun strike!', rarity: 'mythic', color: '#d97706' },
+      { text: "Boodro's Legacy (Colosseum Titan)", subtext: 'Unbreakable physical grit (+40 Durability, +30 Strength)', rarity: 'legendary', color: '#b45309' }
+    ]
+  },
+
+  tricksterTricks: {
+    id: 'tricksterTricks',
+    name: 'Wheel of Tricks Sub-Wheel',
+    subtitle: 'What chaotic combat trick do you spring on your opponent?',
+    icon: '🃏',
+    segments: [
+      { text: 'Steal Opponent Weapon', subtext: 'Disarms foe and uses their weapon against them', rarity: 'legendary', color: '#f59e0b' },
+      { text: 'Invert Opponent Stats', subtext: 'Turns high enemy stats into bottom ratings', rarity: 'mythic', color: '#7c3aed' },
+      { text: 'Absorb Opponent Power', subtext: 'Copies and silences enemy special abilities', rarity: 'godTier', color: '#ec4899' },
+      { text: 'Swap Stats with Foe', subtext: 'Steals high enemy stats and hands them your lower stats', rarity: 'chaos', color: '#ef4444' },
+      { text: 'Steal Weapon & Powers', subtext: 'Total thievery leaving the opponent with bare hands', rarity: 'godTier', color: '#06b6d4' }
     ]
   },
 
@@ -512,6 +1152,17 @@ const TRAIT_DESCRIPTIONS = {
   },
 
   race: {
+    'Dragon Slayer': 'Wyrm Hunter Heritage: Trained specifically in ancient anti-dragon martial forms. Naturally resistant to elemental breath and gains +35% armor penetration against scale and heavy beast armor.',
+    'Devil (7 Sins)': 'Infernal Deadly Sin Avatar: Channeler of one of the 7 capital sins. Gains devastating passive stat bonuses and dark hellfire enhancements that overwhelm pure mortal warriors.',
+    'God / Primordial': 'Cosmic Deity Transcendent: Embodiment of a universal concept or divine pantheon. Possesses near-infinite combat potential (+45 All Stats) and reality-bending domain authority.',
+    'Animorph': 'Adaptive Beast Shifter: Capable of mutating biological forms mid-combat to counter opponent weapon ranges and elemental properties.',
+    'Giant': 'Colossal Titan Physiology: Massive stone/terrestrial mass (+50 Durability, +40 Strength, -20 Speed). Unstoppable heavy swings that shatter enemy footing.',
+    'Golem': 'Construct Frame: Inanimate body of animated clay, stone, iron, diamond, or obsidian. Immune to bleeding, poison, and mental panic.',
+    'Hive Mind': 'Swarm Consciousness: Billions of interconnected organisms. Physical attacks only destroy a fraction of the swarm, giving 35% passive damage mitigation.',
+    'Mythical Beast': 'Apex Mythological Creature: The ferocity of legendary monsters (Nemean Lion, Phoenix, Cerberus, Leviathan). High raw stats and innate mythological auras.',
+    'Dryad': 'Primeval Nature Spirit: Birthed from sacred groves and celestial alignments. Passive health regeneration and root entanglements when fighting on earth.',
+    'Merfolk': 'Aquatic Sovereign: Fluid agility and hydrokinetic mastery (+30 SPD, +25 INT). Can summon ocean torrents to disorient and drown enemy fire.',
+    'Reincarnation / Spirit': 'Past Champion Rebirth: Hosts the awakened combat instincts of past tournament GOATs (Achilles, Joe, Sammy, Darwizzy). Starts duels with max tactical IQ.',
     'Human': 'Adaptable Multiverse Benchmark: Balanced baseline with limitless potential. Adapts to all weapon types and scales with any archetype.',
     'Elf': 'Graceful Arcane Lineage: Innate rizz and agility (+35 SPD, +25 INT). High affinity for magical spell fusion and sub-races.',
     'Dwarf': 'Anti-Magic Forge Master: Heavy armored tank (+40 DUR, +25 STR). Immune to magical curses and forges superior gear.',
@@ -548,6 +1199,20 @@ const TRAIT_DESCRIPTIONS = {
   },
 
   archetype: {
+    'Cursed / Cultist': 'Forbidden Arcana Channeler: Sacrifices mortal safety to brand dark demonic techniques into the arena, unleashing hellfire, necrosis, and soul drain.',
+    'Goliath': 'Defensive Exosuit Juggernaut: Equips massive specialized armor plates (Darwinite, Dragon Scale, Void Fortress) that absorb colossal punishment.',
+    'Cloaked (Ninja)': 'Shadow Infiltration Specialist: Masters silent movement, smoke decoys, and critical ambush strikes that bypass 50% of enemy armor.',
+    'Priest': 'High Cleric of Deific Domains: Channels blessings of War, Wisdom, Sun, or Thunder to cleanse debuffs and smite opponents with holy fury.',
+    'Pirate': 'High-Seas Marauder: Ruthless naval combatant that loots fallen weapons and gains +2 Weapon Mastery with heavy broadside attacks.',
+    'Gladiator': 'Blood-and-Sand Veteran: Masters bare-knuckle combat, beast mutations, or relic weaponry with ferocious low-HP attack multipliers.',
+    'Spirit Weaver': 'Spectral Artisan: Weaves ancestral phantom blades and spirit armor into physical combat, gaining extra power slots and protection.',
+    'Mutant': 'Biophysical Anomaly: Mutates cellular anomalies (Quantum manipulation, Kinetic absorption, Runic flesh) that grant supernatural adaptations.',
+    'Resilient': 'Bad-Luck Protection: If any core attribute rolls below Peak Human (4/10), the warrior automatically re-spins that attribute until it reaches greatness!',
+    'Royal': 'Sovereign Authority: Noble monarchs commanding imperial poise, battlefield leadership, and devastating royal decree stat buffs.',
+    'Apostle': 'Reality-Bending Philosopher: Adheres to absolute philosophical creeds (Existentialism, Determinism, Daoism) that alter the rules of combat.',
+    'Primordial Champion': 'Hand of the Universal Constants: Anointed champion of Time, Eternity, Reality, or Void; commands divine reality-warping strikes.',
+    "Champion's Legacy": "Heir to the GOATs: Fights under the banner of legendary tournament winners (Ethan's Weapon Mimic, Musam's Steaming Honeybun, Boodro's Fortitude).",
+    'Hybrid': 'Dual Archetype Master: Rare prodigy possessing two distinct tactical archetypes simultaneously, fusing their perks and playstyles.',
     'Slayer': 'Prey Specialist: Inflicts 180% executioner damage against designated prey races (Gods, Demons, Dragons, Undead, Mortals).',
     'Archaeologist': 'Relic Master: Unearths ancient primordial artifacts that manipulate spacetime, gravity, and brute force.',
     'Equaliser': 'Divine Balance: Forces god-tier and demigod opponents down to equal mortal stats, leveling the playing field.',

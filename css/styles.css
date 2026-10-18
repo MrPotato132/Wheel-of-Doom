@@ -6,18 +6,34 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Fjalla+One&family=Outfit:wght@300;400;600;700;800&display=swap');
 
 :root {
-  --bg-primary: #07070a;
-  --bg-card: rgba(18, 18, 26, 0.82);
-  --bg-card-hover: rgba(28, 28, 40, 0.92);
-  --bg-glass: rgba(15, 15, 22, 0.65);
+  --bg-primary: #060b14;
+  --bg-card: rgba(10, 20, 38, 0.88);
+  --bg-card-hover: rgba(16, 32, 60, 0.94);
+  --bg-glass: rgba(8, 18, 34, 0.72);
   
-  --crimson-primary: #b3131b;
-  --crimson-deep: #7a0b12;
-  --crimson-glow: rgba(179, 19, 27, 0.6);
+  --blue-primary: #2563eb;
+  --blue-deep: #1e3a8a;
+  --blue-bright: #38bdf8;
+  --blue-glow: rgba(56, 189, 248, 0.4);
   
-  --gold-primary: #d4af37;
-  --gold-bright: #ffd700;
-  --gold-glow: rgba(212, 175, 55, 0.45);
+  --cyan-accent: #00f0ff;
+  --cyan-glow: rgba(0, 240, 255, 0.35);
+  
+  --silver-primary: #cbd5e1;
+  --silver-bright: #f8fafc;
+  
+  --border-blue: rgba(56, 189, 248, 0.32);
+  --border-silver: rgba(148, 163, 184, 0.22);
+  --border-gold: rgba(245, 158, 11, 0.35);
+  --border-crimson: rgba(239, 68, 68, 0.35);
+  
+  --crimson-primary: #ef4444;
+  --crimson-deep: #991b1b;
+  --crimson-glow: rgba(239, 68, 68, 0.5);
+  
+  --gold-primary: #f59e0b;
+  --gold-bright: #fbbf24;
+  --gold-glow: rgba(245, 158, 11, 0.4);
   
   --cyan-celestial: #06b6d4;
   --purple-arcane: #a855f7;
@@ -25,9 +41,6 @@
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  
-  --border-gold: rgba(212, 175, 55, 0.35);
-  --border-crimson: rgba(179, 19, 27, 0.45);
   
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -55,12 +68,12 @@ body {
   overflow-x: hidden;
   position: relative;
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(179, 19, 27, 0.18) 0%, transparent 60%),
-    radial-gradient(circle at 10% 85%, rgba(122, 11, 18, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 90% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 45%);
+    radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.18) 0%, transparent 60%),
+    radial-gradient(circle at 10% 85%, rgba(14, 165, 233, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 90% 70%, rgba(99, 102, 241, 0.08) 0%, transparent 45%);
 }
 
-/* Animated Background Embers */
+/* Clean Starlight / Grid Dust Overlay */
 .embers-bg {
   position: fixed;
   top: 0;
@@ -69,17 +82,15 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.4;
+  opacity: 0.25;
   background-image: 
-    radial-gradient(2px 2px at 20px 30px, #ffd700, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 40px 70px, #ff4d6d, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 90px 40px, #ffd700, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 160px 120px, #ff4d6d, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 230px 190px, #ffd700, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 320px 240px, #ff758f, rgba(0,0,0,0));
+    radial-gradient(1.5px 1.5px at 20px 30px, #38bdf8, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 70px 90px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 150px 60px, #00f0ff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 240px 180px, #818cf8, rgba(0,0,0,0));
   background-repeat: repeat;
-  background-size: 350px 350px;
-  animation: emberDrift 28s linear infinite;
+  background-size: 300px 300px;
+  animation: emberDrift 35s linear infinite;
 }
 
 @keyframes emberDrift {
@@ -373,25 +384,33 @@ canvas#wheelCanvas:active {
 .btn-spin-main {
   width: 100%;
   padding: 14px 24px;
-  background: linear-gradient(180deg, #d31622 0%, #8e0b12 100%);
+  background: linear-gradient(180deg, #0284c7 0%, #1e40af 100%);
   color: #ffffff;
-  border: 2px solid var(--gold-bright);
+  border: 1.5px solid #38bdf8;
   border-radius: var(--radius-full);
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 1.15rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   box-shadow: 
-    0 6px 20px rgba(179, 19, 27, 0.6),
-    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    0 6px 22px rgba(2, 132, 199, 0.5),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+}
+
+.btn-spin-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 28px rgba(56, 189, 248, 0.6),
+    inset 0 1px 4px rgba(255, 255, 255, 0.5);
+  border-color: #00f0ff;
 }
 
 .btn-spin-main::after {
@@ -2336,3 +2355,105 @@ canvas#wheelCanvas:active {
   border-color: #ffd700;
 }
 
+
+
+/* ============================================================
+   GENSHIN-STYLE HERO SHOWCASE CARD STYLES
+   ============================================================ */
+
+.card-hero-header {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  margin-bottom: 16px;
+}
+
+.genshin-card-showcase {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: radial-gradient(circle at 50% 30%, rgba(30, 58, 138, 0.45) 0%, #070d18 90%);
+  border: 1.5px solid var(--element-color, #38bdf8);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+.showcase-silhouette-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.genshin-body-svg {
+  height: 90%;
+  max-width: 100%;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.8));
+  animation: heroBreathe 4s ease-in-out infinite alternate;
+}
+
+@keyframes heroBreathe {
+  from { transform: translateY(0px) scale(1); }
+  to { transform: translateY(-4px) scale(1.02); }
+}
+
+.showcase-element-badge {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.showcase-stars {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 2;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.6));
+}
+
+.showcase-stars.stars-5 {
+  color: #fbbf24;
+}
+
+.showcase-stars.stars-4 {
+  color: #c084fc;
+}
+
+.showcase-stars.stars-3 {
+  color: #38bdf8;
+}
+
+.showcase-level-pill {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  z-index: 2;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}

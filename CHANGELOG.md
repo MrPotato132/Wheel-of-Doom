@@ -12,6 +12,30 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
 
 ---
 
+## [v2.1.0] - 2026-10-18
+### Added
+- **Full Compendium Content Expansion (Added 11 Races, 14 Archetypes & 25+ Sub-Wheels)**:
+  - Added new races from Bushin canon: *Dragon Slayer*, *Devil (7 Sins)*, *God / Primordial*, *Animorph*, *Giant*, *Golem*, *Hive Mind*, *Mythical Beast*, *Dryad*, *Merfolk*, and *Reincarnation / Spirit* (Race wheel expanded to 43 total lineages).
+  - Added new archetypes: *Cursed / Cultist*, *Goliath*, *Cloaked (Ninja)*, *Priest*, *Pirate*, *Gladiator*, *Spirit Weaver*, *Mutant*, *Resilient*, *Royal*, *Apostle*, *Primordial Champion*, *Champion's Legacy* (Ethan, Musam, Boodro), and *Hybrid* (Archetype wheel expanded to 36 total classes).
+  - Implemented 25+ new specialty sub-wheels: `humanOrigin`, `demiGodLineage`, `championsBloodGoat`, `dragonSlayerRank`, `angelicOrder`, `demonPowers`, `devilsSins`, `godType`, `primordialType`, `vampireFeeding`, `animorphMorph`, `cyborgTechno`, `giantDomain`, `goblinPosition`, `orcRole`, `golemMaterial`, `hiveMindForm`, `mythicalBeastType`, `dryadOrigin`, `merfolkLineage`, `reincarnationSoul`, `mageRank`, `paladinPowers`, `cursedPowers`, `goliathArmor`, `ninjaRank`, `martialArtStyle`, `priestDomain`, `pirateRank`, `gladiatorVariant`, `spiritWeaverType`, `mutantTrait`, `royaltyTitle`, `apostleBelief`, `primordialPatron`, `championsLegacyFaction`, and `tricksterTricks`.
+  - Expanded `tamerBeast` sub-wheel to 10 canon beasts (*Bald Cat*, *Alpha Ape*, *Pyro Penguin*, *Thunder Hawk*, *Spectral Wolf*, *Tidal Tiger*, *Gale Griffin*, *Rune Bear*, *Void Panther*, *Infernal Hellhound*).
+  - Populated complete lore and combat descriptions in `TRAIT_DESCRIPTIONS` for all new additions.
+- **Rarity-Weighted Dynamic Wheel Slices & Jackpot Clustering**:
+  - Re-engineered `js/wheel.js` canvas math: common segments receive large, wide arcs while legendary, mythic, and god-tier slices are drawn as razor-thin jackpot slivers.
+  - Slices are dynamically clustered by rarity tier (Common $\rightarrow$ Uncommon $\rightarrow$ Rare $\rightarrow$ Epic $\rightarrow$ Legendary $\rightarrow$ Mythic $\rightarrow$ God-Tier $\rightarrow$ Chaos) for maximum anticipation as the wheel sweeps into the high-stakes danger zone.
+  - Probability-weighted landing physics: landing on thin god-tier slivers now naturally matches actual rarity odds.
+  - Built-in support for the *Equalizer* archetype rule-bending mode to equalize all wheel arcs.
+- **Clean Sapphire & Midnight Blue UI Overhaul**:
+  - Ditching carnival aesthetic: removed yellow chasing LED bulbs and carnival crimson/gold rim.
+  - New clean sapphire, midnight obsidian, and electric ice-blue palette across canvas outer rim, center hub, needle pointer, and buttons.
+  - Brushed steel precision needle pointer with electric cyan glowing tip.
+- **Genshin-Style Character Card Reveal**:
+  - Full-body heroic vector silhouette illustration tailored to character race and archetype (Celestial winged paragon, Infernal demon, Draconic knight, Arcane archmage, Colossal titan, Cybernetic titan, Agile scout, and Colosseum warrior).
+  - Elemental Vision crest (Pyro, Cryo, Electro, Anemo, Geo, Hydro, Abyss, Lumen).
+  - Star-rating badge (★★★★★ 5-Star / 4-Star) with glowing elemental aura backdrop and level badge.
+
+---
+
 ## [v2.0.0] - 2026-10-17
 ### Added
 - **Full Character Renaming System**:

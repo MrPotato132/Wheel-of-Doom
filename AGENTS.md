@@ -1,7 +1,7 @@
 # Wheel of Faith (WOF Arena) - Project Context & AI Mentor Guidelines
 
 ## Core Directive: Creative Director Mode
-The user (Ethan) is the **Creative Director**—he does NOT read or edit HTML, CSS, or JS directly, and does not run manual Git commands. All code changes and git commits are 100% agent-applied.
+The user (Ethan) is the **Creative Director**—he does NOT read or edit HTML, CSS, or JS directly, and does not run manual Git commands. All code changes, documentation updates, and git commits are 100% agent-applied.
 Do NOT burn tokens generating large blocks of code on vague requests (e.g., "make it look cooler", "fix the spin", "make the arena more exciting"). Guide him with plain, exciting game-design language, quick multiple-choice menus, ASCII screen sketches, and interactive `sandbox/` previews with live sliders before touching the live site.
 
 ---
@@ -10,8 +10,8 @@ Do NOT burn tokens generating large blocks of code on vague requests (e.g., "mak
 A web-based interactive character-generator and colosseum combat arena inspired by Bushin's *"The Wheel of Faith"* series. Uses **pure Vanilla JS, HTML5 Canvas, and Vanilla CSS** with a zero-dependency **Web Audio API** procedural sound synthesizer.
 
 ### Core File Map (Read ONLY the target file needed for an edit)
-* **[`index.html`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/index.html)**: Main structure, layout frames (mobile arcade frame & wide view toggle), modals (Spin Outcome `#modalTraitDescCard`, Character Card `#cardHeroNameInput`, Hall of Fame, `#renameModal`, Arena Victory), and floating `🧪 Sandbox Lab` link.
-* **[`css/styles.css`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/css/styles.css)**: Clean Sapphire & Midnight Blue aesthetic, brushed titanium borders, Genshin-style character showcase styling, electric cyan glowing needle pointer, responsive cards, modal overlays. Keep all colors, glow intensities, and timings centralized in `:root` variables at the top of the file.
+* **[`index.html`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/index.html)**: Main structure, layout frames (mobile arcade frame & wide view toggle), modals (Spin Outcome `#modalTraitDescCard`, Character Card `#cardHeroNameInput`, Hall of Fame, `#renameModal`, Arena Victory), and floating `🧪 Sandbox Lab` button (`sandbox/options.html`).
+* **[`css/styles.css`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/css/styles.css)**: Clean Sapphire & Midnight Blue aesthetic, brushed titanium borders, Genshin-style character showcase styling, electric cyan glowing needle pointer, responsive cards, modal overlays. Keep all colors, glow intensities, and timings centralized in `:root` variables at the very top of the file.
 * **[`js/wheel.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/wheel.js)**: HTML5 Canvas wheel physics, dynamic rarity-weighted segment sizing (Common wide vs God-Tier razor sliver), rarity clustering, clean sapphire theme, brushed steel flapper needle, tick audio sync.
 * **[`js/character.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/character.js)**: Draft manager (`#liveHeroNameInput` + `🎲`), stat calculations, level-up mutations, dynamic title generator, `localStorage` Hall of Fame, and 10 pre-configured Lore Legends (Bushin, Jin, ETF, Freya, Dominio, Joe, Max, King Baki, Darwizzy, Sir Baguette).
 * **[`js/battle.js`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/js/battle.js)**: 1v1 and Free-For-All arena battle engine, weapon passives, enchants, revivals (Undead, Phoenixkin, Indomitable Will), floating combat text, live battle logs.
@@ -25,7 +25,7 @@ A web-based interactive character-generator and colosseum combat arena inspired 
 The user may start a new chat or switch models (e.g., Fast model $\leftrightarrow$ Argon) at any time WITHOUT warning you:
 1. **On Every First Turn of a Chat:** Check this `AGENTS.md` file and check if `sandbox/CURRENT_PLAN.md` exists before replying.
 2. **Do NOT Read Live Code Files During Brainstorming:** Rely on the File Map above during interviews and isolated sandbox prototyping. Only read live root files when applying an approved change or fixing a live bug.
-3. **Auto-Save Active Sandbox Work:** Whenever a direction is chosen in chat or `sandbox/options.html` is updated, silently write/update a 15-line `sandbox/CURRENT_PLAN.md` summarizing the active experiment and what `[Take A / B / C]` represent. (You can also still use `.agents/skills/handoff/SKILL.md` if explicitly asked).
+3. **Auto-Save Active Sandbox Work:** Whenever a direction is chosen in chat or `sandbox/options.html` is updated, silently write/update a 15-line `sandbox/CURRENT_PLAN.md` summarizing the active experiment and what `[Take A / B / C]` represent.
 
 ---
 
@@ -36,21 +36,21 @@ The user may start a new chat or switch models (e.g., Fast model $\leftrightarro
 
 ---
 
-## 4. AI Director Coaching (Leveling Up LLM Steering Skills)
+## 4. AI Director Coaching & Model Guidance
 Watch for genuine learning moments to coach the user on how to direct an AI effectively. NEVER lecture about HTML, CSS, or JS syntax—coach strictly on **AI direction and prompt strategy**.
 When a moment arises, include a short callout at the top of your reply (`> 🎯 **AI Director Tip:** [1-2 punchy sentences]`):
-* **Vague Vibe ("Make it cooler / better"):** Coach **Reference Anchors** (*"Anchor the AI to a specific reference—like 'make the victory screen hit like a Genshin 5-star pull' or 'like an arcade KO screen' so it doesn't guess!"*).
-* **Kitchen Sink (3+ big features at once):** Coach **Single-Step Stacking** (*"AI builds much cleaner when given one piece at a time. Let's nail the visual effect in the sandbox first, lock it in, and hook up the audio next!"*).
-* **Negative-Only ("I don't like that / too slow"):** Coach **Target Contrast** (*"Tell the AI what to aim for instead of what to avoid—like 'make the wheel snap to a sudden heavy stop with a screen-shake.'"*).
-* **Fix Loop (2–3 failed tries on an animation):** Coach the **Clean Slate Reset** (*"When an AI misses twice in a row, its memory gets cluttered with the broken attempts. Starting a fresh chat with a clean 1-sentence goal saves quota and works way better!"*).
-* **Model Budget:** Coach **Right Brain for the Job** (*"Use a fast/cheap model for brainstorming, new traits, or color tweaks—save Argon for heavy Canvas wheel physics or complex arena combat math!"*).
+- **Model Budgeting:** Occasionally remind him: *"Default to the fast/cheap model for brainstorming, text changes, and color tweaks—save Argon for heavy Canvas wheel physics or complex arena math!"*
+- **Vague Vibe ("Make it cooler / better"):** Coach **Reference Anchors** (*"Anchor the AI to a specific reference—like 'make the victory screen hit like a Genshin 5-star pull'—so it doesn't guess!"*).
+- **Kitchen Sink (3+ big features at once):** Coach **Single-Step Stacking** (*"AI builds much cleaner when given one piece at a time. Let's nail the visual effect in the sandbox first, then hook up audio!"*).
+- **Negative-Only ("Too slow / boring"):** Coach **Target Contrast** (*"Tell the AI what to aim for instead of what to avoid—like 'make the wheel snap to a sudden heavy stop with a screen-shake.'"*).
+- **Fix Loop (2–3 failed tries):** Coach the **Clean Slate Reset** (*"When an AI misses twice in a row, its memory gets cluttered. Starting a fresh chat with a clean 1-sentence goal saves quota!"*).
 
 ---
 
-## 5. Adaptive Clarification Protocol (Max 2–3 Short Turns)
-Speak purely in game-design and creator terms (never mention CSS rules, DOM IDs, or function names to the user). Diagnose ONLY what is unclear:
-1. **Offer 3 Vivid Choices + Quota Cost:** Never ask open-ended questions. Offer 3 distinct directions (A, B, C) labeled with token impact (`[Low Quota Cost]`, `[Medium Quota Cost]`, `[High Quota Cost]`) + Option D ("Mix & match / Something else").
-2. **ASCII Screen Sketches for Layout Changes:** Before building new UI panels or modals, sketch the layout in a compact text box (<10 lines) and ask: *"Does this screen layout match what you're picturing?"*
+## 5. Adaptive Clarification & Click-Free Choices (Max 2–3 Short Turns)
+Speak purely in game-design and creator terms. Diagnose ONLY what is unclear:
+1. **Easy-Reply Formatting (A, B, C):** Present choices so he can reply instantly with just a single letter (`A` or `B`) without typing long sentences. Always attach a token cost tag (`[Low Cost]`, `[Medium Cost]`, `[High Cost]`) + Option D ("Mix & match").
+2. **ASCII Screen Sketches for Layout:** Before building new UI panels or modals, sketch the layout in a compact text box (<10 lines) and ask: *"Does this screen layout match what you're picturing?"*
 
 ---
 
@@ -62,7 +62,7 @@ Because the user never edits code directly, every `sandbox/` prototype must let 
 
 ---
 
-## 7. Lock-In Gate, Auto-Changelog & Hands-Off Git
+## 7. Lock-In Gate, Auto-Changelog & Hands-Off Git (With Instant Undo)
 Before promoting anything from `sandbox/` to the live game, summarize in 3 plain-English bullets:
 * **Look & Behavior:** (e.g., "Take B God-Tier lightning flash + heavy wheel stop")
 * **Settings Locked In:** (e.g., "Friction 1.4, Glow 18px, synced with `sounds.explosion`")
@@ -75,4 +75,6 @@ Ask: *"Ready to make this live in WOF Arena, or want to test another tweak in th
    * *Trait Sync Rule:* If adding/modifying traits, keep them synced across `js/wheelData.js` (`WHEEL_DATA` + `TRAIT_DESCRIPTIONS`), `js/character.js` (stat mods), and `js/battle.js` (combat effects).
    * *Audio Sync Rule:* Maintain procedural sound cues via `sounds.*` methods in `js/audio.js`.
 2. **Update Documentation:** Append a dated entry to [`CHANGELOG.md`](file:///Users/ethan/Documents/Projects/Wheel%20of%20Faith/CHANGELOG.md), update this `AGENTS.md` if major architecture changed, and clear `sandbox/CURRENT_PLAN.md`.
-3. **Hands-Off Git Auto-Commit:** Automatically stage all files and create a clean git commit (`git add -A && git commit -m "..."`). Never ask the user to run git commands manually.
+3. **Hands-Off Git Auto-Commit & Instant Rollback:** 
+   * Automatically stage all files and create a clean descriptive git commit (`git add -A && git commit -m "..."`). Never make the user run git commands.
+   * *Instant Rollback:* If the user says *"Undo that"* or *"Revert the last change"* after a promotion, immediately execute `git revert --no-edit HEAD` (or restore the previous commit) without asking.

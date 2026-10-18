@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The Wheel of Faith | The Almighty Character Wheels</title>
+  <meta name="description" content="Spin the legendary wheels of The Wheel of Faith (WOF Arena). Roll your Race, Archetype, Weapons, Powers, Weaknesses, and Level-Up your fighters.">
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Ambient Embers Particle Layer -->
+  <div class="embers-bg"></div>
+
+  <main class="app-viewport">
+    <!-- Device Frame: Mobile Arcade Look (with Wide-View Toggle) -->
+    <div class="device-frame" id="deviceContainer">
+      
+      <!-- Top Header -->
+      <header class="app-header">
+        <div class="brand-wrapper">
+          <img src="assets/logo.jpg" alt="Wheel of Faith Logo" class="brand-logo" id="headerLogo">
+          <div class="brand-text">
+            <h1>THE WHEEL OF FAITH</h1>
+            <p>WOF Arena • Wheels Edition</p>
+          </div>
+        </div>
+        <div class="header-controls">
+          <button class="icon-btn" id="muteBtn" title="Toggle Sound">🔊 <span class="btn-text">Sound On</span></button>
+          <button class="icon-btn" id="viewToggleBtn" title="Switch between Mobile Arcade and Wide Desktop">🖥️ <span class="btn-text">Wide View</span></button>
+        </div>
+      </header>
+
+      <!-- Official Social Bar -->
+      <nav class="social-links-bar" aria-label="Social Links">
+        <a href="https://www.instagram.com/wheeloffaith/" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram @wheeloffaith">
+          <span>📷</span> <span>@wheeloffaith</span>
+        </a>
+        <a href="https://www.tiktok.com/@the.wheel.of.fait" target="_blank" rel="noopener noreferrer" class="social-link" title="TikTok @the.wheel.of.fait">
+          <span>🎵</span> <span>TikTok</span>
+        </a>
+        <a href="https://www.youtube.com/@TheWheelofFaith" target="_blank" rel="noopener noreferrer" class="social-link" title="YouTube @TheWheelofFaith">
+          <span>▶️</span> <span>YouTube</span>
+        </a>
+        <a href="http://discord.gg/wheeloffaith" target="_blank" rel="noopener noreferrer" class="social-link" title="Official Discord">
+          <span>👾</span> <span>Discord</span>
+        </a>
+      </nav>
+
+      <!-- Mode Navigation Tabs -->
+      <nav class="mode-tabs" role="tablist">
+        <button class="tab-btn active" id="tabDestiny" role="tab" aria-selected="true">
+          <span class="tab-icon">⚔️</span>
+          <span class="tab-text">Destiny Spin</span>
+        </button>
+        <button class="tab-btn" id="tabFreeSpin" role="tab" aria-selected="false">
+          <span class="tab-icon">🎡</span>
+          <span class="tab-text">Wheel Hub</span>
+        </button>
+        <button class="tab-btn" id="tabLevelUp" role="tab" aria-selected="false">
+          <span class="tab-icon">⚡</span>
+          <span class="tab-text">Level-Up</span>
+        </button>
+        <button class="tab-btn" id="tabArena" role="tab" aria-selected="false">
+          <span class="tab-icon">🏟️</span>
+          <span class="tab-text">WoF Arena</span>
+        </button>
+        <button class="tab-btn" id="tabRoster" role="tab" aria-selected="false">
+          <span class="tab-icon">🏆</span>
+          <span class="tab-text">Hall of Fame</span>
+        </button>
+      </nav>
+
+      <!-- Progress Section (for Destiny Sequence) -->
+      <div class="progress-section" id="stepProgress">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressBar"></div>
+        </div>
+        <span class="step-badge" id="currentStepBadge">Step 1 of 7</span>
+      </div>
+
+      <!-- Free Spin Wheel Selector Hub (Hidden by default, shown in Free Spin Mode) -->
+      <div class="wheel-hub-section hidden" id="wheelSelectorHub">
+        <div class="hub-select-wrapper">
+          <label for="wheelCategorySelect">Select Active Wheel:</label>
+          <select id="wheelCategorySelect" class="styled-select">
+            <optgroup label="Main Character Wheels">
+              <option value="race">Race Wheel (32 Races)</option>
+              <option value="archetype">Archetype Wheel (22 Roles)</option>
+              <option value="weapon">Weapon Wheel (36 Armaments)</option>
+              <option value="power">Power Wheel (28 Abilities)</option>
+              <option value="weakness">Weakness / Curse Wheel (22 Curses)</option>
+              <option value="backstory">Backstory & Chaos Wheel (20 Twists)</option>
+              <option value="stats">Combat Rating Wheel (8 Tiers)</option>
+            </optgroup>
+            <optgroup label="Specialty Sub-Wheels">
+              <option value="elfOrigin">Elf Heritage Sub-Wheel</option>
+              <option value="elementalCalamity">Elemental Calamity Sub-Wheel</option>
+              <option value="cosmicTerritory">Cosmic Territory Sub-Wheel</option>
+              <option value="skeletonOrigin">Skeleton Bone Type Sub-Wheel</option>
+              <option value="fairyBlessing">Fairy Power Multiplier</option>
+              <option value="dwarfForge">Dwarven Forge Masterwork</option>
+              <option value="slayerPrey">Slayer Prey Target Sub-Wheel</option>
+              <option value="archaeologistRelic">Archaeologist Relic Sub-Wheel</option>
+              <option value="tamerBeast">Tamer Companion Beast Sub-Wheel</option>
+              <option value="alchemistPotion">Alchemist Signature Elixir</option>
+            </optgroup>
+            <optgroup label="Game Systems">
+              <option value="levelUp">WOF Arena Level-Up Wheel (26 Upgrades)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="hub-tags-scroll">
+          <button class="hub-tag-btn" data-wheel="race">👤 Race</button>
+          <button class="hub-tag-btn" data-wheel="archetype">⚔️ Archetype</button>
+          <button class="hub-tag-btn" data-wheel="weapon">🗡️ Weapon</button>
+          <button class="hub-tag-btn" data-wheel="power">✨ Power</button>
+          <button class="hub-tag-btn" data-wheel="weakness">⚠️ Weakness</button>
+          <button class="hub-tag-btn" data-wheel="backstory">📜 Backstory</button>
+          <button class="hub-tag-btn" data-wheel="levelUp">⚡ Level-Up</button>
+        </div>
+        <div class="hub-compendium-toggle-row">
+          <button class="btn-toggle-compendium" id="btnToggleCompendium">
+            <span>📖</span> <span id="compendiumBtnText">Open Wheel Almanac & Mechanics Guide</span>
+          </button>
+        </div>
+        <div class="hub-compendium-drawer hidden" id="hubCompendiumDrawer">
+          <div class="compendium-header">
+            <h4 id="compendiumTitle">Active Wheel Almanac</h4>
+            <span class="compendium-count" id="compendiumCount">32 Segments</span>
+          </div>
+          <div class="compendium-items-list" id="compendiumItemsList"></div>
+        </div>
+      </div>
+
+      <!-- Level Up Character Selector Panel (Hidden by default) -->
+      <div class="level-up-panel hidden" id="levelUpPanel">
+        <div class="hub-select-wrapper">
+          <label for="levelUpCharSelect">Choose Fighter to Upgrade:</label>
+          <select id="levelUpCharSelect" class="styled-select"></select>
+        </div>
+        <div id="levelUpCharPreview"></div>
+      </div>
+
+      <!-- ============================================================
+           WOF ARENA: 1v1 DUEL & FREE-FOR-ALL COMBAT
+           ============================================================ -->
+      <section class="arena-section hidden" id="arenaSection" aria-label="WoF Arena Combat">
+        <div class="arena-header-bar">
+          <div class="arena-mode-switch">
+            <button class="arena-submode-btn active" id="btnModeDuel">⚔️ 1v1 Duel</button>
+            <button class="arena-submode-btn" id="btnModeFFA">💥 Free-For-All (Melee)</button>
+          </div>
+          <div class="arena-quick-actions">
+            <button class="btn btn-sm btn-secondary" id="btnAutofillLegends">⚡ Auto-Fill Legends</button>
+            <button class="btn btn-sm btn-secondary" id="btnResetFighters">Clear Roster ✕</button>
+          </div>
+        </div>
+
+        <!-- Fighter Selection Roster in Arena Lobby -->
+        <div class="arena-lobby-panel">
+          <div class="lobby-header">
+            <h4>Arena Combatants (<span id="arenaFighterCount">0</span>)</h4>
+            <span class="lobby-hint" id="arenaLobbyHint">Select 2 fighters for a duel</span>
+          </div>
+          <div class="arena-fighters-chips" id="arenaFighterChips"></div>
+          
+          <div class="lobby-add-row">
+            <select id="lobbyAddSelect" class="styled-select"></select>
+            <button class="btn btn-sm btn-primary" id="lobbyAddBtn">+ Add to Arena</button>
+          </div>
+        </div>
+
+        <!-- Visual Battle Colosseum Stage -->
+        <div class="arena-colosseum" id="arenaColosseum">
+          <!-- Floating Damage Text Container -->
+          <div class="floating-damage-container" id="floatingDamageLayer"></div>
+          
+          <!-- Attack Slash / Beam Animation Element -->
+          <div class="arena-slash-fx hidden" id="arenaSlashFx"></div>
+
+          <!-- 1v1 Duel Arena View -->
+          <div class="arena-duel-view" id="arenaDuelView">
+            <div class="fighter-pod pod-left" id="podLeft">
+              <div class="fighter-avatar-wrap">
+                <div class="fighter-avatar" id="avatarLeft">⚔️</div>
+                <div class="fighter-level-tag" id="lvlLeft">Lv.1</div>
+              </div>
+              <div class="fighter-meta">
+                <h4 class="fighter-name" id="nameLeft">Fighter 1</h4>
+                <div class="fighter-weapon" id="weaponLeft">Bare Knuckles</div>
+                <div class="fighter-status-bar" id="statusBarLeft"></div>
+              </div>
+              <div class="fighter-hp-container">
+                <div class="hp-bar-track">
+                  <div class="hp-bar-fill" id="hpFillLeft"></div>
+                </div>
+                <div class="hp-readout" id="hpTextLeft">100 / 100 HP</div>
+              </div>
+            </div>
+
+            <div class="duel-vs-emblem" id="duelVsEmblem">
+              <span class="vs-text">VS</span>
+              <span class="vs-round" id="duelRoundText">ROUND 1</span>
+            </div>
+
+            <div class="fighter-pod pod-right" id="podRight">
+              <div class="fighter-avatar-wrap">
+                <div class="fighter-avatar" id="avatarRight">🛡️</div>
+                <div class="fighter-level-tag" id="lvlRight">Lv.1</div>
+              </div>
+              <div class="fighter-meta">
+                <h4 class="fighter-name" id="nameRight">Fighter 2</h4>
+                <div class="fighter-weapon" id="weaponRight">Bare Knuckles</div>
+                <div class="fighter-status-bar" id="statusBarRight"></div>
+              </div>
+              <div class="fighter-hp-container">
+                <div class="hp-bar-track">
+                  <div class="hp-bar-fill" id="hpFillRight"></div>
+                </div>
+                <div class="hp-readout" id="hpTextRight">100 / 100 HP</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Free-For-All Multi-Fighter Arena View -->
+          <div class="arena-ffa-view hidden" id="arenaFfaView">
+            <div class="ffa-grid" id="ffaGrid"></div>
+          </div>
+        </div>
+
+        <!-- Arena Control Controls -->
+        <div class="arena-controls-bar">
+          <button class="btn-spin-main arena-fight-btn" id="startBattleBtn">
+            <span>⚔️</span>
+            <span id="fightBtnText">START BATTLE</span>
+          </button>
+          
+          <div class="arena-speed-controls">
+            <span class="speed-label">Speed:</span>
+            <div class="speed-btn-group">
+              <button class="speed-btn active" data-speed="1">1x</button>
+              <button class="speed-btn" data-speed="2">2x</button>
+              <button class="speed-btn" data-speed="4">4x ⚡</button>
+            </div>
+            <button class="btn btn-sm btn-secondary" id="btnPauseBattle">⏸️ Pause</button>
+          </div>
+        </div>
+
+        <!-- Live Commentary Combat Log -->
+        <div class="arena-log-card">
+          <div class="log-card-header">
+            <h4>📜 ARENA COMBAT COMMENTARY</h4>
+            <span class="log-indicator" id="battleStatusBadge">READY</span>
+          </div>
+          <div class="arena-log-feed" id="arenaLogFeed">
+            <div class="log-entry log-system">Select fighters and press START BATTLE to enter the colosseum!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wheel Title & Info -->
+      <div class="wheel-info-bar">
+        <h2 class="wheel-title" id="wheelTitle">👤 Race Wheel</h2>
+        <p class="wheel-subtitle" id="wheelSubtitle">Determine your mortal, infernal, or celestial origin</p>
+      </div>
+
+      <!-- Main Interactive Stage (Wheel Canvas + Live Draft Panel) -->
+      <div class="main-stage-grid">
+        <div class="wheel-stage-container">
+          <div class="wheel-canvas-wrapper">
+            <canvas id="wheelCanvas"></canvas>
+          </div>
+
+          <!-- Spin Action Controls -->
+          <div class="spin-controls-bar">
+            <button class="btn-spin-main" id="spinBtn" aria-label="Spin the Almighty Wheel">
+              <span class="spin-icon">⚡</span>
+              <span>SPIN THE WHEEL</span>
+            </button>
+            <div class="secondary-actions">
+              <button class="btn-instant" id="instantBtn">Fast Spin ⏩</button>
+              <label class="quick-spin-label" for="quickSpinToggle">
+                <input type="checkbox" id="quickSpinToggle">
+                <span>Instant Spin Mode</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Draft Tracker (Active Character in Creation) -->
+        <aside class="live-draft-panel" id="livePreview" aria-label="Live Character Draft">
+          <h3 class="draft-panel-title">Current Warrior Draft</h3>
+          <div class="draft-row draft-name-row">
+            <span class="draft-label">Name:</span>
+            <div class="live-name-input-group">
+              <input type="text" id="liveHeroNameInput" class="live-name-input" maxlength="24" placeholder="Warrior Name..." title="Customize warrior name">
+              <button class="btn-rand-name" id="btnRandomizeName" title="Randomize Name">🎲</button>
+            </div>
+          </div>
+          <div class="draft-row">
+            <span class="draft-label">Race:</span>
+            <span class="draft-val" id="liveRace">—</span>
+          </div>
+          <div class="draft-row">
+            <span class="draft-label">Archetype:</span>
+            <span class="draft-val" id="liveArchetype">—</span>
+          </div>
+          <div class="draft-row">
+            <span class="draft-label">Weapon:</span>
+            <span class="draft-val" id="liveWeapon">—</span>
+          </div>
+          <div class="draft-row">
+            <span class="draft-label">Power:</span>
+            <span class="draft-val" id="livePower">—</span>
+          </div>
+          <div class="draft-row">
+            <span class="draft-label">Weakness:</span>
+            <span class="draft-val" id="liveWeakness">—</span>
+          </div>
+          <div class="draft-row">
+            <span class="draft-label">Chaos/Origin:</span>
+            <span class="draft-val" id="liveBackstory">—</span>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       MODAL 1: SPIN OUTCOME CELEBRATION
+       ============================================================ -->
+  <div class="modal-backdrop hidden" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="modalResultTitle">
+    <div class="modal-card">
+      <button class="modal-close-x" id="modalCloseBtn" aria-label="Close">✕</button>
+      <div class="outcome-header">
+        <h3 id="modalResultTitle">Outcome Revealed!</h3>
+      </div>
+      <div class="outcome-body">
+        <span class="rarity-badge common" id="modalRarityBadge">COMMON</span>
+        <h2 class="outcome-item-text" id="modalItemText">Human</h2>
+        <p class="outcome-item-subtext" id="modalItemSubtext">Middest Race with Infinite Potential</p>
+        
+        <!-- Rich Trait Mechanics & Lore Explanation Card -->
+        <div class="modal-trait-desc-card" id="modalTraitDescCard">
+          <div class="modal-desc-header">
+            <span class="modal-desc-type-badge" id="modalDescTypeBadge">⚡ COMBAT & LORE MECHANICS</span>
+          </div>
+          <p class="modal-desc-text" id="modalDescText">Mechanics and lore explanation will appear here...</p>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="modalNextBtn">Next Wheel ➔</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2: THE ALMIGHTY CHARACTER CARD
+       ============================================================ -->
+  <div class="modal-backdrop hidden" id="cardModal" role="dialog" aria-modal="true" aria-labelledby="cardHeroNameInput">
+    <div class="modal-card character-card-modal-content">
+      <button class="modal-close-x" id="cardModalCloseBtn" aria-label="Close">✕</button>
+      
+      <div class="character-card">
+        <div class="card-top-bar">
+          <span class="card-series-title">THE WHEEL OF FAITH</span>
+          <div class="card-top-controls">
+            <button class="btn-toggle-explain" id="btnToggleTraitExplain" title="Toggle detailed trait lore & combat mechanics descriptions">
+              <span id="explainToggleIcon">📖</span> <span id="explainToggleText">Trait Guide: ON</span>
+            </button>
+            <span class="card-level-tag" id="cardLevelBadge">Lv. 1</span>
+          </div>
+        </div>
+
+        <div class="card-hero-header">
+          <div id="cardAvatarContainer"></div>
+          <div class="card-hero-meta">
+            <div class="card-name-input-row">
+              <input type="text" id="cardHeroNameInput" class="card-hero-name-input" maxlength="24" title="Click to edit character name" placeholder="Enter Character Name...">
+              <button class="btn-card-rename" id="btnEditCardName" title="Rename Character" aria-label="Rename Character">✏️</button>
+            </div>
+            <p class="card-hero-title" id="cardHeroTitle">The Voidbreaker Solar Slayer</p>
+            <div class="card-badges-row">
+              <span class="card-badge badge-race" id="cardRaceBadge">Human</span>
+              <span class="card-badge badge-arch" id="cardArchetypeBadge">Slayer</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-power-meter">
+          <div class="power-meter-label">OVERALL COMBAT RATING:</div>
+          <div class="power-meter-val" id="cardPowerScore">142</div>
+          <div class="card-rank-badge rank-S" id="cardRankBadge">RANK S</div>
+        </div>
+
+        <!-- Attributes List with Rich Trait Explanations -->
+        <div class="card-attributes-list" id="cardAttributesList">
+          <!-- Race & Lineage -->
+          <div class="card-attr-item card-attr-race">
+            <div class="attr-header-row">
+              <span class="attr-key">🧬 Race & Lineage</span>
+              <span class="attr-rarity-tag" id="cardRaceRarity">COMMON</span>
+            </div>
+            <div id="cardRaceDisplay"></div>
+            <div class="trait-explain-box" id="cardRaceExplain"></div>
+          </div>
+
+          <!-- Archetype Role -->
+          <div class="card-attr-item card-attr-archetype">
+            <div class="attr-header-row">
+              <span class="attr-key">🛡️ Archetype Role</span>
+              <span class="attr-rarity-tag" id="cardArchRarity">CLASS</span>
+            </div>
+            <div id="cardArchetypeDisplay"></div>
+            <div class="trait-explain-box" id="cardArchExplain"></div>
+          </div>
+
+          <!-- Weapon & Armament -->
+          <div class="card-attr-item card-attr-weapon">
+            <div class="attr-header-row">
+              <span class="attr-key">🗡️ Weapon & Armament</span>
+              <span class="attr-rarity-tag" id="cardWeaponRarity">WEAPON</span>
+            </div>
+            <div id="cardWeapon"></div>
+            <div class="trait-explain-box" id="cardWeaponExplain"></div>
+          </div>
+
+          <!-- Supernatural Powers -->
+          <div class="card-attr-item card-attr-powers">
+            <div class="attr-header-row">
+              <span class="attr-key">✨ Supernatural Powers</span>
+              <span class="attr-rarity-tag" id="cardPowerCount">1 ABILITY</span>
+            </div>
+            <div id="cardPowers"></div>
+          </div>
+
+          <!-- Weakness / Curse -->
+          <div class="card-attr-item card-attr-weakness">
+            <div class="attr-header-row">
+              <span class="attr-key">⚠️ Weakness & Curse Handicap</span>
+              <span class="attr-rarity-tag flaw">CURSE</span>
+            </div>
+            <div id="cardWeakness"></div>
+            <div class="trait-explain-box weakness-explain" id="cardWeaknessExplain"></div>
+          </div>
+
+          <!-- Backstory / Chaos Factor (Prominently Highlighted!) -->
+          <div class="card-attr-item card-attr-chaos highlight-chaos">
+            <div class="attr-header-row">
+              <span class="attr-key chaos-key">🌀 Backstory & Chaos Factor</span>
+              <span class="attr-rarity-tag chaos" id="cardChaosRarity">CHAOS TWIST</span>
+            </div>
+            <div id="cardBackstory"></div>
+            <div class="trait-explain-box chaos-explain" id="cardBackstoryExplain"></div>
+          </div>
+        </div>
+
+        <!-- Combat Stats Radar Bars with Interactive Guide -->
+        <div class="card-stats-section">
+          <div class="stats-section-header">
+            <span class="attr-key">📊 Combat Statistics</span>
+            <span class="stats-hint">Tap any stat for combat effect</span>
+          </div>
+          <div class="card-stats-grid">
+            <div class="stat-bar-row" id="statStr" data-stat="STR" title="Physical attack power & heavy blunt damage">
+              <span class="stat-name">STR</span>
+              <div class="stat-track"><div class="stat-fill"></div></div>
+              <span class="stat-num">50</span>
+            </div>
+            <div class="stat-bar-row" id="statSpd" data-stat="SPD" title="Turn initiative, attack speed, and dodge rate">
+              <span class="stat-name">SPD</span>
+              <div class="stat-track"><div class="stat-fill"></div></div>
+              <span class="stat-num">50</span>
+            </div>
+            <div class="stat-bar-row" id="statDur" data-stat="DUR" title="Maximum HP pool & damage reduction armor">
+              <span class="stat-name">DUR</span>
+              <div class="stat-track"><div class="stat-fill"></div></div>
+              <span class="stat-num">50</span>
+            </div>
+            <div class="stat-bar-row" id="statInt" data-stat="INT" title="Supernatural power trigger chance & tactical counter-attacks">
+              <span class="stat-name">INT</span>
+              <div class="stat-track"><div class="stat-fill"></div></div>
+              <span class="stat-num">50</span>
+            </div>
+            <div class="stat-bar-row" id="statChaos" data-stat="CHAOS" title="Wildcard miracle procs & critical damage multiplier">
+              <span class="stat-name">CHAOS</span>
+              <div class="stat-track"><div class="stat-fill"></div></div>
+              <span class="stat-num">50</span>
+            </div>
+          </div>
+          <div class="stat-explain-callout" id="statExplainCallout">
+            <span class="stat-callout-icon">💡</span>
+            <span class="stat-callout-text" id="statCalloutText">Hover or tap any stat bar above to inspect its combat mechanics.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Action Buttons -->
+      <div class="card-actions-row">
+        <button class="btn btn-primary" id="saveCharacterBtn">💾 Save to Hall of Fame</button>
+        <button class="btn btn-secondary" id="exportCardBtn">📥 Download Card (PNG)</button>
+        <button class="btn btn-secondary" id="copyCardTextBtn">📋 Copy Summary</button>
+        <button class="btn btn-primary" id="restartDestinyBtn">⚔️ Forge New Hero</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: HALL OF FAME (Roster)
+       ============================================================ -->
+  <div class="modal-backdrop hidden" id="rosterModal" role="dialog" aria-modal="true" aria-labelledby="rosterModalTitle">
+    <div class="modal-card">
+      <button class="modal-close-x" id="rosterCloseBtn" aria-label="Close">✕</button>
+      <div class="outcome-header">
+        <h3 id="rosterModalTitle">🏆 Hall of Fame</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Saved Warriors & WOF Arena Competitors</p>
+      </div>
+      <div class="roster-grid" id="rosterList"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 4: ARENA VICTORY CELEBRATION
+       ============================================================ -->
+  <div class="modal-backdrop hidden" id="battleVictoryModal" role="dialog" aria-modal="true" aria-labelledby="victoryTitle">
+    <div class="modal-card victory-modal-card">
+      <button class="modal-close-x" id="victoryModalCloseBtn" aria-label="Close">✕</button>
+      <div class="victory-header">
+        <span class="victory-crown">👑</span>
+        <h3 id="victoryTitle">ARENA CHAMPION</h3>
+      </div>
+      <div class="victory-champion-display" id="victoryChampionDisplay">
+        <div class="champ-avatar" id="champAvatar">🏆</div>
+        <h2 class="champ-name" id="champName">Bushin</h2>
+        <p class="champ-title" id="champTitle">The Mastermind & Fourth Wall Breaker</p>
+      </div>
+      <div class="victory-stats-grid" id="victoryStatsGrid">
+        <div class="vstat-item">
+          <span class="vstat-num" id="champKills">0</span>
+          <span class="vstat-label">ELIMINATIONS</span>
+        </div>
+        <div class="vstat-item">
+          <span class="vstat-num" id="champDamage">0</span>
+          <span class="vstat-label">DAMAGE DEALT</span>
+        </div>
+        <div class="vstat-item">
+          <span class="vstat-num" id="champLevel">Lv. 1</span>
+          <span class="vstat-label">CHAMPION TIER</span>
+        </div>
+      </div>
+      <div class="victory-actions">
+        <button class="btn btn-primary btn-levelup-champ" id="btnLevelUpChampion">⚡ Level Up Champion on the Wheel!</button>
+        <button class="btn btn-secondary" id="btnRematch">🔄 New Arena Match</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 5: CUSTOM CHARACTER RENAME MODAL
+       ============================================================ -->
+  <div class="modal-backdrop hidden" id="renameModal" role="dialog" aria-modal="true" aria-labelledby="renameModalTitle">
+    <div class="modal-card rename-modal-card">
+      <button class="modal-close-x" id="renameModalCloseBtn" aria-label="Close">✕</button>
+      <div class="outcome-header">
+        <h3 id="renameModalTitle">✏️ Rename Warrior</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Choose an epic name for your colosseum gladiator</p>
+      </div>
+      <div class="rename-modal-body">
+        <input type="text" id="renameModalInput" class="rename-modal-input" maxlength="26" placeholder="Enter warrior name...">
+        <div class="rename-suggestions">
+          <button class="btn-name-suggest" data-name="Shadow Sovereign">Shadow Sovereign</button>
+          <button class="btn-name-suggest" data-name="Bushin-Slayer">Bushin-Slayer</button>
+          <button class="btn-name-suggest" data-name="Lord Dominio">Lord Dominio</button>
+          <button class="btn-name-suggest" data-name="Anime Protagonist">Anime Protagonist</button>
+          <button class="btn-name-suggest" data-name="Sir Baguette">Sir Baguette</button>
+          <button class="btn-name-suggest" data-name="Valkyrie Queen">Valkyrie Queen</button>
+        </div>
+      </div>
+      <div class="rename-modal-actions">
+        <button class="btn btn-secondary" id="renameRandomBtn">🎲 Randomize</button>
+        <button class="btn btn-primary" id="renameConfirmBtn">Confirm Name ⚔️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/wheelData.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/wheel.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/battle.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

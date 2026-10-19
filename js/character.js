@@ -18,7 +18,6 @@ class CharacterManager {
       subRace: null,
       archetype: null,
       archetypeSub: null,
-      sorcererGrade: { text: 'Grade 1 Sorcerer', subtext: '36% Base Black Flash Odds', rarity: 'epic', bfChance: 0.36, bonus: 45 },
       weapon: null,
       enchantments: [],
       powers: [],
@@ -71,24 +70,6 @@ class CharacterManager {
         break;
       case 'archetypeSub':
         this.currentDraft.archetypeSub = segmentData;
-        if (segmentData && segmentData.fingers) {
-          this.currentDraft.sukunaFingers = segmentData.fingers;
-          const fBonus = segmentData.fingers * 4;
-          this.currentDraft.stats.str += fBonus;
-          this.currentDraft.stats.spd += Math.floor(fBonus * 0.8);
-          this.currentDraft.stats.chaos += fBonus;
-        }
-        break;
-      case 'sorcererGrade':
-        this.currentDraft.sorcererGrade = segmentData;
-        if (segmentData && segmentData.bonus) {
-          const b = segmentData.bonus;
-          this.currentDraft.stats.str += b;
-          this.currentDraft.stats.spd += b;
-          this.currentDraft.stats.dur += b;
-          this.currentDraft.stats.int += b;
-          this.currentDraft.stats.chaos += b;
-        }
         break;
       case 'weapon':
         this.currentDraft.weapon = segmentData;
@@ -97,11 +78,6 @@ class CharacterManager {
         if (!this.currentDraft.powers.some(p => p.text === segmentData.text)) {
           this.currentDraft.powers.push(segmentData);
         }
-        break;
-      case 'domainType':
-        this.currentDraft.domainType = segmentData;
-        this.currentDraft.domainName = segmentData.text;
-        this.currentDraft.domainTheme = segmentData.theme || 'void';
         break;
       case 'weakness':
         this.currentDraft.weakness = segmentData;
@@ -150,11 +126,6 @@ class CharacterManager {
       case 'Homunculus': s.int += 40; s.chaos += 30; s.dur += 20; break;
       case 'Astral Seraph': s.int += 50; s.spd += 40; s.dur += 30; break;
       case 'Living Armor': s.dur += 50; s.str += 30; s.int -= 10; break;
-      // JJK Expansion Races
-      case 'Special Grade Cursed Spirit': s.str += 45; s.dur += 45; s.chaos += 50; break;
-      case 'Death Painting Womb': s.str += 40; s.dur += 40; s.chaos += 35; break;
-      case 'Six Eyes Clan Heir': s.int += 65; s.spd += 55; s.str += 40; break;
-      case 'Heavenly Restricted (Toji Pact)': s.str += 75; s.spd += 75; s.dur += 50; break;
       default: break;
     }
   }
@@ -179,10 +150,6 @@ class CharacterManager {
       case 'Cosmic Inquisitor': s.int += 50; s.dur += 30; s.chaos += 20; break;
       case 'Bard / Battle Rocker': s.chaos += 45; s.spd += 25; s.int += 20; break;
       case 'Gambler': s.chaos += 65; s.spd += 25; s.int += 20; break;
-      // JJK Expansion Archetypes
-      case 'Cursed Vessel': s.str += 55; s.spd += 45; s.chaos += 60; break;
-      case 'Special Grade Sorcerer': s.str += 50; s.int += 55; s.spd += 45; break;
-      case 'Cursed Corpse Puppet': s.dur += 60; s.str += 40; s.spd += 15; break;
       default: break;
     }
   }
@@ -213,16 +180,7 @@ class CharacterManager {
     const powerName = char.powers.length ? char.powers[0].text : '';
 
     let epithet = '';
-    if (raceName === 'Six Eyes Clan Heir' || powerName.includes('Hollow Purple')) {
-      epithet = 'The Honored One';
-    } else if (archetypeName === 'Cursed Vessel') {
-      const f = char.sukunaFingers || (char.archetypeSub && char.archetypeSub.fingers) || 20;
-      epithet = `Vessel of Sukuna (${f}F)`;
-    } else if (raceName.includes('Heavenly Restricted') || weaponName.includes('Inverted Spear')) {
-      epithet = 'The Sorcerer Killer';
-    } else if (subRaceText.includes('King of Curses') || powerName.includes('Cleave')) {
-      epithet = 'King of Curses';
-    } else if (char.backstory && char.backstory.text === 'Fourth Wall Breaker') {
+    if (char.backstory && char.backstory.text === 'Fourth Wall Breaker') {
       epithet = 'The Meta Entity';
     } else if (char.backstory && char.backstory.text === 'Reborn Anime Protagonist') {
       epithet = 'The Shonen Chosen One';
@@ -404,7 +362,7 @@ class CharacterManager {
         archetypeSub: null,
         weapon: { text: 'Nodachi of the Black Void', subtext: 'Slices through spatial rifts', rarity: 'legendary' },
         enchantments: ['Void Siphon'],
-        powers: [{ text: 'Domain Expansion', subtext: 'Guaranteed hits in shadow realm', rarity: 'godTier' }],
+        powers: [{ text: 'Shadow Manipulation', subtext: 'Travels through shadows, binds foes', rarity: 'epic' }],
         weakness: { text: 'Needs 8 Hours of Sleep', subtext: 'Exhausted from dungeon raids', rarity: 'common' },
         backstory: { text: 'Reborn Anime Protagonist', subtext: 'Solo Hunter Sovereign', rarity: 'godTier' },
         combatRank: { rank: 'EX', mult: 3.2 },
@@ -545,120 +503,6 @@ class CharacterManager {
         backstory: { text: 'Sentient Meme Come to Life', subtext: 'Pure chaotic comedy', rarity: 'chaos' },
         combatRank: { rank: 'A', mult: 1.6 },
         stats: { str: 130, spd: 95, dur: 150, int: 90, chaos: 160 },
-        isLegend: true
-      },
-      {
-        id: 'legend_sukuna',
-        name: 'Ryomen Sukuna (20F)',
-        level: 10,
-        race: { text: 'Special Grade Cursed Spirit', color: '#881337', rarity: 'godTier' },
-        subRace: { text: 'True Form Heian Sukuna' },
-        archetype: { text: 'Cursed Vessel', rarity: 'godTier' },
-        archetypeSub: { text: '20 Fingers (True King of Curses)', fingers: 20 },
-        sukunaFingers: 20,
-        weapon: { text: 'Kamutoke (Vajra Dagger)', subtext: 'Heian Era lightning relic', rarity: 'godTier' },
-        enchantments: ['Spacetime Rend', 'Void Siphon'],
-        passives: ['Indomitable Will', 'Double Strike Mastery'],
-        powers: [
-          { text: 'Domain Expansion', subtext: 'Malevolent Shrine', rarity: 'godTier' },
-          { text: 'Cleave & Dismantle (Shrine)', subtext: 'World-Cutting Slash', rarity: 'legendary' },
-          { text: 'Black Flash (Kokusen)', subtext: 'Sparks of black ^2.5', rarity: 'mythic' },
-          { text: 'Reverse Cursed Technique', subtext: 'Positive energy healing', rarity: 'epic' }
-        ],
-        domainType: { text: 'Malevolent Shrine (Cleave Storm)', theme: 'shrine' },
-        weakness: { text: 'Compulsive Taunting', subtext: 'Toying with lesser sorcerers', rarity: 'uncommon' },
-        backstory: { text: 'Sealed Demon King', subtext: 'Disgraced One of the Heian Era', rarity: 'legendary' },
-        combatRank: { rank: 'GOD', mult: 3.5 },
-        stats: { str: 215, spd: 195, dur: 190, int: 185, chaos: 220 },
-        isLegend: true
-      },
-      {
-        id: 'legend_gojo',
-        name: 'Satoru Gojo',
-        level: 10,
-        race: { text: 'Six Eyes Clan Heir', color: '#0284c7', rarity: 'godTier' },
-        subRace: null,
-        archetype: { text: 'Special Grade Sorcerer', rarity: 'mythic' },
-        archetypeSub: { text: 'Infinite Void (Cosmic Stun)', theme: 'void' },
-        domainType: { text: 'Infinite Void (Cosmic Stun)', theme: 'void' },
-        weapon: { text: 'Bare Knuckles (Martial Arts)', subtext: 'Lapse Blue infused fists', rarity: 'common' },
-        enchantments: ['Spacetime Rend'],
-        passives: ['Indomitable Will', 'Double Strike Mastery'],
-        powers: [
-          { text: 'Limitless & Hollow Purple', subtext: 'Imaginary Mass erasure', rarity: 'godTier' },
-          { text: 'Domain Expansion', subtext: 'Unlimited Void', rarity: 'godTier' },
-          { text: 'Black Flash (Kokusen)', subtext: 'Sparks of black ^2.5', rarity: 'mythic' },
-          { text: 'Reverse Cursed Technique', subtext: '24/7 brain refresh', rarity: 'epic' }
-        ],
-        weakness: { text: 'Compulsive Taunting', subtext: 'Throughout Heaven and Earth, I alone am the Honored One', rarity: 'uncommon' },
-        backstory: { text: 'The Chosen Vessel', subtext: 'Shifted the balance of the world at birth', rarity: 'legendary' },
-        combatRank: { rank: 'GOD', mult: 3.5 },
-        stats: { str: 195, spd: 215, dur: 185, int: 225, chaos: 205 },
-        isLegend: true
-      },
-      {
-        id: 'legend_toji',
-        name: 'Toji Fushiguro',
-        level: 9,
-        race: { text: 'Heavenly Restricted (Toji Pact)', color: '#14532d', rarity: 'mythic' },
-        subRace: null,
-        archetype: { text: 'Shadow Assassin', rarity: 'rare' },
-        archetypeSub: null,
-        weapon: { text: 'Inverted Spear of Heaven', subtext: 'Nullifies all Cursed Techniques', rarity: 'godTier' },
-        enchantments: ['Armor Bypass Rend', 'Lightning Chain'],
-        passives: ['Double Strike Mastery'],
-        powers: [
-          { text: 'Lightning God Speed', subtext: 'Zero Cursed Energy physical apex', rarity: 'epic' }
-        ],
-        weakness: { text: 'Greedy for Gold', subtext: 'Boat racing debts', rarity: 'uncommon' },
-        backstory: { text: 'Disgraced Gladiator', subtext: 'The Sorcerer Killer who left it all behind', rarity: 'uncommon' },
-        combatRank: { rank: 'SSS', mult: 2.8 },
-        stats: { str: 210, spd: 220, dur: 175, int: 145, chaos: 165 },
-        isLegend: true
-      },
-      {
-        id: 'legend_yuji',
-        name: 'Yuji Itadori (Awakened)',
-        level: 9,
-        race: { text: 'Death Painting Womb', color: '#991b1b', rarity: 'epic' },
-        subRace: null,
-        archetype: { text: 'Cursed Vessel', rarity: 'godTier' },
-        archetypeSub: { text: '15 Fingers (Shibuya Calamity)', fingers: 15 },
-        sukunaFingers: 15,
-        weapon: { text: 'Bare Knuckles (Martial Arts)', subtext: 'Soul-seizing divergent strikes', rarity: 'common' },
-        enchantments: ['Armor Bypass Rend'],
-        passives: ['Indomitable Will', 'Double Strike Mastery'],
-        powers: [
-          { text: 'Black Flash (Kokusen)', subtext: 'Chosen by the Sparks of Black (8x Chain)', rarity: 'mythic' },
-          { text: 'Cleave & Dismantle (Shrine)', subtext: 'Modern scissor-line soul dismantle', rarity: 'legendary' },
-          { text: 'Blood Bending', subtext: 'Piercing Blood & Supernova', rarity: 'epic' },
-          { text: 'Reverse Cursed Technique', subtext: 'Blood-knit regeneration', rarity: 'epic' }
-        ],
-        weakness: { text: 'Overly Polite', subtext: 'Suffers for his friends', rarity: 'common' },
-        backstory: { text: 'Reborn Anime Protagonist', subtext: 'Cog in the jujutsu machine', rarity: 'legendary' },
-        combatRank: { rank: 'SSS', mult: 2.8 },
-        stats: { str: 205, spd: 200, dur: 195, int: 115, chaos: 190 },
-        isLegend: true
-      },
-      {
-        id: 'legend_mahoraga',
-        name: 'Divine General Mahoraga',
-        level: 10,
-        race: { text: 'Special Grade Cursed Spirit', color: '#881337', rarity: 'godTier' },
-        subRace: { text: 'Eight-Handled Sword Divergent Sila' },
-        archetype: { text: 'Berserker', rarity: 'uncommon' },
-        archetypeSub: null,
-        weapon: { text: 'Split Soul Katana', subtext: 'Sword of Extermination', rarity: 'mythic' },
-        enchantments: ['Spacetime Rend'],
-        passives: ['Indomitable Will'],
-        powers: [
-          { text: 'Ten Shadows (Mahoraga)', subtext: 'Dharma Wheel turns and adapts to all phenomena', rarity: 'godTier' },
-          { text: 'Super Regeneration', subtext: 'Instant adaptation recovery', rarity: 'rare' }
-        ],
-        weakness: { text: 'Always Announces Attack', subtext: 'Sacred Dharma Wheel clank before adaptation', rarity: 'chaos' },
-        backstory: { text: 'Ancient Lab Experiment', subtext: 'Untamed apex shikigami of the Zenin clan', rarity: 'uncommon' },
-        combatRank: { rank: 'GOD', mult: 3.5 },
-        stats: { str: 210, spd: 185, dur: 225, int: 160, chaos: 195 },
         isLegend: true
       }
     ];

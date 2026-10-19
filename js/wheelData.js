@@ -80,27 +80,7 @@ const WHEEL_DATA = {
       { text: 'Mythical Beast', subtext: 'Legendary Apex Chimera of Myth', rarity: 'legendary', color: '#b45309', subWheel: 'mythicalBeastType' },
       { text: 'Dryad', subtext: 'Nature-Bound Spirit of Primeval Forests', rarity: 'uncommon', color: '#16a34a', subWheel: 'dryadOrigin' },
       { text: 'Merfolk', subtext: 'Aquatic Sovereign of the Ocean Depths', rarity: 'uncommon', color: '#0891b2', subWheel: 'merfolkLineage' },
-      { text: 'Reincarnation / Spirit', subtext: 'Past Season Arena Legend Reborn', rarity: 'legendary', color: '#7c3aed', subWheel: 'reincarnationSoul' },
-      // --- JJK EXPANSION RACES ---
-      { text: 'Special Grade Cursed Spirit', subtext: 'Born from Humanity’s Darkest Fear & Cursed Energy', rarity: 'mythic', color: '#991b1b', subWheel: 'disasterCurseType' },
-      { text: 'Death Painting Womb', subtext: 'Half-Curse Half-Human Blood Manipulation Hybrid', rarity: 'epic', color: '#be123c', subWheel: null },
-      { text: 'Six Eyes Clan Heir', subtext: 'Atomic Cursed Energy Perception & Limitless Lineage', rarity: 'godTier', color: '#00f0ff', subWheel: null },
-      { text: 'Heavenly Restricted (Toji Pact)', subtext: 'Zero Cursed Energy Traded for Godlike Physicality', rarity: 'mythic', color: '#111827', subWheel: null },
-    ]
-  },
-
-  disasterCurseType: {
-    id: 'disasterCurseType',
-    name: 'Special Grade Curse Origin Sub-Wheel',
-    subtitle: 'Which primal human terror manifested your cursed spirit form?',
-    icon: '👁️',
-    segments: [
-      { text: 'Soul Transfigurer (Mahito)', subtext: 'Reshapes souls on contact; immune to non-soul damage', rarity: 'mythic', color: '#ec4899' },
-      { text: 'Volcanic Calamity (Jogo)', subtext: 'Erupts molten magma & summons Maximum Meteor', rarity: 'epic', color: '#ea580c' },
-      { text: 'Primeval Forest (Hanami)', subtext: 'Cursed roots that feed on opponent fighting spirit', rarity: 'rare', color: '#16a34a' },
-      { text: 'Abyssal Tide (Dagon)', subtext: 'Endless oceanic horizon swarming with death-swarm shikigami', rarity: 'rare', color: '#0284c7' },
-      { text: 'Queen of Curses (Rika)', subtext: 'Boundless Cursed Energy reservoir & unconditional mimicry', rarity: 'legendary', color: '#7c3aed' },
-      { text: 'King of Curses (True Heian)', subtext: 'Four-armed calamity sovereign of Cleave & Dismantle', rarity: 'godTier', color: '#dc2626' }
+      { text: 'Reincarnation / Spirit', subtext: 'Past Season Arena Legend Reborn', rarity: 'legendary', color: '#7c3aed', subWheel: 'reincarnationSoul' }
     ]
   },
 
@@ -246,26 +226,7 @@ const WHEEL_DATA = {
       { text: 'Primordial Champion', subtext: 'Mortal Chosen by Universal Constants', rarity: 'godTier', color: '#06b6d4', subWheel: 'primordialPatron' },
       { text: "Champion's Legacy", subtext: 'Aligns with Factions of Tournament GOATs (Ethan, Musam, Boodro)', rarity: 'mythic', color: '#d97706', subWheel: 'championsLegacyFaction' },
       { text: 'Hybrid', subtext: 'Possesses Two Distinct Archetypes Simultaneously', rarity: 'godTier', color: '#ec4899', subWheel: null },
-      { text: 'Gambler', subtext: 'High-Stakes Risk Taker: Rolling Jackpot or Bust in the Heat of Duel', rarity: 'epic', color: '#f59e0b', subWheel: 'gamblerGamble' },
-      // --- JJK EXPANSION ARCHETYPES ---
-      { text: 'Cursed Vessel', subtext: 'Hosts the King of Curses; Spins for Consumed Sukuna Fingers (1–20)!', rarity: 'godTier', color: '#dc2626', subWheel: 'cursedVesselFingers' },
-      { text: 'Special Grade Sorcerer', subtext: 'Jujutsu Anomaly Capable of Overthrowing a Nation Single-Handedly', rarity: 'mythic', color: '#7c3aed', subWheel: null },
-      { text: 'Cursed Corpse Puppet', subtext: 'Autonomous Multi-Core Combat Doll (3 Lives & Gorilla Mode)', rarity: 'rare', color: '#d97706', subWheel: null },
-    ]
-  },
-
-  cursedVesselFingers: {
-    id: 'cursedVesselFingers',
-    name: 'Consumed Sukuna Fingers Sub-Wheel',
-    subtitle: 'How many Special Grade Cursed Object fingers have you swallowed?',
-    icon: '🔥',
-    segments: [
-      { text: '1 Finger Consumed', subtext: '+20 All Stats & Awakened Cursed Energy Fist', rarity: 'uncommon', color: '#6b7280', fingers: 1 },
-      { text: '3 Fingers Consumed', subtext: '+35 STR/SPD & Invisible Dismantle Slashes', rarity: 'rare', color: '#b91c1c', fingers: 3 },
-      { text: '10 Fingers Consumed', subtext: '+50 STR/CHAOS & Reverse Cursed Technique Healing', rarity: 'epic', color: '#dc2626', fingers: 10 },
-      { text: '15 Fingers (Shibuya Rampage)', subtext: '+75 STR/SPD & Divine Flame Arrow (Fuga) Incineration', rarity: 'legendary', color: '#ea580c', fingers: 15 },
-      { text: '19 Fingers + Mummy Corpse', subtext: '+95 All Stats & World-Cutting Spatial Slash', rarity: 'mythic', color: '#991b1b', fingers: 19 },
-      { text: '20 Fingers (True Heian King)', subtext: '+120 All Stats, Malevolent Shrine & Guaranteed Black Flash!', rarity: 'godTier', color: '#ef4444', fingers: 20 }
+      { text: 'Gambler', subtext: 'High-Stakes Risk Taker: Rolling Jackpot or Bust in the Heat of Duel', rarity: 'epic', color: '#f59e0b', subWheel: 'gamblerGamble' }
     ]
   },
 
@@ -281,23 +242,6 @@ const WHEEL_DATA = {
       { text: 'All-In Stake', subtext: 'Sacrifices 30% current HP to unleash a 400% catastrophic blow', rarity: 'legendary', color: '#7c3aed' },
       { text: 'Card Counting', subtext: 'Predicts enemy evasion and turns misses into grazing hits', rarity: 'uncommon', color: '#0284c7' },
       { text: 'Golden Slot Machine', subtext: '33% chance for instant complete heal, 33% instant 2x damage, 33% shield', rarity: 'godTier', color: '#fbbf24' }
-    ]
-  },
-
-  domainType: {
-    id: 'domainType',
-    name: 'Domain Expansion Realm Sub-Wheel',
-    subtitle: 'What metaphysical realm is summoned when you expand your domain?',
-    icon: '🌌',
-    segments: [
-      { text: 'Infinite Void', subtext: 'Floods target mind with infinite cosmic data; 100% hit rate & stuns', rarity: 'godTier', color: '#581c87', theme: 'void' },
-      { text: 'Malevolent Shrine', subtext: 'Relentless storm of invisible cleaving slashes carving all matter', rarity: 'godTier', color: '#991b1b', theme: 'shrine' },
-      { text: 'Idle Death Gamble', subtext: 'Colosseum casino domain granting unlimited energy on jackpot', rarity: 'mythic', color: '#f59e0b', theme: 'gamble' },
-      { text: 'Chimera Shadow Garden', subtext: 'Abyssal lake of fluid shadow spawning endless chimeric beasts', rarity: 'legendary', color: '#1e1b4b', theme: 'shadow' },
-      { text: 'Horizon of the Captivating Skandha', subtext: 'Tropical ocean barrier summoning savage leviathan shikigami', rarity: 'legendary', color: '#0284c7', theme: 'ocean' },
-      { text: 'Coffin of the Iron Mountain', subtext: 'Volcanic subterranean kiln incinerating targets with molten magma', rarity: 'epic', color: '#ea580c', theme: 'volcano' },
-      { text: 'Self-Embodiment of Perfection', subtext: 'Direct transmorphic touch on the enemy soul, bypassing physical armor', rarity: 'mythic', color: '#ec4899', theme: 'soul' },
-      { text: 'Time-Space Chrono Matrix', subtext: 'Clockwork pocket continuum freezing opponents while you strike freely', rarity: 'godTier', color: '#06b6d4', theme: 'time' }
     ]
   },
 
@@ -992,19 +936,12 @@ const WHEEL_DATA = {
       { text: 'Sledgehammer of Justice', subtext: 'Creates Seismic Crater Shockwaves', rarity: 'uncommon', color: '#b45309' },
       { text: 'God-Slaying Kusarigama', subtext: 'Whirling Chain Sickle with Venom Edge', rarity: 'legendary', color: '#b91c1c' },
       { text: 'Rubber Chicken of Torment', subtext: 'Deafening Squeak Induces Panic & Broken Stance', rarity: 'chaos', color: '#facc15' },
-      { text: 'Dual Energy Chakrams', subtext: 'Blazing Rotating Solar Sawblades', rarity: 'rare', color: '#ea580c' },
-      // --- JJK CURSED TOOLS ---
-      { text: 'Inverted Spear of Heaven', subtext: 'Special Grade Cursed Tool: Forcibly Nullifies All Shields & Barriers', rarity: 'godTier', color: '#e11d48' },
-      { text: 'Playful Cloud', subtext: 'Three-Section Staff of Pure Unstoppable Physical Force', rarity: 'legendary', color: '#dc2626' },
-      { text: 'Split Soul Katana', subtext: 'Ignores All Physical Durability to Carve Directly Into the Soul', rarity: 'mythic', color: '#9333ea' },
-      { text: "Executioner's Sword", subtext: 'Higuruma’s Golden Gavel Blade: Instant Death Verdict Potential', rarity: 'godTier', color: '#fbbf24' },
-      { text: 'Kamutoke (Vajra Dagger)', subtext: 'Sukuna’s Heian Relic Calling Down Catastrophic Cursed Lightning', rarity: 'legendary', color: '#eab308' },
-      { text: 'Black Rope', subtext: 'Braided African Cursed Rope that Disrupts & Burns Techniques', rarity: 'epic', color: '#475569' }
+      { text: 'Dual Energy Chakrams', subtext: 'Blazing Rotating Solar Sawblades', rarity: 'rare', color: '#ea580c' }
     ]
   },
 
   // ============================================================
-  // 4. POWER WHEEL (34 Supernatural Abilities & Cursed Techniques)
+  // 4. POWER WHEEL (27 Supernatural Abilities)
   // ============================================================
   power: {
     id: 'power',
@@ -1029,7 +966,6 @@ const WHEEL_DATA = {
       { text: 'Precognition', subtext: 'Sees 5 seconds into the immediate future', rarity: 'rare', color: '#0891b2' },
       { text: 'Laser Gaze', subtext: 'High-intensity optical incinerator', rarity: 'uncommon', color: '#ef4444' },
       // --- NEW EXPANDED POWERS ---
-      { text: 'Domain Expansion', subtext: 'Traps foe in pocket realm with guaranteed hits', rarity: 'godTier', color: '#581c87', subWheel: 'domainType' },
       { text: 'Black Hole Singularity', subtext: 'Crushes light, matter, and enemy projectiles', rarity: 'godTier', color: '#0284c7' },
       { text: 'Blood Bending', subtext: 'Forces enemy limbs into self-inflicted strikes', rarity: 'mythic', color: '#991b1b' },
       { text: 'Lightning God Speed', subtext: 'Hypersonic velocity delivering 3 chain strikes', rarity: 'legendary', color: '#eab308' },
@@ -1040,14 +976,7 @@ const WHEEL_DATA = {
       { text: 'Force Field Barrier', subtext: 'Conjures an impenetrable 150 HP energy bubble', rarity: 'rare', color: '#06b6d4' },
       { text: 'Summon Meteor Strike', subtext: 'Calls down an apocalyptic blazing space rock', rarity: 'mythic', color: '#ea580c' },
       { text: 'Cosmic Erasure', subtext: 'Unravels threads of opponent reality for 300% dmg', rarity: 'godTier', color: '#7c3aed' },
-      { text: 'Illusion Phantasm', subtext: 'Spawns 3 mirror images that absorb lethal attacks', rarity: 'epic', color: '#db2777' },
-      // --- JJK CURSED TECHNIQUES ---
-      { text: 'Black Flash (Kokusen)', subtext: '0.000001s Spatial Distortion Unleashing ^2.5 Crimson-Black Lightning Crits!', rarity: 'legendary', color: '#dc2626' },
-      { text: 'Limitless & Hollow Purple', subtext: 'Neutral Infinity Barrier + Imaginary Mass Erasing Everything in its Path', rarity: 'godTier', color: '#9333ea' },
-      { text: 'Ten Shadows (Mahoraga)', subtext: 'Eight-Handled Wheel Turns on Every Hit Taken to Adapt & Regenerate', rarity: 'godTier', color: '#1e1b4b' },
-      { text: 'Cleave & Dismantle (Shrine)', subtext: 'Relentless Invisible Slashes Adjusting to Target Toughness + Flame Arrow', rarity: 'mythic', color: '#991b1b' },
-      { text: 'Boogie Woogie', subtext: 'Claps Hands to Swap Positions with Foes, Turning Enemy Strikes into Whiffs', rarity: 'epic', color: '#2563eb' },
-      { text: 'Reverse Cursed Technique', subtext: 'Multiplies Negative Energy into Positive Energy to Regenerate Severe Wounds', rarity: 'legendary', color: '#10b981' }
+      { text: 'Illusion Phantasm', subtext: 'Spawns 3 mirror images that absorb lethal attacks', rarity: 'epic', color: '#db2777' }
     ]
   },
 
@@ -1177,27 +1106,6 @@ const WHEEL_DATA = {
       { text: 'Indomitable Will', subtext: 'Survives fatal blows with 1 HP once per match', rarity: 'epic', color: '#f97316', effect: { type: 'indomitableWill' } },
       { text: 'Double Strike Mastery', subtext: '30% chance to attack twice on every turn', rarity: 'legendary', color: '#14b8a6', effect: { type: 'doubleStrike' } }
     ]
-  },
-
-  // ============================================================
-  // 9. JUJUTSU SORCERER GRADE & POTENTIAL WHEEL (Universal Grade)
-  // ============================================================
-  sorcererGrade: {
-    id: 'sorcererGrade',
-    name: 'Sorcerer Grade & Potential Wheel',
-    subtitle: 'Every warrior starts with a Jujutsu Sorcerer Grade, Black Flash odds, and Awakening potential!',
-    icon: '🔮',
-    segments: [
-      { text: 'Grade 4 Sorcerer', subtext: '14% Base Black Flash Odds • Novice Cursed Energy Flow', rarity: 'common', color: '#475569', bfChance: 0.14, bonus: 10 },
-      { text: 'Grade 3 Sorcerer', subtext: '18% Base Black Flash Odds • Academy Field Operative', rarity: 'common', color: '#2563eb', bfChance: 0.18, bonus: 16 },
-      { text: 'Semi-Grade 2 Sorcerer', subtext: '22% Base Black Flash Odds • Certified Curse Exorcist', rarity: 'uncommon', color: '#0d9488', bfChance: 0.22, bonus: 22 },
-      { text: 'Grade 2 Sorcerer', subtext: '26% Base Black Flash Odds • Solo Mission Specialist + Simple Domain', rarity: 'uncommon', color: '#16a34a', bfChance: 0.26, bonus: 28 },
-      { text: 'Semi-Grade 1 Sorcerer', subtext: '30% Base Black Flash Odds • Elite Clan Vanguard + Simple Domain', rarity: 'rare', color: '#7c3aed', bfChance: 0.30, bonus: 35 },
-      { text: 'Grade 1 Sorcerer', subtext: '36% Base Black Flash Odds • Peak Jujutsu Tactician + Simple Domain', rarity: 'epic', color: '#d97706', bfChance: 0.36, bonus: 45 },
-      { text: 'Special Grade Sorcerer', subtext: '44% Base Black Flash Odds • Can Overthrow a Nation Single-Handedly', rarity: 'legendary', color: '#e11d48', bfChance: 0.44, bonus: 60 },
-      { text: 'Heavenly Anomaly (Zero CE)', subtext: '40% Spatial Strike Odds • Superhuman Physical Prowess & Barrier Immunity', rarity: 'mythic', color: '#14532d', bfChance: 0.40, bonus: 65 },
-      { text: 'Unlimited Potential (Awakened)', subtext: '52% Base Black Flash Odds • Surpasses Gojo & Sukuna + Honored One Awakening!', rarity: 'godTier', color: '#00f0ff', bfChance: 0.52, bonus: 80 }
-    ]
   }
 };
 
@@ -1302,12 +1210,7 @@ const TRAIT_DESCRIPTIONS = {
     'Demi-God': 'Divine Bloodline: Son or daughter of Olympus (+45 STR, +35 DUR, +30 INT). Starts combat surrounded by a shimmering aegis.',
     'Homunculus': 'Vat-Grown Prodigy: Artificially engineered organism (+40 INT, +30 CHAOS). Adapts resistances against whatever damage type hit it last.',
     'Astral Seraph': 'Higher-Dimensional Light: Manifestation of pure celestial authority (+50 INT, +40 SPD, +30 DUR). Pierces magical forcefields.',
-    'Living Armor': 'Ghost Steel Guardian: Autonomous enchanted plate armor (+50 DUR, +30 STR). Immune to headshots, pain, and life-drain effects.',
-    // JJK Expansion Races
-    'Special Grade Cursed Spirit': 'Born from Collective Human Dread: Regenerates health using pure negative Cursed Energy (+45 STR, +45 DUR, +50 CHAOS) and manifests a Disaster Curse domain origin.',
-    'Death Painting Womb': 'Half-Curse Blood Hybrid: Special Grade Cursed Womb physiology (+40 STR, +40 DUR, +35 CHAOS). Converts Cursed Energy directly into poisonous crimson blood.',
-    'Six Eyes Clan Heir': 'The Honored Lineage: Possesses atomic-level Cursed Energy perception (+65 INT, +55 SPD, +40 STR). Reduces technique costs to near-zero and projects Neutral Infinity.',
-    'Heavenly Restricted (Toji Pact)': 'Zero Cursed Energy Anomaly: Stripped of all Cursed Energy at birth in exchange for apex superhuman physicality (+75 STR, +75 SPD, +50 DUR). Completely invisible to Domain barriers!'
+    'Living Armor': 'Ghost Steel Guardian: Autonomous enchanted plate armor (+50 DUR, +30 STR). Immune to headshots, pain, and life-drain effects.'
   },
 
   archetype: {
@@ -1348,11 +1251,7 @@ const TRAIT_DESCRIPTIONS = {
     'Brawler / Pugilist': 'Unbreakable Grit: Converts incoming blunt damage into adrenaline attack power; counters critical strikes instantly.',
     'Cosmic Inquisitor': 'Purifier of the Multiverse: Strips away enemy invulnerability, shields, and supernatural copy abilities.',
     'Bard / Battle Rocker': 'Heavy Metal Shockwaves: Plays crushing arena riffs that disorient enemies, forcing them to miss 25% of their attacks.',
-    'Gambler': 'High-Stakes Risk Taker: Wagers life and limb on volatile dice rolls, jackpots, and roulette wheels, trading safety for catastrophic damage spikes.',
-    // JJK Expansion Archetypes
-    'Cursed Vessel': 'Host of the King of Curses: Consumes 1 to 20 Special Grade Sukuna Fingers! Scales Cursed Energy output massively and unlocks Cleave, Dismantle, and Black Flash.',
-    'Special Grade Sorcerer': 'Nation-Toppling Jujutsu Anomaly: Commands overwhelming Cursed Energy output (+50 STR, +50 INT, +45 SPD) with high Black Flash probability.',
-    'Cursed Corpse Puppet': 'Three-Core Abrupt Mutated Doll: Houses three independent sibling cores (including unstoppable Gorilla Drumming Mode) for massive durability.'
+    'Gambler': 'High-Stakes Risk Taker: Wagers life and limb on volatile dice rolls, jackpots, and roulette wheels, trading safety for catastrophic damage spikes.'
   },
 
   weapon: {
@@ -1392,14 +1291,7 @@ const TRAIT_DESCRIPTIONS = {
     'Sledgehammer of Justice': 'Groundpounder: Massive industrial hammer that triggers localized seismic earthquakes on impact.',
     'God-Slaying Kusarigama': 'Reaper Sickle & Chain: Entangles enemy weapons with weighted chains while executing precise throat slashes.',
     'Rubber Chicken of Torment': 'Psychological Warfare: Squeaks with ear-shattering pitch on every strike, infuriating enemies into reckless mistakes.',
-    'Dual Energy Chakrams': 'Solar Sawblades: Spinning plasma discs that carve through incoming projectiles and shred enemy defenses.',
-    // JJK Cursed Tools
-    'Inverted Spear of Heaven': 'Special Grade Cursed Tool: Imbued with a foreign technique that forcibly nullifies all enemy shields, Infinity barriers, and defensive buffs on contact!',
-    'Playful Cloud': 'Three-Section Special Grade Staff: The only Special Grade Cursed Tool without an innate technique—amplifies raw physical Strength into earth-shattering blows.',
-    'Split Soul Katana': 'Soul-Carving Blade: Completely ignores physical armor and durability to slice directly into the opponent’s soul.',
-    "Executioner's Sword": 'Judgeman’s Death Penalty: Golden gavel blade that condemns targets—possesses a lethal execution proc against wounded enemies.',
-    'Kamutoke (Vajra Dagger)': 'Heian Era Divine Relic: Sukuna’s ancient ritual vajra that calls down blinding forks of cursed lightning on every strike.',
-    'Black Rope': 'Miguel’s Braided Cursed Tool: Woven over generations by African sorcerers to disrupt and slap away incoming Cursed Techniques.'
+    'Dual Energy Chakrams': 'Solar Sawblades: Spinning plasma discs that carve through incoming projectiles and shred enemy defenses.'
   },
 
   power: {
@@ -1431,14 +1323,7 @@ const TRAIT_DESCRIPTIONS = {
     'Force Field Barrier': 'Kevlar Aegis: Projects a glowing hexagonal forcefield that absorbs the first 150 points of damage completely.',
     'Summon Meteor Strike': 'Orbital Devastation: Calls down a flaming meteor from orbit that slams into the arena for apocalyptic AoE damage.',
     'Cosmic Erasure': 'Ontological Deletion: A 15% chance to channel the primordial void, inflicting 300% unblockable existential damage.',
-    'Illusion Phantasm': 'Mirror Clones: Creates 3 identical holographic phantoms; the enemy must guess which is real or hit empty air.',
-    // JJK Cursed Techniques
-    'Black Flash (Kokusen)': 'Spatial Distortion Crit (^2.5): Applies Cursed Energy within 0.000001s of a physical hit—erupting in branching black-and-crimson lightning for 250% critical damage and entering The Zone!',
-    'Limitless & Hollow Purple': 'Cursed Technique Lapse Blue + Reversal Red: Collides attraction and repulsion into Imaginary Mass: Hollow Purple, erasing everything in its path!',
-    'Ten Shadows (Mahoraga)': 'Eight-Handled Sword Divergent Sila Divine General Mahoraga: Whenever you take damage, the sacred wheel turns once—healing HP and permanently adapting to reduce future damage!',
-    'Cleave & Dismantle (Shrine)': 'King of Curses’ Innate Technique: Unleashes invisible high-speed slashes that automatically adjust to slice through target durability, plus Divine Flame (Fuga)!',
-    'Boogie Woogie': 'Aoi Todo’s Applause: Claps hands to swap spatial positions with the opponent mid-swing, turning enemy attacks into whiffs and landing disorienting counter-strikes!',
-    'Reverse Cursed Technique': 'Positive Energy Multiplication: Multiplies negative Cursed Energy against itself to regenerate massive health whenever wounded.'
+    'Illusion Phantasm': 'Mirror Clones: Creates 3 identical holographic phantoms; the enemy must guess which is real or hit empty air.'
   },
 
   levelUp: {
@@ -1502,14 +1387,7 @@ const TRAIT_DESCRIPTIONS = {
     'Divine Lich Skeleton': 'Floating Necro-Sovereign: Levitation, spectral death flames, and auto-resurrection on death.',
     'Single Spark': 'Standard Fey Blessing: Granted 1 standard supernatural power roll.',
     'Dual Fey Blessing': 'Fey Doubling: Bestowed with 2 independent simultaneous powers by the Fey royalty!',
-    'Trinity Overload': 'Fey Cataclysm: Bestowed with 3 simultaneous supernatural powers at once!',
-    // JJK Disaster Curse Origins
-    'Soul Transfigurer (Mahito)': 'Idle Transfiguration: Reshapes the blueprint of the soul on touch, bypassing armor and negating physical blows.',
-    'Volcanic Calamity (Jogo)': 'Disaster Flames: Unleashes scorching volcanic eruptions and crushes the arena with Maximum: Meteor.',
-    'Primeval Forest (Hanami)': 'Cursed Briar Roots: Absorbs nature’s wrath to entangle enemies and drain their fighting spirit.',
-    'Abyssal Tide (Dagon)': 'Death Swarm Shikigami: Floods the battlefield with endless man-eating deep-sea shikigami.',
-    'Queen of Curses (Rika)': 'Special Grade Vengeful Spirit: Manifests Rika Orimoto’s boundless Cursed Energy reservoir and pure love beam.',
-    'King of Curses (True Heian)': 'Four-Armed Calamity: Perfect Heian body with two mouths for continuous chanting and four arms for lethal strikes.'
+    'Trinity Overload': 'Fey Cataclysm: Bestowed with 3 simultaneous supernatural powers at once!'
   },
 
   subArchetype: {
@@ -1539,33 +1417,7 @@ const TRAIT_DESCRIPTIONS = {
     'Loaded Dice': 'Rigged Odds: Guaranteed to roll maximum 2.8x critical strike damage multiplier on every crit.',
     'All-In Stake': 'Desperation Wager: Sacrifices 30% current HP to deliver an unstoppable 400% catastrophic strike.',
     'Card Counting': 'Statistical Insight: Anticipates enemy evasion patterns, transforming missed attacks into glancing hits.',
-    'Golden Slot Machine': 'Triple 7s: Rolls 3 spinning reels mid-turn for instant full heal, double damage, or a 200 HP barrier.',
-    // Cursed Vessel Sukuna Finger Perks
-    '1 Finger Consumed': 'Awakened Vessel (1/20): Grants +20 to all stats and Divergent Fist double-impact Cursed Energy strikes.',
-    '3 Fingers Consumed': 'Detention Center Awakening (3/20): Grants +35 STR/SPD and unleashes invisible Dismantle slashes.',
-    '10 Fingers Consumed': 'Half-Awakened Calamity (10/20): Grants +50 STR/CHAOS and Reverse Cursed Technique regeneration.',
-    '15 Fingers (Shibuya Rampage)': 'Shibuya Incident King (15/20): Grants +75 STR/SPD and incinerates targets with Divine Flame Arrow (Fuga)!',
-    '19 Fingers + Mummy Corpse': 'Culling Game Sovereign (19/20): Grants +95 All Stats and World-Cutting Slash that bisects space itself.',
-    '20 Fingers (True Heian King)': 'Complete King of Curses (20/20): Grants +120 All Stats, Malevolent Shrine authority, and constant Black Flash crits!',
-    // Domain Expansion Types
-    'Infinite Void': 'Limitless Space: Imbues the realm with unbounded information, stunning the foe and guaranteeing 100% hit rate.',
-    'Malevolent Shrine': 'Dismantle & Cleave: A relentless storm of slashing blades that relentlessly shreds through target defenses.',
-    'Idle Death Gamble': 'Pachinko Domain: Traps the combatant in a high-speed slot match, triggering an immortal energy jackpot.',
-    'Chimera Shadow Garden': 'Umbral Swarm: Summons an endless tide of shadow familiars that attack from blind angles.',
-    'Horizon of the Captivating Skandha': 'Oceanic Abyss: Floods the arena with tidal vortexes and leviathan predators that bypass armor.',
-    'Coffin of the Iron Mountain': 'Volcanic Core: Traps the target in the heart of an active volcano, dealing severe burning magma damage.',
-    'Self-Embodiment of Perfection': 'Soul Transfiguration: Direct transmorphic resonance touching the opponent’s soul, ignoring armor.',
-    'Time-Space Chrono Matrix': 'Temporal Freeze: Freezes the opponent’s personal timeline while the caster unleashes a barrage of free hits.',
-    // Universal Sorcerer Grades & Potential
-    'Grade 4 Sorcerer': 'Novice Sorcerer Grade: Grants +10 All Stats and a 14% base chance to land a ^2.5 Black Flash (Kokusen) on any strike.',
-    'Grade 3 Sorcerer': 'Field Operative Grade: Grants +16 All Stats and an 18% base chance to land a ^2.5 Black Flash (Kokusen).',
-    'Semi-Grade 2 Sorcerer': 'Certified Exorcist Grade: Grants +22 All Stats and a 22% base chance to land a ^2.5 Black Flash (Kokusen).',
-    'Grade 2 Sorcerer': 'Solo Specialist Grade: Grants +28 All Stats, Simple Domain anti-barrier defense, and a 26% base Black Flash chance.',
-    'Semi-Grade 1 Sorcerer': 'Elite Clan Vanguard: Grants +35 All Stats, Simple Domain mastery, and a 30% base Black Flash chance.',
-    'Grade 1 Sorcerer': 'Peak Jujutsu Tactician: Grants +45 All Stats, Simple Domain mastery, and a 36% base chance to land a ^2.5 Black Flash!',
-    'Special Grade Sorcerer': 'National Threat Anomaly: Grants +60 All Stats, Domain Clash superiority, and a 44% base chance to land a ^2.5 Black Flash!',
-    'Heavenly Anomaly (Zero CE)': 'Zero Cursed Energy Pact: Grants +65 STR/SPD, Simple Domain resilience, and 40% Spatial Strike critical odds!',
-    'Unlimited Potential (Awakened)': 'Transcendent Prodigy (1-in-10-Million Talent): Grants +80 All Stats, 52% base Black Flash odds (+8% per chain), and triggers THE HONORED ONE AWAKENING below 45% HP (RCT heal + guaranteed Black Flash)!'
+    'Golden Slot Machine': 'Triple 7s: Rolls 3 spinning reels mid-turn for instant full heal, double damage, or a 200 HP barrier.'
   }
 };
 

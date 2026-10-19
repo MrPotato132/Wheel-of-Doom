@@ -2,138 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wheel of Faith — Sandbox Lab (Option C: Clash + Active Domain + Simple Domain)</title>
+  <title>Wheel of Faith — Pure Fantasy Combat Sandbox</title>
   <link rel="stylesheet" href="../css/styles.css">
   <style>
-    body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #040308; color: #f8fafc; font-family: system-ui, sans-serif; overflow: hidden; }
-    .sandbox-bar { position: fixed; top: 10px; z-index: 100; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: rgba(8,6,16,0.95); border: 1px solid #ff003c; padding: 7px 11px; border-radius: 99px; box-shadow: 0 8px 32px rgba(255,0,60,0.3); backdrop-filter: blur(12px); }
-    .take-btn, .act-btn { background: #120d1d; border: 1px solid #3b2854; color: #cbd5e1; padding: 5px 9px; border-radius: 99px; cursor: pointer; font-weight: 700; font-size: 0.7rem; transition: 0.2s; }
-    .take-btn.active { background: #e11d48; border-color: #fda4af; color: #fff; box-shadow: 0 0 12px #e11d48; }
-    .act-btn.bf { background: linear-gradient(135deg, #09090b, #be123c); border-color: #ff0040; color: #fff; }
-    .act-btn.clash { background: linear-gradient(90deg, #be123c 0%, #7e22ce 50%, #0284c7 100%); border-color: #fff; color: #fff; box-shadow: 0 0 16px rgba(56,189,248,0.6); }
-    .act-btn.pushL { background: #991b1b; border-color: #fca5a5; color: #fff; } .act-btn.pushR { background: #0369a1; border-color: #bae6fd; color: #fff; } .act-btn.sd { background: linear-gradient(135deg, #065f46, #0ea5e9); border-color: #6ee7b7; color: #fff; }
-    .slider-wrap { display: flex; align-items: center; gap: 3px; font-size: 0.68rem; color: #fecdd3; } .slider-val { color: #fde047; font-weight: 800; min-width: 24px; }
-    .promote-btn { background: linear-gradient(135deg, #f59e0b, #ea580c); color: #000; font-weight: 800; border: none; padding: 5px 11px; border-radius: 99px; cursor: pointer; font-size: 0.7rem; }
-    .arena-stage { position: relative; width: 760px; height: 430px; border-radius: 18px; background: radial-gradient(circle at center, #13091c 0%, #050308 100%); border: 2px solid #fb7185; box-shadow: 0 0 45px rgba(225,29,72,0.4); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 18px; }
-    #fxCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 25; }
-    .pause-pill { align-self: center; z-index: 40; background: rgba(0,0,0,0.92); border: 1.5px solid #fde047; color: #fde047; font-size: 0.72rem; font-weight: 900; padding: 4px 14px; border-radius: 99px; letter-spacing: 0.1em; opacity: 0; transition: 0.2s; } .pause-pill.active { opacity: 1; box-shadow: 0 0 20px rgba(253,224,71,0.6); }
-    .chant-box { position: absolute; bottom: 54px; left: 50%; transform: translateX(-50%); z-index: 40; background: rgba(5,0,10,0.92); border: 1px solid #f43f5e; color: #fda4af; font-size: 0.78rem; font-weight: 800; font-style: italic; padding: 5px 16px; border-radius: 8px; opacity: 0; transition: 0.2s; white-space: nowrap; } .chant-box.show { opacity: 1; }
-    .fighters-row { display: flex; justify-content: space-between; align-items: center; z-index: 30; margin: auto 0; padding: 0 16px; transition: 0.3s; }
-    .f-pod { width: 220px; background: rgba(12,10,22,0.92); border: 1.5px solid #475569; border-radius: 12px; padding: 12px; text-align: center; transition: 0.25s; position: relative; }
-    .f-pod.clashing-left { transform: translateX(60px) scale(1.06); border-color: #ff003c; box-shadow: 0 0 32px #ff003c; } .f-pod.clashing-right { transform: translateX(-60px) scale(1.06); border-color: #00f0ff; box-shadow: 0 0 32px #00f0ff; }
-    .f-pod.simple-domain { border-color: #2dd4bf !important; box-shadow: 0 0 32px #2dd4bf, inset 0 0 18px rgba(45,212,191,0.5) !important; } .f-pod.hit-jolt { transform: scale(0.94) rotate(-2deg); border-color: #ef4444; }
-    .chain-tag { display: inline-block; font-size: 0.64rem; font-weight: 900; background: #991b1b; color: #fff; padding: 2px 8px; border-radius: 99px; margin-top: 5px; }
-    .clash-hud { z-index: 35; background: rgba(0,0,0,0.85); border: 1px solid rgba(255,255,255,0.22); border-radius: 10px; padding: 7px 12px; font-size: 0.72rem; }
-    .clash-track { height: 11px; border-radius: 99px; background: linear-gradient(90deg, #0284c7, #e0f2fe); overflow: hidden; display: flex; margin-top: 4px; box-shadow: 0 0 14px rgba(255,0,60,0.6); } .clash-fill { width: 50%; background: linear-gradient(90deg, #7f1d1d, #ff003c); transition: width 0.06s; }
-    .invert-freeze { filter: invert(1) contrast(2.4) !important; transform: scale(1.03); }
+    body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #06050b; color: #f8fafc; font-family: 'Cinzel', serif, system-ui; overflow: hidden; }
+    .sandbox-bar { position: fixed; top: 12px; z-index: 100; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: rgba(15,12,24,0.96); border: 1.5px solid #d97706; padding: 8px 16px; border-radius: 99px; box-shadow: 0 8px 32px rgba(217,119,6,0.3); backdrop-filter: blur(12px); }
+    .act-btn { background: #1c152a; border: 1px solid #d97706; color: #fde68a; padding: 6px 14px; border-radius: 99px; cursor: pointer; font-weight: 800; font-size: 0.76rem; transition: 0.2s; font-family: inherit; }
+    .act-btn:hover { background: #d97706; color: #000; transform: translateY(-1px); }
+    .arena-stage { position: relative; width: 760px; height: 430px; border-radius: 18px; background: radial-gradient(circle at center, #1e1330 0%, #0a0614 100%); border: 2px solid #b45309; box-shadow: 0 0 50px rgba(180,83,9,0.45); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; box-sizing: border-box; }
+    .fighters-row { display: flex; justify-content: space-between; align-items: center; z-index: 30; margin: auto 0; padding: 0 20px; }
+    .f-pod { width: 230px; background: rgba(18,14,30,0.94); border: 2px solid #d97706; border-radius: 14px; padding: 16px; text-align: center; transition: 0.25s; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
+    .f-avatar { font-size: 2.2rem; margin-bottom: 6px; }
+    .f-name { font-weight: 900; font-size: 1.05rem; color: #fef3c7; }
+    .f-class { font-size: 0.75rem; color: #f59e0b; font-weight: 800; margin-top: 3px; }
+    .f-hp-bar { height: 10px; border-radius: 99px; background: #261b36; overflow: hidden; margin-top: 8px; border: 1px solid #451a03; }
+    .f-hp-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #059669); transition: width 0.3s; }
+    .f-hp-text { font-size: 0.72rem; color: #cbd5e1; margin-top: 4px; font-weight: 700; }
+    .log-banner { text-align: center; font-size: 0.84rem; color: #fde68a; font-weight: 700; background: rgba(0,0,0,0.65); border: 1px solid rgba(217,119,6,0.3); padding: 8px; border-radius: 8px; min-height: 20px; }
+    .hit-shake { animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+    @keyframes shake { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-8px, 4px); } 40% { transform: translate(8px, -4px); } 60% { transform: translate(-6px, 2px); } 80% { transform: translate(6px, -2px); } }
   </style>
 </head>
 <body>
   <div class="sandbox-bar">
-    <button class="take-btn" data-take="A">Take A</button><button class="take-btn" data-take="B">Take B</button><button class="take-btn active" data-take="C">Take C: Full Domain</button>
-    <div class="slider-wrap">Charge:<input type="range" id="sCharge" min="0.4" max="1.4" step="0.05" value="0.75"><span class="slider-val" id="vCharge">0.75s</span></div>
-    <div class="slider-wrap">DomTime:<input type="range" id="sPause" min="2.5" max="6.0" step="0.5" value="4.0"><span class="slider-val" id="vPause">4.0s</span></div>
-    <div class="slider-wrap">Grade:<input type="range" id="sGrade" min="0" max="6" step="1" value="6"><span class="slider-val" id="vGrade">Unlimited</span></div>
-    <button class="act-btn clash" id="btnClash">⛩️🔥 CLASH: SHRINE vs VOID 🤞🌌</button><button class="act-btn pushL" id="btnPushL">👈 Shrine Wins</button><button class="act-btn pushR" id="btnPushR">Void Wins 👉</button><button class="act-btn sd" id="btnSD">🛡️ Simple Domain</button><button class="act-btn bf" id="btnBF">⚡⚫ Black Flash</button><button class="promote-btn" id="btnPromote">🚀 Promote to Live</button>
+    <button class="act-btn" id="btnStrike">⚔️ Heavy Strike</button>
+    <button class="act-btn" id="btnCrit">💥 Critical Smite</button>
+    <button class="act-btn" id="btnMagic">✨ Arcane Burst</button>
+    <button class="act-btn" id="btnGamble">🎲 Gambler Wager</button>
+    <button class="act-btn" id="btnReset">🔄 Reset HP</button>
   </div>
-  <div class="arena-stage" id="stage">
-    <canvas id="fxCanvas" width="760" height="430"></canvas>
-    <div class="pause-pill" id="pausePill">⏸️ COMBAT PAUSED — DOMAIN CLASH CUTSCENE</div>
-    <div class="chant-box" id="chantBox">🗣️ "RYŌIKI TENKAI: MALEVOLENT SHRINE vs UNLIMITED VOID!"</div>
+  <div class="arena-stage">
+    <div style="text-align:center;font-weight:900;letter-spacing:0.18em;color:#f59e0b;font-size:0.95rem;">COLOSSEUM FANTASY COMBAT LAB</div>
     <div class="fighters-row">
-      <div class="f-pod" id="podL"><div style="font-size:1.7rem">👁️</div><div style="font-weight:900;font-size:0.92rem">Ryomen Sukuna (20F)</div><div style="font-size:0.72rem;color:#f43f5e;font-weight:800" id="stateL">MALEVOLENT SHRINE</div><div style="font-size:0.72rem;color:#fde047;font-weight:800" id="hpL">HP: 3,000 / 3,000</div><div class="chain-tag" id="chainL">🔥 120% ZONE • CHAIN: 0x</div></div>
-      <div style="font-weight:900;color:#fb7185;font-size:1.3rem;z-index:15">VS</div>
-      <div class="f-pod" id="podR"><div style="font-size:1.7rem">🤞</div><div style="font-weight:900;font-size:0.92rem">Satoru Gojo</div><div style="font-size:0.72rem;color:#38bdf8;font-weight:800" id="gradeL">Grade: Unlimited Potential</div><div style="font-size:0.72rem;color:#fde047;font-weight:800" id="hpR">HP: 3,000 / 3,000</div><div class="chain-tag" id="stateR" style="background:#0369a1">🤞 Six Eyes • Limitless</div></div>
+      <div class="f-pod" id="podA">
+        <div class="f-avatar">⚔️</div>
+        <div class="f-name">Sir Bushin</div>
+        <div class="f-class">Human Champion • Excalibur</div>
+        <div class="f-hp-bar"><div class="f-hp-fill" id="hpFillA"></div></div>
+        <div class="f-hp-text" id="hpTextA">500 / 500 HP</div>
+      </div>
+      <div style="font-size:1.6rem;font-weight:900;color:#f59e0b;">VS</div>
+      <div class="f-pod" id="podB">
+        <div class="f-avatar">👿</div>
+        <div class="f-name">Jin the Shadow</div>
+        <div class="f-class">Demon Assassin • Shadow Manipulation</div>
+        <div class="f-hp-bar"><div class="f-hp-fill" id="hpFillB"></div></div>
+        <div class="f-hp-text" id="hpTextB">500 / 500 HP</div>
+      </div>
     </div>
-    <div class="clash-hud"><div style="display:flex;justify-content:space-between"><span id="statusTxt">Click "CLASH" then push Shrine or Void! Winner's Domain stays active with sure-hit damage & finishers!</span><span id="clashPctTxt">⛩️ Shrine 50% vs 50% Void 🤞</span></div><div class="clash-track"><div class="clash-fill" id="clashFill"></div></div></div>
+    <div class="log-banner" id="logBanner">Select a combat action to test arena mechanics!</div>
   </div>
   <script>
-    const grades = [{ name: 'Grade 4 Sorcerer', odds: '12%', short: 'Grade 4' }, { name: 'Grade 3 Sorcerer', odds: '16%', short: 'Grade 3' }, { name: 'Grade 2 Sorcerer', odds: '22%', short: 'Grade 2' }, { name: 'Semi-Grade 1 Sorcerer', odds: '28%', short: 'Semi-1' }, { name: 'Grade 1 Sorcerer', odds: '34%', short: 'Grade 1' }, { name: 'Special Grade Sorcerer', odds: '42%', short: 'Special' }, { name: 'Unlimited Potential (Awakened)', odds: '52%', short: 'Unlimited' }];
-    let activeTake = 'C', bfChain = 0, animId = null, actx = null, clashBias = 0.08, isClashing = false, simpleDom = false, hpSukuna = 3000, hpGojo = 3000;
-    const clashImg = new Image(); clashImg.src = 'domain_clash.png';
-    const sCharge = document.getElementById('sCharge'), sPause = document.getElementById('sPause'), sGrade = document.getElementById('sGrade');
-    const cvs = document.getElementById('fxCanvas'), ctx = cvs.getContext('2d'), stage = document.getElementById('stage'), podL = document.getElementById('podL'), podR = document.getElementById('podR');
-    function tone(f1, f2, dur, type = 'sawtooth', vol = 0.22) {
-      const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-      if (!actx) actx = new AC(); const now = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
-      o.type = type; o.frequency.setValueAtTime(f1, now); o.frequency.exponentialRampToValueAtTime(f2, now + dur); g.gain.setValueAtTime(vol, now); g.gain.exponentialRampToValueAtTime(0.001, now + dur); o.connect(g); g.connect(actx.destination); o.start(now); o.stop(now + dur);
+    let hpA = 500, hpB = 500, maxHp = 500, turn = 0;
+    const log = document.getElementById('logBanner');
+    function updateBars() {
+      document.getElementById('hpFillA').style.width = Math.max(0, (hpA / maxHp) * 100) + '%';
+      document.getElementById('hpTextA').textContent = `${Math.max(0, hpA)} / ${maxHp} HP`;
+      document.getElementById('hpFillB').style.width = Math.max(0, (hpB / maxHp) * 100) + '%';
+      document.getElementById('hpTextB').textContent = `${Math.max(0, hpB)} / ${maxHp} HP`;
     }
-    function sync() {
-      const g = grades[sGrade.value]; document.getElementById('vCharge').textContent = sCharge.value + 's'; document.getElementById('vPause').textContent = sPause.value + 's'; document.getElementById('vGrade').textContent = g.short;
-      document.getElementById('gradeL').textContent = `Grade: ${g.short} (${g.odds} BF)`; document.getElementById('hpL').textContent = `HP: ${hpSukuna} / 3,000`; document.getElementById('hpR').textContent = `HP: ${hpGojo} / 3,000`;
+    function dealDamage(isAAttacking, dmg, label) {
+      const targetPod = isAAttacking ? document.getElementById('podB') : document.getElementById('podA');
+      if (isAAttacking) hpB = Math.max(0, hpB - dmg); else hpA = Math.max(0, hpA - dmg);
+      targetPod.classList.add('hit-shake');
+      setTimeout(() => targetPod.classList.remove('hit-shake'), 320);
+      log.textContent = `${isAAttacking ? 'Sir Bushin' : 'Jin'} executes ${label}! -${dmg} DMG.`;
+      updateBars();
+      turn++;
     }
-    [sCharge, sPause, sGrade].forEach(el => el.addEventListener('input', sync)); sync();
-    document.querySelectorAll('.take-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.take-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); activeTake = b.dataset.take; sync(); }));
-    function showHud(pillTxt, chantTxt) { const pill = document.getElementById('pausePill'), chant = document.getElementById('chantBox'); pill.textContent = pillTxt; pill.classList.add('active'); chant.textContent = chantTxt; chant.classList.add('show'); }
-    function startWinningDomain(sukunaWon) {
-      const domMs = parseFloat(sPause.value) * 1000, start = performance.now(), W = 760, H = 430; let lastTick = 0, firedFinisher = false; const targetPod = sukunaWon ? podR : podL;
-      if (sukunaWon) document.getElementById('stateR').textContent = '🩸 SLICED BY CLEAVE & DISMANTLE!'; else document.getElementById('stateL').textContent = '🧠 ∞ VOID PARALYSIS (STUNNED)!';
-      function domLoop(now) {
-        const el = now - start, rem = Math.max(0, (domMs - el) / 1000), p = el / domMs; ctx.clearRect(0, 0, W, H);
-        if (p >= 1) {
-          podL.classList.remove('simple-domain'); podR.classList.remove('simple-domain'); simpleDom = false; document.getElementById('pausePill').classList.remove('active'); document.getElementById('chantBox').classList.remove('show');
-          if (sukunaWon) document.getElementById('stateL').textContent = '🥵 CT BURNOUT (1 TURN)'; else document.getElementById('stateR').textContent = '🥵 CT BURNOUT (RCT REFRESH)';
-          document.getElementById('statusTxt').textContent = `✅ Active Domain Ended! Winner entered brief Cursed Technique Burnout.`; return;
-        }
-        document.getElementById('clashFill').style.width = ((1 - p) * 100) + '%'; document.getElementById('clashPctTxt').textContent = `${sukunaWon ? '⛩️ SHRINE' : '🤞 VOID'} ACTIVE: ${rem.toFixed(1)}s`;
-        if (el - lastTick > 350) {
-          lastTick = el; const rawDmg = sukunaWon ? 150 : 110, dmg = simpleDom ? Math.floor(rawDmg * 0.45) : rawDmg;
-          if (sukunaWon) hpGojo = Math.max(0, hpGojo - dmg); else hpSukuna = Math.max(0, hpSukuna - dmg);
-          targetPod.classList.add('hit-jolt'); setTimeout(() => targetPod.classList.remove('hit-jolt'), 140); tone(sukunaWon ? 950 : 620, 120, 0.09, sukunaWon ? 'sawtooth' : 'sine', 0.2); sync();
-        }
-        const isClimax = rem <= 1.1;
-        if (isClimax && !firedFinisher) {
-          firedFinisher = true; const finDmg = simpleDom ? 240 : 520;
-          if (sukunaWon) { hpGojo = Math.max(0, hpGojo - finDmg); showHud(`🔥 竈「開」 DIVINE FLAME: FUGA! (-${finDmg} HP)`, '🗣️ "Kamino... OPEN (竈「開」)!" — Thermobaric Fire Arrow!'); }
-          else { hpSukuna = Math.max(0, hpSukuna - finDmg); showHud(`🟣🤞 HOLLOW TECHNIQUE: PURPLE! (-${finDmg} HP)`, '🗣️ "Nine Ropes, Polarized Light... HOLLOW PURPLE (虚式「茈」)!"'); }
-          tone(180, 28, 0.7, 'sawtooth', 0.4); sync();
-        } else if (!isClimax) { showHud(`${sukunaWon ? '⛩️ MALEVOLENT SHRINE' : '🌌 UNLIMITED VOID'} ACTIVE (${rem.toFixed(1)}s)`, sukunaWon ? `🗡️ Relentless Cleave & Dismantle Ticks! ${simpleDom ? '(🛡️ Simple Domain -55% DMG!)' : ''}` : `🧠 Target Stunned by ∞ Information! ${simpleDom ? '(🛡️ Simple Domain Active!)' : ''}`); }
-        if (sukunaWon) {
-          ctx.fillStyle = isClimax ? 'rgba(180,35,0,0.55)' : 'rgba(65,4,16,0.58)'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#e11d48'; ctx.beginPath(); ctx.arc(W / 2, 95, isClimax ? 75 : 46, 0, Math.PI * 2); ctx.fill();
-          for (let s = 0; s < 26; s++) { ctx.strokeStyle = isClimax ? (s % 2 ? '#fde047' : '#ff4500') : (s % 3 === 0 ? '#fff' : '#ff003c'); ctx.lineWidth = isClimax ? 4 : 2.4; ctx.beginPath(); ctx.moveTo(Math.random() * W, Math.random() * H); ctx.lineTo(Math.random() * W, Math.random() * H); ctx.stroke(); }
-        } else {
-          const g = ctx.createRadialGradient(W / 2, H / 2, 10, W / 2, H / 2, 420); g.addColorStop(0, isClimax ? '#a855f7' : '#38bdf8'); g.addColorStop(0.5, '#1e1b4b'); g.addColorStop(1, '#020617'); ctx.fillStyle = g; ctx.globalAlpha = 0.65; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
-          for (let r = 0; r < 24; r++) { const a = (r / 24) * Math.PI * 2 + el * 0.004; ctx.strokeStyle = isClimax ? '#d8b4fe' : '#e0f2fe'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(W / 2, H / 2); ctx.lineTo(W / 2 + Math.cos(a) * 450, H / 2 + Math.sin(a) * 450); ctx.stroke(); }
-          if (isClimax) { ctx.fillStyle = 'rgba(168,85,247,0.85)'; ctx.shadowColor = '#c084fc'; ctx.shadowBlur = 40; ctx.beginPath(); ctx.arc(W * (1 - rem), H / 2, 68, 0, Math.PI * 2); ctx.fill(); }
-        }
-        animId = requestAnimationFrame(domLoop);
-      }
-      animId = requestAnimationFrame(domLoop);
-    }
-    function startSplitClash() {
-      if (animId) cancelAnimationFrame(animId); isClashing = true; hpSukuna = 3000; hpGojo = 3000; sync(); const clashMs = 2400, start = performance.now(), W = 760, H = 430;
-      podL.classList.add('clashing-left'); podR.classList.add('clashing-right'); showHud('⏸️ COMBAT PAUSED — DOMAIN CLASH TUG-OF-WAR', '🗣️ "RYŌIKI TENKAI: MALEVOLENT SHRINE vs UNLIMITED VOID!"'); tone(160, 34, 0.8, 'sawtooth', 0.35);
-      function clashLoop(now) {
-        const el = now - start, p = el / clashMs, t = el / 1000; ctx.clearRect(0, 0, W, H);
-        if (p >= 1) { isClashing = false; podL.classList.remove('clashing-left'); podR.classList.remove('clashing-right'); startWinningDomain(clashBias >= 0); return; }
-        const splitX = Math.max(80, Math.min(W - 80, W * (0.5 + 0.12 * Math.sin(t * 9) + clashBias + (p > 0.7 ? (clashBias >= 0 ? 1 : -1) * (p - 0.7) * 1.5 : 0)))), pct = Math.min(96, Math.max(4, Math.round((splitX / W) * 100)));
-        document.getElementById('clashFill').style.width = pct + '%'; document.getElementById('clashPctTxt').textContent = `⛩️ Shrine ${pct}% vs ${100 - pct}% Void 🤞`;
-        ctx.save(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(splitX + 42, 0); ctx.lineTo(splitX - 42, H); ctx.lineTo(0, H); ctx.closePath(); ctx.clip(); if (clashImg.complete && clashImg.naturalWidth) ctx.drawImage(clashImg, (splitX - W * 0.5) * 0.25, 0, W, H); else { ctx.fillStyle = '#450a0a'; ctx.fillRect(0, 0, W, H); } ctx.restore();
-        ctx.save(); ctx.beginPath(); ctx.moveTo(splitX + 42, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(splitX - 42, H); ctx.closePath(); ctx.clip(); if (clashImg.complete && clashImg.naturalWidth) ctx.drawImage(clashImg, (splitX - W * 0.5) * 0.25, 0, W, H); else { ctx.fillStyle = '#0c4a6e'; ctx.fillRect(0, 0, W, H); } ctx.restore(); ctx.save();
-        [[11, '#ff003c', 26], [6, '#00f0ff', 18], [3, '#ffffff', 6]].forEach(([w, col, bl]) => { ctx.strokeStyle = col; ctx.lineWidth = w; ctx.shadowColor = col; ctx.shadowBlur = bl; ctx.beginPath(); ctx.moveTo(splitX + 42, 0); for (let y = 1; y <= 12; y++) ctx.lineTo(splitX + 42 - (y * 7) + (Math.random() - 0.5) * 28, (y / 12) * H); ctx.stroke(); });
-        const vx = splitX + (Math.random() - 0.5) * 10, vy = H / 2 + (Math.random() - 0.5) * 10; ctx.font = '900 58px Impact, sans-serif'; ctx.lineWidth = 7; ctx.strokeStyle = '#ffffff'; ctx.fillStyle = '#09090b'; ctx.strokeText('VS', vx - 32, vy + 20); ctx.fillText('VS', vx - 32, vy + 20); ctx.restore();
-        animId = requestAnimationFrame(clashLoop);
-      }
-      animId = requestAnimationFrame(clashLoop);
-    }
-    document.getElementById('btnClash').addEventListener('click', startSplitClash);
-    document.getElementById('btnPushL').addEventListener('click', () => { clashBias = 0.24; if (!isClashing) startSplitClash(); tone(140, 280, 0.12); });
-    document.getElementById('btnPushR').addEventListener('click', () => { clashBias = -0.24; if (!isClashing) startSplitClash(); tone(520, 880, 0.12); });
-    document.getElementById('btnSD').addEventListener('click', () => { simpleDom = !simpleDom; podL.classList.toggle('simple-domain', simpleDom); podR.classList.toggle('simple-domain', simpleDom); document.getElementById('statusTxt').textContent = simpleDom ? '🛡️ SIMPLE DOMAIN (簡易領域) DEPLOYED! Incoming Domain Sure-Hit Damage reduced by 55%!' : 'Simple Domain deactivated.'; tone(660, 1320, 0.2, 'triangle', 0.25); });
-    document.getElementById('btnBF').addEventListener('click', () => {
-      if (animId) cancelAnimationFrame(animId); const chargeMs = parseFloat(sCharge.value) * 1000, start = performance.now(), cx = 540, cy = 215;
-      showHud('⏸️ COMBAT PAUSED — BLACK FLASH CONDENSATION', '🗣️ "Scale of the Dragon... Recoil... Twin Meteors! (0.000001s)"'); tone(110, 620, chargeMs / 1000, 'sine', 0.22);
-      function step(now) {
-        const el = now - start; ctx.clearRect(0, 0, 760, 430);
-        if (el < chargeMs) { const p = el / chargeMs; ctx.fillStyle = `rgba(0,0,0,${0.4 + p * 0.45})`; ctx.fillRect(0, 0, 760, 430); ctx.strokeStyle = '#ff003c'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(cx, cy, Math.max(8, (1 - p) * 155), 0, Math.PI * 2); ctx.stroke(); animId = requestAnimationFrame(step); }
-        else if (el < chargeMs + 210) { stage.classList.add('invert-freeze'); animId = requestAnimationFrame(step); }
-        else if (el < chargeMs + 1100) {
-          if (stage.classList.contains('invert-freeze')) { stage.classList.remove('invert-freeze'); tone(220, 28, 0.55, 'sawtooth', 0.4); bfChain++; hpGojo = Math.max(0, hpGojo - 680); document.getElementById('chainL').textContent = `🔥 120% ZONE • CHAIN: ${bfChain}x`; sync(); }
-          for (let b = 0; b < 16; b++) { const ang = (b / 16) * Math.PI * 2 + (Math.random() * 0.35), pts = [[cx, cy]]; for (let s = 1; s <= 7; s++) pts.push([cx + Math.cos(ang) * s * 54 + (Math.random() - 0.5) * 48, cy + Math.sin(ang) * s * 54 + (Math.random() - 0.5) * 48]); [[13, '#ff003c', 25], [5, '#000', 0]].forEach(([w, c, bl]) => { ctx.save(); ctx.beginPath(); pts.forEach((pt, i) => i ? ctx.lineTo(pt[0], pt[1]) : ctx.moveTo(pt[0], pt[1])); ctx.strokeStyle = c; ctx.lineWidth = w; ctx.shadowColor = '#ff003c'; ctx.shadowBlur = bl; ctx.stroke(); ctx.restore(); }); }
-          ctx.font = '900 46px system-ui'; ctx.fillStyle = '#fff'; ctx.shadowColor = '#ff003c'; ctx.shadowBlur = 24; ctx.fillText('黒閃 • BLACK FLASH!', 175, 220); animId = requestAnimationFrame(step);
-        } else { ctx.clearRect(0, 0, 760, 430); document.getElementById('pausePill').classList.remove('active'); document.getElementById('chantBox').classList.remove('show'); }
-      }
-      animId = requestAnimationFrame(step);
+    document.getElementById('btnStrike').addEventListener('click', () => dealDamage(turn % 2 === 0, 48 + Math.floor(Math.random() * 24), '⚔️ Heavy Strike'));
+    document.getElementById('btnCrit').addEventListener('click', () => dealDamage(turn % 2 === 0, 110 + Math.floor(Math.random() * 45), '💥 Critical Smite'));
+    document.getElementById('btnMagic').addEventListener('click', () => dealDamage(turn % 2 === 0, 80 + Math.floor(Math.random() * 30), '✨ Arcane Burst'));
+    document.getElementById('btnGamble').addEventListener('click', () => {
+      const roll = Math.random();
+      if (roll > 0.5) dealDamage(turn % 2 === 0, 180, '🎲 Jackpot Fever (Gambler Wager WIN)');
+      else dealDamage(turn % 2 !== 0, 75, '💀 Backfire (Gambler Wager LOSS)');
     });
-    document.getElementById('btnPromote').addEventListener('click', function () { const txt = `Promote to live with sandbox settings: take=${activeTake}, chargeUp=${sCharge.value}s, domTime=${sPause.value}s, grade=${grades[sGrade.value].name}, activeDomainAfterClash=true, simpleDomain=true, fugaAndPurpleFinishers=true`; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt); this.textContent = '✅ Copied to Clipboard!'; setTimeout(() => { this.textContent = '🚀 Promote to Live'; }, 2000); });
-  </script></body></html>
+    document.getElementById('btnReset').addEventListener('click', () => { hpA = 500; hpB = 500; updateBars(); log.textContent = 'Arena combatants restored to full vitality!'; });
+  </script>
+</body>
+</html>

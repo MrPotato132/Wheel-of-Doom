@@ -13,6 +13,34 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
 
 ---
 
+## [v2.6.0] - 2026-10-19
+### Removed & Refactored
+- **100% Jujutsu Kaisen (JJK) Purge & Pure High-Fantasy Colosseum Reset (`js/wheelData.js`, `js/character.js`, `js/battle.js`, `js/app.js`, `js/audio.js`, `index.html`, `css/styles.css`, `sandbox/`)**:
+  - **Wheels & Drafting**:
+    - Restored the classic 7-step Destiny Queue (`race`, `archetype`, `weapon`, `power`, `weakness`, `backstory`, `stats`).
+    - Purged `sorcererGrade`, `disasterCurseType`, `cursedVesselFingers`, and `domainType` wheels.
+    - Removed JJK races (*Special Grade Cursed Spirit*, *Death Painting Womb*, *Six Eyes Clan Heir*, *Heavenly Restricted*).
+    - Removed JJK archetypes (*Cursed Vessel*, *Special Grade Sorcerer*, *Cursed Corpse Puppet*); preserved `Gambler` and `gamblerGamble` high-stakes fantasy wagering.
+    - Removed JJK cursed tools (*Inverted Spear of Heaven*, *Playful Cloud*, *Split Soul Katana*, *Executioner's Sword*, *Kamutoke*, *Black Rope*).
+    - Removed JJK cursed powers (*Domain Expansion*, *Black Flash*, *Limitless & Hollow Purple*, *Ten Shadows*, *Cleave & Dismantle*, *Boogie Woogie*, *Reverse Cursed Technique*).
+    - Purged all JJK entries from `TRAIT_DESCRIPTIONS` across race, archetype, weapon, power, levelUp, and subArchetype categories.
+  - **Characters & Roster**:
+    - Removed `sorcererGrade` attribute, `domainType`, and `sukunaFingers` stat scaling from `characterManager`.
+    - Removed JJK epithets (*The Honored One*, *Vessel of Sukuna*, *The Sorcerer Killer*, *King of Curses*).
+    - Restored pure fantasy legends roster (Sir Bushin, Jin the Shadow, ETF, Freya, Dominio, Joe, Max, King Baki, Darwizzy, Sir Baguette).
+  - **Combat & Audio Engine**:
+    - Cleaned `setupBattle()`, `executeNextTurn()`, and `resolveTurnAction()`: removed domain clash, active domain continuation, Simple Domain, CT Burnout, Honored One awakening, and Black Flash formulas.
+    - Restored fast, fluid 1100ms fantasy duel pacing.
+    - Removed Web Audio API synthesizers `playDomainExpansion()` and `playBlackFlash()`.
+  - **UI, Overlays & Styles**:
+    - Removed `#arenaPauseBanner`, `#arenaDomainOverlay`, `#arenaBlackFlashOverlay`, and `#arenaChantBox` from `index.html`.
+    - Removed JJK arena test buttons (`#btnTestBlackFlash`, `#btnTestDomainClash`, `#btnSimpleDomain`).
+    - Removed live draft preview and character card modal sorcerer grade rows.
+    - Purged over 400 lines of domain overlay and kokusen animation CSS.
+    - Rewrote `sandbox/options.html` into a pure fantasy combat testing lab (< 140 lines) and deleted `sandbox/domain_clash.png`.
+
+---
+
 ## [v2.5.0] - 2026-10-18
 ### Added
 - **Promoted Sandbox Take C (`take=C, chargeUp=0.75s, domTime=4s, grade=Unlimited Potential (Awakened), activeDomainAfterClash=true, simpleDomain=true, fugaAndPurpleFinishers=true`)**:

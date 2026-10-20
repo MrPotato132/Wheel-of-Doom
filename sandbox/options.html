@@ -2,83 +2,253 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wheel of Faith — Pure Fantasy Combat Sandbox</title>
+  <title>Wheel of Faith — Combat Rating & Lineage Sandbox</title>
   <link rel="stylesheet" href="../css/styles.css">
   <style>
-    body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #06050b; color: #f8fafc; font-family: 'Cinzel', serif, system-ui; overflow: hidden; }
-    .sandbox-bar { position: fixed; top: 12px; z-index: 100; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: rgba(15,12,24,0.96); border: 1.5px solid #d97706; padding: 8px 16px; border-radius: 99px; box-shadow: 0 8px 32px rgba(217,119,6,0.3); backdrop-filter: blur(12px); }
-    .act-btn { background: #1c152a; border: 1px solid #d97706; color: #fde68a; padding: 6px 14px; border-radius: 99px; cursor: pointer; font-weight: 800; font-size: 0.76rem; transition: 0.2s; font-family: inherit; }
-    .act-btn:hover { background: #d97706; color: #000; transform: translateY(-1px); }
-    .arena-stage { position: relative; width: 760px; height: 430px; border-radius: 18px; background: radial-gradient(circle at center, #1e1330 0%, #0a0614 100%); border: 2px solid #b45309; box-shadow: 0 0 50px rgba(180,83,9,0.45); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; box-sizing: border-box; }
-    .fighters-row { display: flex; justify-content: space-between; align-items: center; z-index: 30; margin: auto 0; padding: 0 20px; }
-    .f-pod { width: 230px; background: rgba(18,14,30,0.94); border: 2px solid #d97706; border-radius: 14px; padding: 16px; text-align: center; transition: 0.25s; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
-    .f-avatar { font-size: 2.2rem; margin-bottom: 6px; }
-    .f-name { font-weight: 900; font-size: 1.05rem; color: #fef3c7; }
-    .f-class { font-size: 0.75rem; color: #f59e0b; font-weight: 800; margin-top: 3px; }
-    .f-hp-bar { height: 10px; border-radius: 99px; background: #261b36; overflow: hidden; margin-top: 8px; border: 1px solid #451a03; }
-    .f-hp-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #059669); transition: width 0.3s; }
-    .f-hp-text { font-size: 0.72rem; color: #cbd5e1; margin-top: 4px; font-weight: 700; }
-    .log-banner { text-align: center; font-size: 0.84rem; color: #fde68a; font-weight: 700; background: rgba(0,0,0,0.65); border: 1px solid rgba(217,119,6,0.3); padding: 8px; border-radius: 8px; min-height: 20px; }
-    .hit-shake { animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
-    @keyframes shake { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-8px, 4px); } 40% { transform: translate(8px, -4px); } 60% { transform: translate(-6px, 2px); } 80% { transform: translate(6px, -2px); } }
+    body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #06050b; color: #f8fafc; font-family: 'Cinzel', serif, system-ui; overflow-y: auto; padding: 20px 0; }
+    .sandbox-bar { position: sticky; top: 10px; z-index: 100; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: rgba(15,12,24,0.96); border: 1.5px solid #d97706; padding: 8px 16px; border-radius: 99px; box-shadow: 0 8px 32px rgba(217,119,6,0.3); backdrop-filter: blur(12px); margin-bottom: 14px; }
+    .act-btn { background: #1c152a; border: 1px solid #d97706; color: #fde68a; padding: 6px 14px; border-radius: 99px; cursor: pointer; font-weight: 800; font-size: 0.74rem; transition: 0.2s; font-family: inherit; }
+    .act-btn.active { background: #d97706; color: #000; box-shadow: 0 0 14px rgba(217,119,6,0.6); }
+    .act-btn:hover { transform: translateY(-1px); }
+    .stage-card { width: 800px; max-width: 95vw; background: radial-gradient(circle at center, #1b122c 0%, #090514 100%); border: 2px solid #b45309; border-radius: 16px; padding: 22px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .panel { background: rgba(14,10,24,0.85); border: 1px solid rgba(217,119,6,0.35); border-radius: 12px; padding: 16px; }
+    .panel-title { font-size: 0.85rem; font-weight: 900; color: #f59e0b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; justify-content: space-between; }
+    .tag { font-size: 0.68rem; padding: 2px 8px; border-radius: 99px; font-weight: 800; }
+    .tag-god { background: #06b6d4; color: #000; } .tag-mythic { background: #ec4899; color: #fff; } .tag-legend { background: #f59e0b; color: #000; } .tag-rare { background: #2563eb; color: #fff; }
+    .wheel-slices-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .slice-chip { font-size: 0.68rem; padding: 4px 8px; border-radius: 6px; background: #231b34; border: 1px solid #453460; font-weight: 700; }
+    .slice-chip.blessed { border-color: #f59e0b; background: rgba(245,158,11,0.2); color: #fde68a; }
+    .vs-box { font-size: 0.82rem; line-height: 1.5; color: #cbd5e1; }
+    .score-badge { font-size: 1.35rem; font-weight: 900; color: #fde047; }
+    .btn-spin-test { width: 100%; margin-top: 14px; padding: 12px; background: linear-gradient(135deg, #d97706, #b45309); border: none; border-radius: 8px; color: #fff; font-weight: 900; font-size: 0.95rem; cursor: pointer; letter-spacing: 0.08em; font-family: inherit; }
+    .btn-spin-test:hover { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .comparison-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    .comp-box { padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
+    .comp-old { background: rgba(239,68,68,0.12); border: 1px solid #ef4444; color: #fca5a5; }
+    .comp-new { background: rgba(16,185,129,0.15); border: 1px solid #10b981; color: #6ee7b7; }
   </style>
 </head>
 <body>
   <div class="sandbox-bar">
-    <button class="act-btn" id="btnStrike">⚔️ Heavy Strike</button>
-    <button class="act-btn" id="btnCrit">💥 Critical Smite</button>
-    <button class="act-btn" id="btnMagic">✨ Arcane Burst</button>
-    <button class="act-btn" id="btnGamble">🎲 Gambler Wager</button>
-    <button class="act-btn" id="btnReset">🔄 Reset HP</button>
+    <span style="font-size:0.75rem;color:#fde68a;font-weight:900;">TEST PRESETS:</span>
+    <button class="act-btn active" data-preset="divine">👑 Divine Ascendant (God-Tier)</button>
+    <button class="act-btn" data-preset="heroic">⚡ Mythic Hero (High Tier)</button>
+    <button class="act-btn" data-preset="veteran">🛡️ Proven Gladiator (Mid Tier)</button>
+    <button class="act-btn" data-preset="peasant">🌾 Mortal Peasant (Common)</button>
   </div>
-  <div class="arena-stage">
-    <div style="text-align:center;font-weight:900;letter-spacing:0.18em;color:#f59e0b;font-size:0.95rem;">COLOSSEUM FANTASY COMBAT LAB</div>
-    <div class="fighters-row">
-      <div class="f-pod" id="podA">
-        <div class="f-avatar">⚔️</div>
-        <div class="f-name">Sir Bushin</div>
-        <div class="f-class">Human Champion • Excalibur</div>
-        <div class="f-hp-bar"><div class="f-hp-fill" id="hpFillA"></div></div>
-        <div class="f-hp-text" id="hpTextA">500 / 500 HP</div>
+
+  <div class="stage-card">
+    <div style="text-align:center;">
+      <h2 style="margin:0 0 4px;color:#fef3c7;font-size:1.4rem;">Lineage Floor & Cumulative Build Rank Lab</h2>
+      <p style="margin:0;font-size:0.75rem;color:#f59e0b;">Interactive simulation combining Option 1 (Build Score) + Option 2 (Lineage Floor)</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title"><span>Drafted Lineage & Traits</span><span id="tierTag" class="tag tag-god">DIVINE TIER</span></div>
+        <div class="vs-box" id="traitsList">Loading...</div>
+        <div style="margin-top:10px;padding:8px;background:rgba(245,158,11,0.12);border:1px solid #f59e0b;border-radius:6px;">
+          <div style="font-size:0.7rem;color:#fbbf24;font-weight:800;" id="floorTitle">✨ Lineage Floor: Guaranteed Rank A</div>
+          <div style="font-size:0.68rem;color:#fde68a;" id="floorDesc">God-Tier traits eliminate lower tiers from the 7th wheel!</div>
+        </div>
       </div>
-      <div style="font-size:1.6rem;font-weight:900;color:#f59e0b;">VS</div>
-      <div class="f-pod" id="podB">
-        <div class="f-avatar">👿</div>
-        <div class="f-name">Jin the Shadow</div>
-        <div class="f-class">Demon Assassin • Shadow Manipulation</div>
-        <div class="f-hp-bar"><div class="f-hp-fill" id="hpFillB"></div></div>
-        <div class="f-hp-text" id="hpTextB">500 / 500 HP</div>
+
+      <div class="panel">
+        <div class="panel-title"><span>7th Wheel: Combat Rating Slices</span><span id="spinResultTag" class="tag tag-rare">READY</span></div>
+        <div style="font-size:0.72rem;color:#94a3b8;">Adapted segments based on Lineage Floor:</div>
+        <div class="wheel-slices-preview" id="slicesPreview"></div>
+        <button class="btn-spin-test" id="btnTestSpin">🎰 SIMULATE 7TH WHEEL SPIN</button>
       </div>
     </div>
-    <div class="log-banner" id="logBanner">Select a combat action to test arena mechanics!</div>
+
+    <div class="panel" style="margin-top:0;">
+      <div class="panel-title"><span>Evaluation & Comparison</span><span class="score-badge" id="powerScoreBadge">SCORE: 218 • RANK EX</span></div>
+      <div class="comparison-row">
+        <div class="comp-box comp-old" id="compOldText">
+          <b>❌ Old System (Punitive Multiplier):</b><br>
+          If player rolled Rank E: Stats cut by 50% (0.5x mult).<br>
+          Card forced to: <b>RANK E (Peasant)</b> despite God-Tier traits!
+        </div>
+        <div class="comp-box comp-new" id="compNewText">
+          <b>✅ Combined System (Option 1 + Option 2):</b><br>
+          Lineage Floor guarantees minimum <b>Rank A</b> on the wheel!<br>
+          Build Score elevates final letter badge to <b>RANK EX</b>!
+        </div>
+      </div>
+    </div>
   </div>
+
   <script>
-    let hpA = 500, hpB = 500, maxHp = 500, turn = 0;
-    const log = document.getElementById('logBanner');
-    function updateBars() {
-      document.getElementById('hpFillA').style.width = Math.max(0, (hpA / maxHp) * 100) + '%';
-      document.getElementById('hpTextA').textContent = `${Math.max(0, hpA)} / ${maxHp} HP`;
-      document.getElementById('hpFillB').style.width = Math.max(0, (hpB / maxHp) * 100) + '%';
-      document.getElementById('hpTextB').textContent = `${Math.max(0, hpB)} / ${maxHp} HP`;
+    const presets = {
+      divine: {
+        name: 'Cosmic God-King',
+        race: { text: 'Cosmic Warrior', rarity: 'godTier' },
+        archetype: { text: 'Champion', rarity: 'epic' },
+        weapon: { text: 'Excalibur', rarity: 'mythic' },
+        powers: [{ text: 'Reality Bending', rarity: 'godTier' }],
+        backstory: { text: 'Reborn Anime Protagonist', rarity: 'mythic' },
+        baseStats: { str: 85, spd: 80, dur: 85, int: 80, chaos: 90 }
+      },
+      heroic: {
+        name: 'Angel Paladin',
+        race: { text: 'Angel', rarity: 'mythic' },
+        archetype: { text: 'Paladin', rarity: 'epic' },
+        weapon: { text: 'Radiant Holy Blade', rarity: 'legendary' },
+        powers: [{ text: 'Sacred Miracles', rarity: 'legendary' }],
+        backstory: { text: 'Chosen by Destiny', rarity: 'rare' },
+        baseStats: { str: 70, spd: 65, dur: 75, int: 65, chaos: 60 }
+      },
+      veteran: {
+        name: 'Orc Berserker',
+        race: { text: 'Orc', rarity: 'rare' },
+        archetype: { text: 'Berserker', rarity: 'rare' },
+        weapon: { text: 'Battleaxe', rarity: 'uncommon' },
+        powers: [{ text: 'Rage Surge', rarity: 'uncommon' }],
+        backstory: { text: 'Pit Survivor', rarity: 'common' },
+        baseStats: { str: 65, spd: 55, dur: 60, int: 45, chaos: 50 }
+      },
+      peasant: {
+        name: 'Mortal Farmer',
+        race: { text: 'Human', rarity: 'common' },
+        archetype: { text: 'Peasant', rarity: 'common' },
+        weapon: { text: 'Pitchfork', rarity: 'common' },
+        powers: [],
+        backstory: { text: 'Lost in the Woods', rarity: 'common' },
+        baseStats: { str: 45, spd: 45, dur: 45, int: 45, chaos: 45 }
+      }
+    };
+
+    let curKey = 'divine';
+    const baseSegments = [
+      { text: 'Rank E - Peasant', rank: 'E', mult: 0.9, rarity: 'common' },
+      { text: 'Rank D - Soldier', rank: 'D', mult: 1.0, rarity: 'common' },
+      { text: 'Rank C - Veteran', rank: 'C', mult: 1.15, rarity: 'uncommon' },
+      { text: 'Rank B - Elite Warrior', rank: 'B', mult: 1.35, rarity: 'rare' },
+      { text: 'Rank A - Champion', rank: 'A', mult: 1.6, rarity: 'epic' },
+      { text: 'Rank S - Calamity Tier', rank: 'S', mult: 2.0, rarity: 'legendary' },
+      { text: 'Rank SS - Demigod', rank: 'SS', mult: 2.5, rarity: 'mythic' },
+      { text: 'Rank EX - God of the Arena', rank: 'EX', mult: 3.2, rarity: 'godTier' }
+    ];
+
+    function evaluatePreset(p) {
+      let g = 0, m = 0, l = 0, e = 0;
+      const all = [p.race, p.archetype, p.weapon, ...(p.powers || []), p.backstory];
+      all.forEach(t => {
+        const r = (t && t.rarity) ? t.rarity.toLowerCase() : '';
+        if (r === 'godtier') g++; else if (r === 'mythic') m++; else if (r === 'legendary') l++; else if (r === 'epic') e++;
+      });
+      const sc = g * 4 + m * 3 + l * 2 + e;
+      if (g >= 2 || sc >= 8) return { floor: 'A', minIdx: 4, name: 'Divine Lineage Floor' };
+      if (g >= 1 || m >= 2 || sc >= 5) return { floor: 'B', minIdx: 3, name: 'Mythic Heritage Floor' };
+      if (m >= 1 || l >= 1 || sc >= 2) return { floor: 'C', minIdx: 2, name: 'Heroic Lineage Floor' };
+      return { floor: 'None', minIdx: 0, name: 'Standard Slices (Fair 0.9x Floor)' };
     }
-    function dealDamage(isAAttacking, dmg, label) {
-      const targetPod = isAAttacking ? document.getElementById('podB') : document.getElementById('podA');
-      if (isAAttacking) hpB = Math.max(0, hpB - dmg); else hpA = Math.max(0, hpA - dmg);
-      targetPod.classList.add('hit-shake');
-      setTimeout(() => targetPod.classList.remove('hit-shake'), 320);
-      log.textContent = `${isAAttacking ? 'Sir Bushin' : 'Jin'} executes ${label}! -${dmg} DMG.`;
-      updateBars();
-      turn++;
+
+    function calcPowerScore(p, rolledMult) {
+      const s = p.baseStats;
+      const base = (s.str + s.spd + s.dur + s.int + s.chaos) / 5 * rolledMult;
+      const wr = p.weapon ? (p.weapon.rarity === 'godTier' ? 45 : p.weapon.rarity === 'mythic' ? 35 : 20) : 10;
+      const rr = p.race ? (p.race.rarity === 'godTier' ? 40 : p.race.rarity === 'mythic' ? 30 : 15) : 8;
+      const pr = (p.powers ? p.powers.length : 0) * 18;
+      return Math.floor(base + wr + rr + pr);
     }
-    document.getElementById('btnStrike').addEventListener('click', () => dealDamage(turn % 2 === 0, 48 + Math.floor(Math.random() * 24), '⚔️ Heavy Strike'));
-    document.getElementById('btnCrit').addEventListener('click', () => dealDamage(turn % 2 === 0, 110 + Math.floor(Math.random() * 45), '💥 Critical Smite'));
-    document.getElementById('btnMagic').addEventListener('click', () => dealDamage(turn % 2 === 0, 80 + Math.floor(Math.random() * 30), '✨ Arcane Burst'));
-    document.getElementById('btnGamble').addEventListener('click', () => {
-      const roll = Math.random();
-      if (roll > 0.5) dealDamage(turn % 2 === 0, 180, '🎲 Jackpot Fever (Gambler Wager WIN)');
-      else dealDamage(turn % 2 !== 0, 75, '💀 Backfire (Gambler Wager LOSS)');
+
+    function getLetterRank(score, rolledRank) {
+      const scale = [
+        { r: 'EX', min: 210, o: 7 }, { r: 'SS', min: 175, o: 6 }, { r: 'S', min: 145, o: 5 },
+        { r: 'A', min: 120, o: 4 }, { r: 'B', min: 98, o: 3 }, { r: 'C', min: 75, o: 2 },
+        { r: 'D', min: 52, o: 1 }, { r: 'E', min: 0, o: 0 }
+      ];
+      let sRank = 'E', sOrder = 0;
+      for (const entry of scale) { if (score >= entry.min) { sRank = entry.r; sOrder = entry.o; break; } }
+      const rEntry = scale.find(x => x.r === rolledRank);
+      const rOrder = rEntry ? rEntry.o : 0;
+      return sOrder >= rOrder ? sRank : rolledRank;
+    }
+
+    function renderPreset() {
+      const p = presets[curKey];
+      const ev = evaluatePreset(p);
+
+      document.getElementById('traitsList').innerHTML = `
+        <b>Race:</b> ${p.race.text} <span class="tag tag-${p.race.rarity}">${p.race.rarity}</span><br>
+        <b>Archetype:</b> ${p.archetype.text} <span class="tag tag-${p.archetype.rarity}">${p.archetype.rarity}</span><br>
+        <b>Weapon:</b> ${p.weapon.text} <span class="tag tag-${p.weapon.rarity}">${p.weapon.rarity}</span><br>
+        <b>Power:</b> ${(p.powers && p.powers[0]) ? p.powers[0].text : 'None'}<br>
+        <b>Backstory:</b> ${p.backstory.text}
+      `;
+
+      document.getElementById('floorTitle').textContent = `✨ ${ev.name}: Guaranteed Rank ${ev.floor}!`;
+      document.getElementById('floorDesc').textContent = ev.minIdx > 0
+        ? `Slices below Rank ${ev.floor} are blessed and upgraded before you spin!`
+        : `Rank E now grants fair 0.9x stats (no harsh 50% penalty).`;
+
+      const slicesContainer = document.getElementById('slicesPreview');
+      slicesContainer.innerHTML = '';
+      const adapted = baseSegments.map((seg, idx) => {
+        if (idx < ev.minIdx) {
+          return { ...seg, text: `Rank ${ev.floor} - Blessed`, rank: ev.floor, isBlessed: true };
+        }
+        return seg;
+      });
+
+      adapted.forEach(s => {
+        const d = document.createElement('div');
+        d.className = `slice-chip ${s.isBlessed ? 'blessed' : ''}`;
+        d.textContent = s.text;
+        slicesContainer.appendChild(d);
+      });
+
+      const initialScore = calcPowerScore(p, 1.0);
+      const initialRank = getLetterRank(initialScore, 'C');
+      document.getElementById('powerScoreBadge').textContent = `SCORE: ${initialScore} • RANK ${initialRank}`;
+      document.getElementById('spinResultTag').textContent = 'READY TO SPIN';
+      document.getElementById('spinResultTag').className = 'tag tag-rare';
+    }
+
+    document.getElementById('btnTestSpin').addEventListener('click', () => {
+      const p = presets[curKey];
+      const ev = evaluatePreset(p);
+      const adapted = baseSegments.map((seg, idx) => {
+        if (idx < ev.minIdx) {
+          const targetFloorSeg = baseSegments[ev.minIdx] || baseSegments[2];
+          return { ...targetFloorSeg, text: `Rank ${ev.floor} - Lineage Blessed`, isBlessed: true };
+        }
+        return seg;
+      });
+
+      const rolled = adapted[Math.floor(Math.random() * adapted.length)];
+      const score = calcPowerScore(p, rolled.mult);
+      const effRank = getLetterRank(score, rolled.rank);
+
+      document.getElementById('spinResultTag').textContent = `ROLLED: ${rolled.text.toUpperCase()}`;
+      document.getElementById('spinResultTag').className = rolled.isBlessed ? 'tag tag-mythic' : 'tag tag-god';
+
+      document.getElementById('powerScoreBadge').textContent = `SCORE: ${score} • RANK ${effRank}`;
+
+      document.getElementById('compOldText').innerHTML = `
+        <b>❌ Old System (Punitive Mult):</b><br>
+        If player rolled lowest slice: stats cut by 50%.<br>
+        Fighter stamped with: <b>RANK E (Peasant)</b>!
+      `;
+      document.getElementById('compNewText').innerHTML = `
+        <b>✅ Combined System (Option 1 + 2):</b><br>
+        Rolled: <b>${rolled.text}</b> (${rolled.mult}x).<br>
+        Build Score & Floor safeguard effective rank: <b>RANK ${effRank}</b>!
+      `;
     });
-    document.getElementById('btnReset').addEventListener('click', () => { hpA = 500; hpB = 500; updateBars(); log.textContent = 'Arena combatants restored to full vitality!'; });
+
+    document.querySelectorAll('.act-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.act-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        curKey = b.dataset.preset;
+        renderPreset();
+      });
+    });
+
+    renderPreset();
   </script>
 </body>
 </html>

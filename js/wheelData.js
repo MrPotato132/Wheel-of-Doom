@@ -1050,6 +1050,7 @@ const WHEEL_DATA = {
 
   // ============================================================
   // 7. COMBAT RATING WHEEL (8 Tiers)
+  // Multipliers updated for fair gameplay + Lineage Floor synergy
   // ============================================================
   stats: {
     id: 'stats',
@@ -1057,14 +1058,14 @@ const WHEEL_DATA = {
     subtitle: 'Spins for overall combat tier and potential',
     icon: '📊',
     segments: [
-      { text: 'Rank E - Peasant', subtext: 'Combat Rating: 15-30', rarity: 'common', color: '#4b5563', rank: 'E', mult: 0.5 },
-      { text: 'Rank D - Soldier', subtext: 'Combat Rating: 31-50', rarity: 'common', color: '#6b7280', rank: 'D', mult: 0.8 },
-      { text: 'Rank C - Veteran', subtext: 'Combat Rating: 51-70', rarity: 'uncommon', color: '#16a34a', rank: 'C', mult: 1.0 },
-      { text: 'Rank B - Elite Warrior', subtext: 'Combat Rating: 71-85', rarity: 'rare', color: '#2563eb', rank: 'B', mult: 1.3 },
-      { text: 'Rank A - Champion', subtext: 'Combat Rating: 86-95', rarity: 'epic', color: '#7c3aed', rank: 'A', mult: 1.6 },
-      { text: 'Rank S - Calamity Tier', subtext: 'Combat Rating: 96-120', rarity: 'legendary', color: '#d97706', rank: 'S', mult: 2.0 },
-      { text: 'Rank SS - Demigod', subtext: 'Combat Rating: 121-150', rarity: 'mythic', color: '#db2777', rank: 'SS', mult: 2.5 },
-      { text: 'Rank EX - God of the Arena', subtext: 'Combat Rating: 151-200+', rarity: 'godTier', color: '#06b6d4', rank: 'EX', mult: 3.2 }
+      { text: 'Rank E - Peasant', subtext: 'Combat Rating: 35-50 • Raw Underdog Potential', rarity: 'common', color: '#4b5563', rank: 'E', mult: 0.9 },
+      { text: 'Rank D - Soldier', subtext: 'Combat Rating: 50-70 • Trained Combatant', rarity: 'common', color: '#6b7280', rank: 'D', mult: 1.0 },
+      { text: 'Rank C - Veteran', subtext: 'Combat Rating: 71-95 • Proven Colosseum Survivor', rarity: 'uncommon', color: '#16a34a', rank: 'C', mult: 1.15 },
+      { text: 'Rank B - Elite Warrior', subtext: 'Combat Rating: 96-120 • Arena Vanguard', rarity: 'rare', color: '#2563eb', rank: 'B', mult: 1.35 },
+      { text: 'Rank A - Champion', subtext: 'Combat Rating: 121-150 • Decorated Gladiator', rarity: 'epic', color: '#7c3aed', rank: 'A', mult: 1.6 },
+      { text: 'Rank S - Calamity Tier', subtext: 'Combat Rating: 151-180 • Force of Destruction', rarity: 'legendary', color: '#d97706', rank: 'S', mult: 2.0 },
+      { text: 'Rank SS - Demigod', subtext: 'Combat Rating: 181-220 • Transcendent Lineage', rarity: 'mythic', color: '#db2777', rank: 'SS', mult: 2.5 },
+      { text: 'Rank EX - God of the Arena', subtext: 'Combat Rating: 220+ • Supreme Entity', rarity: 'godTier', color: '#06b6d4', rank: 'EX', mult: 3.2 }
     ]
   },
 
@@ -1361,7 +1362,15 @@ const TRAIT_DESCRIPTIONS = {
     'SPD': 'Speed: Determines combat turn order initiative, attack frequency, and evasion/dodge probability.',
     'DUR': 'Durability: Defines maximum HP pool (DUR * 5.5 + 120) and passive damage reduction armor.',
     'INT': 'Intelligence: Controls supernatural power activation rate, critical strike frequency, and tactical foresight.',
-    'CHAOS': 'Chaos Rating: Multiplies random damage variance and triggers wild wildcard miracle and glitch procs.'
+    'CHAOS': 'Chaos Rating: Multiplies random damage variance and triggers wild wildcard miracle and glitch procs.',
+    'Rank E - Peasant': 'Raw Underdog Potential: Baseline 0.9x physical potential with no lineage buffs. High agility and grit in the pit!',
+    'Rank D - Soldier': 'Trained Combatant: 1.0x baseline attributes. Standard colosseum legionnaire with disciplined gladiatorial training.',
+    'Rank C - Veteran': 'Proven Survivor: 1.15x stat boost. Hardened by dozens of victorious arena matches.',
+    'Rank B - Elite Warrior': 'Arena Vanguard: 1.35x stat boost. High-ranking colosseum champion with superior combat instincts.',
+    'Rank A - Champion': 'Decorated Gladiator: 1.6x stat boost. Master of arena warfare, crowd-favored hero with devastating offense.',
+    'Rank S - Calamity Tier': 'Force of Destruction: 2.0x stat multiplier. Commands catastrophic combat ratings that shake the colosseum sands.',
+    'Rank SS - Demigod': 'Transcendent Lineage: 2.5x stat multiplier. Godlike battle aura, crushing armor penetration, and supreme vitality.',
+    'Rank EX - God of the Arena': 'Supreme Entity: 3.2x stat multiplier. The highest theoretical tier of combat prowess and arena dominance.'
   },
 
   subRace: {

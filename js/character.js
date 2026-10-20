@@ -163,12 +163,150 @@ class CharacterManager {
     }
   }
 
+  // ============================================================
+  // LINEAGE FLOOR & WHEEL PITY SYSTEM (Option 2)
+  // Evaluates high-rarity drafted traits to guarantee a minimum rank floor
+  // ============================================================
+  getLineageFloor(char = this.currentDraft) {
+    if (!char) return null;
+    const traits = [];
+    if (char.race) traits.push(char.race);
+    if (char.subRace) traits.push(char.subRace);
+    if (char.archetype) traits.push(char.archetype);
+    if (char.archetypeSub) traits.push(char.archetypeSub);
+    if (char.weapon) traits.push(char.weapon);
+    if (char.powers && char.powers.length) traits.push(...char.powers);
+    if (char.backstory) traits.push(char.backstory);
+
+    let godTierCount = 0;
+    let mythicCount = 0;
+    let legendaryCount = 0;
+    let epicCount = 0;
+
+    traits.forEach(t => {
+      const r = t.rarity ? t.rarity.toLowerCase() : '';
+      if (r === 'godtier') godTierCount++;
+      else if (r === 'mythic') mythicCount++;
+      else if (r === 'legendary') legendaryCount++;
+      else if (r === 'epic') epicCount++;
+    });
+
+    const score = godTierCount * 4 + mythicCount * 3 + legendaryCount * 2 + epicCount * 1;
+
+    // Highest Floor: Rank A (Champion minimum)
+    if (godTierCount >= 2 || score >= 8) {
+      return {
+        floorRank: 'A',
+        minRankIndex: 4,
+        tierName: 'Divine Lineage',
+        icon: '👑',
+        desc: 'Your God-tier heritage guarantees a minimum of Rank A (Champion)!'
+      };
+    }
+    // High Floor: Rank B (Elite Warrior minimum)
+    else if (godTierCount >= 1 || mythicCount >= 2 || score >= 5) {
+      return {
+        floorRank: 'B',
+        minRankIndex: 3,
+        tierName: 'Mythic Heritage',
+        icon: '⚡',
+        desc: 'Your Mythic heritage guarantees a minimum of Rank B (Elite Warrior)!'
+      };
+    }
+    // Moderate Floor: Rank C (Veteran minimum)
+    else if (mythicCount >= 1 || legendaryCount >= 1 || score >= 2) {
+      return {
+        floorRank: 'C',
+        minRankIndex: 2,
+        tierName: 'Heroic Lineage',
+        icon: '🛡️',
+        desc: 'Your Heroic lineage guarantees a minimum of Rank C (Veteran)!'
+      };
+    }
+
+    return null;
+  }
+
+  // Generates adapted wheel slices for the stats wheel respecting Lineage Floor
+  getAdaptedStatsWheel(baseStatsWheel, lineageFloor) {
+    if (!lineageFloor || !baseStatsWheel || !baseStatsWheel.segments) return baseStatsWheel;
+
+    const rankIdxMap = { E: 0, D: 1, C: 2, B: 3, A: 4, S: 5, SS: 6, EX: 7 };
+    const minIdx = lineageFloor.minRankIndex;
+
+    const floorSliceTemplates = {
+      A: { text: 'Rank A - Divine Ascendant', subtext: 'Lineage Floor Upgrade (121-150) • Champion', rarity: 'epic', color: '#7c3aed', rank: 'A', mult: 1.6, isBlessed: true },
+      B: { text: 'Rank B - Mythic Vanguard', subtext: 'Lineage Floor Upgrade (96-120) • Elite Warrior', rarity: 'rare', color: '#2563eb', rank: 'B', mult: 1.35, isBlessed: true },
+      C: { text: 'Rank C - Blessed Veteran', subtext: 'Lineage Floor Upgrade (71-95) • Veteran', rarity: 'uncommon', color: '#16a34a', rank: 'C', mult: 1.15, isBlessed: true }
+    };
+
+    const template = floorSliceTemplates[lineageFloor.floorRank] || floorSliceTemplates.C;
+
+    const adaptedSegments = baseStatsWheel.segments.map(seg => {
+      const idx = rankIdxMap[seg.rank] !== undefined ? rankIdxMap[seg.rank] : 0;
+      if (idx < minIdx) {
+        return { ...template };
+      }
+      return { ...seg };
+    });
+
+    return {
+      ...baseStatsWheel,
+      subtitle: `✨ ${lineageFloor.tierName}: Guaranteed minimum Rank ${lineageFloor.floorRank}!`,
+      segments: adaptedSegments
+    };
+  }
+
   finalizeStatsWithRank(rankSegment) {
     const mult = rankSegment.mult || 1.0;
     const s = this.currentDraft.stats;
     for (const key in s) {
       s[key] = Math.max(15, Math.floor(s[key] * mult + (Math.random() * 15 - 5)));
     }
+    this.currentDraft.effectiveRank = this.getEffectiveRank(this.currentDraft);
+  }
+
+  // Calculate Effective Letter Rank combining Total Build Score (Option 1) & Lineage (Option 2)
+  getEffectiveRank(char = this.currentDraft) {
+    if (!char) return 'C';
+    const score = this.getOverallPower(char);
+    const rolledRank = char.combatRank && char.combatRank.rank ? char.combatRank.rank : 'C';
+
+    const rankScale = [
+      { rank: 'EX', minScore: 210, order: 7 },
+      { rank: 'SS', minScore: 175, order: 6 },
+      { rank: 'S',  minScore: 145, order: 5 },
+      { rank: 'A',  minScore: 120, order: 4 },
+      { rank: 'B',  minScore: 98,  order: 3 },
+      { rank: 'C',  minScore: 75,  order: 2 },
+      { rank: 'D',  minScore: 52,  order: 1 },
+      { rank: 'E',  minScore: 0,   order: 0 }
+    ];
+
+    let scoreRank = 'E';
+    let scoreOrder = 0;
+    for (const entry of rankScale) {
+      if (score >= entry.minScore) {
+        scoreRank = entry.rank;
+        scoreOrder = entry.order;
+        break;
+      }
+    }
+
+    const rolledEntry = rankScale.find(e => e.rank === rolledRank);
+    const rolledOrder = rolledEntry ? rolledEntry.order : 2;
+
+    const floor = this.getLineageFloor(char);
+    let floorOrder = -1;
+    if (floor) {
+      const floorEntry = rankScale.find(e => e.rank === floor.floorRank);
+      if (floorEntry) floorOrder = floorEntry.order;
+    }
+
+    // Whichever is highest wins: True Build Score vs Wheel Roll vs Lineage Floor!
+    const maxOrder = Math.max(scoreOrder, rolledOrder, floorOrder);
+    const finalEntry = rankScale.find(e => e.order === maxOrder);
+    return finalEntry ? finalEntry.rank : 'C';
   }
 
   // Generate dynamic epic title like in the Instagram series
@@ -188,7 +326,7 @@ class CharacterManager {
       epithet = 'The Chosen One';
     } else if (raceName === 'Shadow Monarch' || archetypeName === 'Shadow Monarch') {
       epithet = 'Monarch of Shadows';
-    } else if (char.combatRank && char.combatRank.rank === 'EX') {
+    } else if (char.effectiveRank === 'EX' || (char.combatRank && char.combatRank.rank === 'EX')) {
       epithet = 'God of the Arena';
     } else if (weaponName && weaponName.includes('Thor')) {
       epithet = 'Bane of the Heavens';
@@ -205,15 +343,43 @@ class CharacterManager {
     return `${char.name}, ${epithet}`;
   }
 
-  // Calculate Overall Power Level
+  // Calculate Overall Power Level (Cumulative Build Score - Option 1)
   getOverallPower(char = this.currentDraft) {
+    if (!char || !char.stats) return 100;
     const s = char.stats;
     const base = (s.str + s.spd + s.dur + s.int + s.chaos) / 5;
-    const powerBonus = (char.powers.length) * 15;
-    const weaponBonus = char.weapon && (char.weapon.rarity === 'godTier' || char.weapon.rarity === 'mythic') ? 40 : 15;
-    const levelBonus = (char.level - 1) * 20;
+    const powerBonus = (char.powers ? char.powers.length : 0) * 18;
+    
+    // Weapon Rarity Bonus
+    let weaponBonus = 0;
+    if (char.weapon) {
+      const wr = (char.weapon.rarity || '').toLowerCase();
+      if (wr === 'godtier') weaponBonus = 45;
+      else if (wr === 'mythic') weaponBonus = 35;
+      else if (wr === 'legendary') weaponBonus = 25;
+      else if (wr === 'epic') weaponBonus = 18;
+      else weaponBonus = 12;
+    }
+
+    // Race & Subrace Rarity Bonus
+    let raceBonus = 0;
+    if (char.race) {
+      const rr = (char.race.rarity || '').toLowerCase();
+      if (rr === 'godtier') raceBonus = 40;
+      else if (rr === 'mythic') raceBonus = 30;
+      else if (rr === 'legendary') raceBonus = 20;
+      else if (rr === 'epic') raceBonus = 14;
+      else raceBonus = 8;
+    }
+    if (char.subRace) {
+      const srr = (char.subRace.rarity || '').toLowerCase();
+      if (srr === 'godtier' || srr === 'mythic') raceBonus += 15;
+      else if (srr === 'legendary' || srr === 'epic') raceBonus += 10;
+    }
+
+    const levelBonus = ((char.level || 1) - 1) * 20;
     const enchantBonus = (char.enchantments ? char.enchantments.length : 0) * 12;
-    return Math.floor(base + powerBonus + weaponBonus + levelBonus + enchantBonus);
+    return Math.floor(base + powerBonus + weaponBonus + raceBonus + levelBonus + enchantBonus);
   }
 
   // Apply Mobile Game Level-Up Spin

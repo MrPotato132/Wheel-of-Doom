@@ -13,6 +13,29 @@ All notable changes, updates, feature expansions, and bug fixes for the project 
 
 ---
 
+## [v2.7.0] - 2026-10-20
+### Added & Improved
+- **Fair Combat Rating & Lineage Synergy Overhaul (Combined Option 1 + Option 2)**:
+  - **Option 2: Lineage Floor & Wheel Pity System (`js/character.js`, `js/app.js`)**:
+    - High-tier drafted traits now generate a guaranteed **Lineage Floor** before the 7th wheel is spun:
+      - **Divine Lineage (Rank A Floor)**: 2+ God-tier traits or 8+ weighted points guarantees a minimum of Rank A (Champion).
+      - **Mythic Heritage (Rank B Floor)**: 1+ God-tier, 2+ Mythic, or 5+ weighted points guarantees a minimum of Rank B (Elite Warrior).
+      - **Heroic Lineage (Rank C Floor)**: 1+ Mythic, 1+ Legendary, or 2+ weighted points guarantees a minimum of Rank C (Veteran).
+    - Wheel slices below the floor are dynamically blessed and elevated (`isBlessed: true`), ensuring lower tiers cannot be rolled.
+    - Slices display an active UI indicator: `✨ Lineage Blessing Active: Guaranteed minimum Rank X!`, accompanied by a `LINEAGE BLESSED` outcome modal celebration.
+  - **Option 1: Cumulative Build Score & Effective Rank (`js/character.js`, `js/app.js`)**:
+    - The Character Card's letter rank (`cardRankBadge`) is now dynamically calculated from the fighter's **Total Build Power Score** (`characterManager.getEffectiveRank()`), which combines Race rarity, Archetype, Weapon rarity, Powers count, Base Stats, Level, and Combat Rating multiplier.
+    - The final badge is granted based on whichever is **highest**: Total Build Power vs Rolled Slice vs Lineage Floor. High-tier builds are protected from low-rank downgrades, while lucky low-tier drafts can still surge up to Rank EX!
+  - **Rebalanced Multipliers (`js/wheelData.js`)**:
+    - Replaced the harsh `0.5x` stat halving on Rank E with a fair `0.9x` Underdog multiplier.
+    - Raised Rank D from `0.8x` to `1.0x` baseline, Rank C to `1.15x`, Rank B to `1.35x`, Rank A to `1.6x`, Rank S to `2.0x`, Rank SS to `2.5x`, and Rank EX to `3.2x`.
+    - Added full rank descriptions to `TRAIT_DESCRIPTIONS.stats`.
+  - **Styles & Sandbox Lab (`css/styles.css`, `sandbox/options.html`, `sandbox/CURRENT_PLAN.md`)**:
+    - Added CSS classes for all rank tiers (`.rank-A` through `.rank-E`) and `.lineage-blessing-active` pulsing glow.
+    - Rewrote `sandbox/options.html` into an interactive testing lab comparing the old vs new combat rating system across Divine, Mythic, Heroic, and Peasant presets.
+
+---
+
 ## [v2.6.0] - 2026-10-19
 ### Removed & Refactored
 - **100% Jujutsu Kaisen (JJK) Purge & Pure High-Fantasy Colosseum Reset (`js/wheelData.js`, `js/character.js`, `js/battle.js`, `js/app.js`, `js/audio.js`, `index.html`, `css/styles.css`, `sandbox/`)**:

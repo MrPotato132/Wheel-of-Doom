@@ -255,18 +255,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const currentTask = state.destinyQueue[state.destinyStep];
     state.activeWheelId = currentTask.id;
-    const wheelData = WHEEL_DATA[currentTask.id];
+    let wheelData = WHEEL_DATA[currentTask.id];
 
     if (!wheelData) {
       console.error('Wheel data not found for:', currentTask.id);
       return;
     }
 
+    // Lineage Floor & Wheel Pity System (Option 2)
+    let lineageFloor = null;
+    if (currentTask.id === 'stats' && state.currentMode === 'destiny') {
+      lineageFloor = characterManager.getLineageFloor();
+      if (lineageFloor) {
+        wheelData = characterManager.getAdaptedStatsWheel(wheelData, lineageFloor);
+      }
+    }
+
     wheel.setWheelData(wheelData);
 
     // Update Header and Badges
     wheelTitle.textContent = `${wheelData.icon || '⚡'} ${wheelData.name}`;
-    wheelSubtitle.textContent = wheelData.subtitle || 'Spin to reveal your fate!';
+    if (lineageFloor) {
+      wheelSubtitle.innerHTML = `<span class="lineage-blessing-active">${lineageFloor.icon} ${lineageFloor.tierName} Active: Minimum guaranteed <b>Rank ${lineageFloor.floorRank}</b>!</span>`;
+    } else {
+      wheelSubtitle.textContent = wheelData.subtitle || 'Spin to reveal your fate!';
+    }
 
     const totalSteps = state.destinyQueue.length;
     currentStepBadge.textContent = `Step ${state.destinyStep + 1} of ${totalSteps}`;
@@ -429,6 +442,17 @@ document.addEventListener('DOMContentLoaded', () => {
     badge.textContent = rarityInfo.name.toUpperCase();
     badge.className = `rarity-badge ${rarity}`;
 
+    // Lineage Blessing celebration in modal if roll was elevated by lineage floor
+    if (segment.isBlessed) {
+      if (badge) {
+        badge.textContent = 'LINEAGE BLESSED';
+        badge.className = 'rarity-badge legendary';
+      }
+      if (modalDescText) {
+        modalDescText.textContent = `✨ Lineage Blessing Proc: Your high-tier bloodline elevated this roll to Rank ${segment.rank}! Lower tiers were purged by your divine/mythic heritage.`;
+      }
+    }
+
     modalNextBtn.textContent = state.currentMode === 'destiny' ? 'Next Wheel ➔' : 'Awesome!';
 
     resultModal.classList.remove('hidden');
@@ -580,11 +604,15 @@ document.addEventListener('DOMContentLoaded', () => {
     setStatBar('statInt', s.int);
     setStatBar('statChaos', s.chaos);
 
-    // Combat Rank
-    const rank = char.combatRank ? char.combatRank.rank : 'C';
+    // Combat Rank (Combined Option 1: Build Score + Option 2: Lineage Floor)
+    const effectiveRank = characterManager.getEffectiveRank(char);
+    char.effectiveRank = effectiveRank;
     const rankEl = document.getElementById('cardRankBadge');
-    rankEl.textContent = `RANK ${rank}`;
-    rankEl.className = `card-rank-badge rank-${rank}`;
+    rankEl.textContent = `RANK ${effectiveRank}`;
+    rankEl.className = `card-rank-badge rank-${effectiveRank}`;
+    if (char.combatRank && char.combatRank.rank && char.combatRank.rank !== effectiveRank) {
+      rankEl.title = `Rolled: Rank ${char.combatRank.rank} ➔ Elevated to Rank ${effectiveRank} by Total Build Power!`;
+    }
 
     // Generate Animated Genshin-Impact Style Splash Card
     drawCharacterAvatar(char);

@@ -457,6 +457,9 @@ class CharacterManager {
   }
 
   saveCharacter(char = this.currentDraft) {
+    if (char && !char.effectiveRank) {
+      char.effectiveRank = this.getEffectiveRank(char);
+    }
     const list = this.getSavedCharacters();
     const existingIdx = list.findIndex(c => c.id === char.id);
     if (existingIdx >= 0) {

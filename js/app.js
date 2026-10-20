@@ -1858,7 +1858,7 @@ Archetype: ${char.archetype ? char.archetype.text : 'Warrior'}
 Weapon: ${char.weapon ? char.weapon.text : 'None'}
 Powers: ${char.powers.map(p => p.text).join(', ') || 'None'}
 Weakness: ${char.weakness ? char.weakness.text : 'None'}
-Combat Rank: ${char.combatRank ? char.combatRank.rank : 'C'} (Power: ${characterManager.getOverallPower(char)})
+Combat Rank: ${char.effectiveRank || (char.combatRank ? char.combatRank.rank : 'C')} (Power: ${characterManager.getOverallPower(char)})
 Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | INT ${char.stats.int} | CHAOS ${char.stats.chaos}
 #TheWheelOfFaith #WoFArena`;
 
@@ -1916,7 +1916,7 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
     // Power Score
     ctx.fillStyle = '#06b6d4';
     ctx.font = 'bold 18px "Outfit", sans-serif';
-    ctx.fillText(`POWER RATING: ${characterManager.getOverallPower(char)}  |  Lv. ${char.level || 1}  |  RANK ${char.combatRank ? char.combatRank.rank : 'C'}`, canvas.width / 2, 160);
+    ctx.fillText(`POWER RATING: ${characterManager.getOverallPower(char)}  |  Lv. ${char.level || 1}  |  RANK ${char.effectiveRank || (char.combatRank ? char.combatRank.rank : 'C')}`, canvas.width / 2, 160);
 
     // Separator line
     ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
@@ -2250,7 +2250,7 @@ Stats: STR ${char.stats.str} | SPD ${char.stats.spd} | DUR ${char.stats.dur} | I
         <div class="roster-pills">
           <span class="pill pill-race">${c.race ? c.race.text : 'Mortal'}</span>
           <span class="pill pill-arch">${c.archetype ? c.archetype.text : 'Warrior'}</span>
-          <span class="pill pill-rank">Rank ${c.combatRank ? c.combatRank.rank : 'C'}</span>
+          <span class="pill pill-rank">Rank ${c.effectiveRank || (c.combatRank ? c.combatRank.rank : characterManager.getEffectiveRank(c))}</span>
         </div>
         <div class="roster-actions">
           <button class="btn btn-sm btn-inspect" data-action="inspect" data-id="${c.id}">View Card 📜</button>
